@@ -1,0 +1,35 @@
+{
+	"name": "cozyshelf",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node build/src/index.ts",
+		"start:dev": "nodemon --config nodemon.json src/index.ts",
+		"build": "tsc",
+		"test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles",
+		"test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles --watch",
+		"test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles --watch --coverage"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "commonjs",
+	"devDependencies": {
+		"@types/express": "^5.0.3",
+		"@types/jest": "^30.0.0",
+		"@types/node": "^24.0.12",
+		"dotenv": "^17.1.0",
+		"jest": "^30.0.4",
+		"nodemon": "^3.1.10",
+		"ts-jest": "^29.4.0",
+		"ts-node": "^10.9.2",
+		"tslint": "^5.20.1",
+		"typescript": "^5.8.3"
+	},
+	"dependencies": {
+		"ejs": "^3.1.10",
+		"express": "^5.1.0",
+		"typeorm": "^0.3.25"
+	}
+}
