@@ -1,16 +1,14 @@
-import dotenv from "dotenv";
-import express from "express";
+import express, { Express } from "express";
 import defaultMiddlewareConfig from "./middlewares/defaultMiddleware.config";
-import routesConfig from "./routes/routesConfig";
+import configRoutes from "./middlewares/configRoutes";
+import environment from "./config/environment";
 
-dotenv.config();
-
-const port = process.env.PORT || 3000;
-
-const server = express();
+const server: Express = express();
 defaultMiddlewareConfig(server);
-routesConfig(server);
+configRoutes(server);
 
-server.listen(port, () => {
-	console.log(`[INFO] 🟢 Server is running on port ${port}`);
+server.listen(environment.server.port, () => {
+	console.log(`[INFO] 🟢 Server is running on port ${environment.server.port}`);
 });
+
+export default server;
