@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "node build/index.js",
-		"start:dev": "tsx watch src/index.ts",
+		"start:dev": "npm run db:up && tsx watch src/index.ts",
 		"db:up": "docker compose up -d db",
 		"db:down": "docker compose down",
 		"db:down_volumes": "docker compose down -v",
