@@ -14,11 +14,10 @@ const errorsDuringInitialization: string[] = [];
 async function startServer() {
 	try {
 		await TypeOrmConnection.connect(postgresDataSource);
+		server.listen(environment.server.port);
 	} catch (error) {
 		errorsDuringInitialization.push((error as Error).message)
 	}
-
-	server.listen(environment.server.port);
 }
 
 startServer().then(() => {
