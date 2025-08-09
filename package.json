@@ -5,7 +5,10 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "node build/index.js",
-		"start:dev": "nodemon --config nodemon.json src/index.ts",
+		"start:dev": "npm run db:up && tsx watch src/index.ts",
+		"db:up": "docker compose up -d db",
+		"db:down": "docker compose down",
+		"db:down_volumes": "docker compose down -v",
 		"build": "tsc",
 		"test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles",
 		"test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles --watch",
@@ -14,12 +17,11 @@
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
-	"type": "commonjs",
 	"devDependencies": {
 		"@jest/globals": "^30.0.4",
 		"@types/express": "^5.0.3",
 		"@types/jest": "^30.0.0",
-		"@types/node": "^24.0.12",
+		"@types/node": "^24.2.1",
 		"dotenv": "^17.1.0",
 		"jest": "^30.0.4",
 		"nodemon": "^3.1.10",
@@ -27,12 +29,14 @@
 		"ts-jest": "^29.4.0",
 		"ts-node": "^10.9.2",
 		"tslint": "^5.20.1",
+		"tsx": "^4.20.3",
 		"typescript": "^5.8.3"
 	},
 	"dependencies": {
 		"@types/supertest": "^6.0.3",
 		"ejs": "^3.1.10",
 		"express": "^5.1.0",
+		"pg": "^8.16.3",
 		"typeorm": "^0.3.25"
 	}
 }
