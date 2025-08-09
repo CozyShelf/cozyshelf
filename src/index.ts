@@ -2,13 +2,36 @@ import express, { Express } from "express";
 import defaultMiddlewareConfig from "./middlewares/defaultMiddleware.config";
 import configRoutes from "./middlewares/configRoutes";
 import environment from "./config/environment";
+import TypeOrmConnection from "./config/database/TypeOrmConnection";
+import postgresDataSource from "./config/database/datasources/postgresDataSource";
 
 const server: Express = express();
 defaultMiddlewareConfig(server);
 configRoutes(server);
 
-server.listen(environment.server.port, () => {
-	console.log(`[INFO] 🟢 Server is running on port ${environment.server.port}`);
+const errorsDuringInitialization: string[] = [];
+
+async function startServer() {
+	try {
+		await TypeOrmConnection.connect(postgresDataSource);
+	} catch (error) {
+		errorsDuringInitialization.push((error as Error).message)
+	}
+
+	server.listen(environment.server.port);
+}
+
+startServer().then(() => {
+	if (errorsDuringInitialization.length > 0) {
+		console.log(
+			"[ERROR] 🔴 FATAL: The following errors occurred during initialization: "
+		);
+		errorsDuringInitialization.map((error) => console.log(`\t\t- ${error}`));
+		return;
+	}
+	console.log(
+		`[INFO] 🟢 Server is running on http://${environment.server.host}:${environment.server.port}/`
+	);
 });
 
 export default server;
