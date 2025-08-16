@@ -25,3 +25,5 @@ clientRouter.put("/:id", async (req: Request, res: Response) => {
 clientRouter.delete("/:id", async (req: Request, res: Response) => {
 	await clientController.delete(req, res);
 });
+
+export default clientRouter;

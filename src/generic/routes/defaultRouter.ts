@@ -1,12 +1,8 @@
-import { Request, Response, Router } from "express";
-import viewTestRouter from "./viewTestRouter";
+import { Router } from "express";
+import clientRouter from "../../client/router/ClientRouter";
 
 const defaultRouter = Router();
 
-defaultRouter.get("/", (_: Request, res: Response) => {
-	res.status(200).send("Welcome to the default route!");
-});
-
-defaultRouter.use("/view-test", viewTestRouter);
+defaultRouter.use("/clients", clientRouter);
 
 export default defaultRouter;
