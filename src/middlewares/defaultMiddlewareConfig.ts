@@ -1,17 +1,16 @@
 import express, { Express } from "express";
+import expressLayouts from "express-ejs-layouts";
 import path from "path";
+import defaultRouter from "../routes/defaultRouter";
 
 export default function defaultMiddlewareConfig(app: Express) {
 	app.use(express.json());
-	configStaticFiles(app);
-	configViewEngine(app);
-}
 
-function configStaticFiles(app: Express) {
 	app.use(express.static(path.join(__dirname, "../../public")));
-}
+	app.use(expressLayouts);
 
-function configViewEngine(app: Express) {
-	app.set("views", path.join(__dirname, "../views"));
+	app.set("layout", path.join(__dirname, "../views/layouts/default-layout"));
 	app.set("view engine", "ejs");
+
+	app.use("/", defaultRouter);
 }
