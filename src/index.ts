@@ -1,8 +1,9 @@
+import "reflect-metadata";
 import express, { Express } from "express";
-import defaultMiddlewareConfig from "./middlewares/defaultMiddlewareConfig";
-import environment from "./config/environment";
-import TypeOrmConnection from "./config/database/TypeOrmConnection";
-import postgresDataSource from "./config/database/datasources/postgresDataSource";
+import defaultMiddlewareConfig from "./generic/middlewares/defaultMiddlewareConfig";
+import environment from "./generic/config/environment";
+import TypeOrmConnection from "./generic/config/database/TypeOrmConnection";
+import postgresDataSource from "./generic/config/database/datasources/postgresDataSource";
 
 const server: Express = express();
 defaultMiddlewareConfig(server);
