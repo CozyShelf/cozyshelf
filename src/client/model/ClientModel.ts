@@ -1,5 +1,5 @@
-import {Column, Entity, OneToMany} from "typeorm";
-import {Gender} from "../domain/enums/Gender";
+import {Column, Entity, JoinColumn, OneToMany, OneToOne} from "typeorm";
+import Gender from "../domain/enums/Gender";
 import AddressModel from "../../address/model/AddressModel";
 import Card from "../../card/model/CreditCardModel";
 import GenericModel from "../../generic/model/GenericModel";
@@ -8,45 +8,45 @@ import TelephoneModel from "../../telephone/model/TelephoneModel";
 
 @Entity()
 export default class ClientModel extends GenericModel {
-	@Column()
+	@Column({ type: "varchar" })
 	_name: string;
 
-	@Column()
+	@Column({type: "date"})
 	_birthDate: Date;
 
-	@Column()
+	@Column({ type: "varchar" })
 	_cpf: string;
 
-	@Column()
+	@Column({ type: "varchar" })
 	_email: string;
 
-	@Column()
+	@OneToOne(() => PasswordModel)
+	@JoinColumn()
 	_password: PasswordModel;
 
-	@Column()
+	@Column(() => AddressModel)
+	@JoinColumn()
 	_address: AddressModel;
 
-	@Column()
+	@Column({ type: "int" })
 	_ranking: number;
 
-	@Column()
+	@Column(() => TelephoneModel)
 	_telephone: TelephoneModel;
 
-	@Column({type: "enum", enum: Gender})
+	@Column({ type: "enum", enum: Gender })
 	_gender!: Gender;
 
-	@OneToMany(
-		() => Card,
-		(card: Card) => card.client,
-		{cascade: true, eager: true}
-	)
+	@OneToMany(() => Card, (card: Card) => card.client, {
+		cascade: true,
+		eager: true,
+	})
 	_cards!: Card[];
 
-	@OneToMany(
-		() => AddressModel,
-		(address: AddressModel) => address.client,
-		{cascade: true, eager: true}
-	)
+	@OneToMany(() => AddressModel, (address: AddressModel) => address.client, {
+		cascade: true,
+		eager: true,
+	})
 	_addresses!: AddressModel[];
 
 	constructor(
@@ -75,7 +75,6 @@ export default class ClientModel extends GenericModel {
 		this._addresses = addresses || [];
 		this._cards = cards || [];
 	}
-
 
 	get name(): string {
 		return this._name;

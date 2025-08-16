@@ -1,13 +1,13 @@
 import { Column, Entity } from "typeorm";
-import {TelephoneType} from "../domain/enums/TelephoneType";
+import TelephoneType from "../domain/enums/TelephoneType";
 
 @Entity()
 export default class TelephoneModel {
-	@Column() private _ddd: string;
+	@Column({ type: "string" }) private _ddd: string;
 
-	@Column() private _number: string;
+	@Column({ type: "string" }) private _number: string;
 
-	@Column() private _type: TelephoneType;
+	@Column({ type: "string" }) private _type: TelephoneType;
 
 	constructor(ddd: string, number: string, type: TelephoneType) {
 		this._ddd = ddd;

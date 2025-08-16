@@ -2,16 +2,13 @@ import {Column, Entity} from "typeorm";
 
 @Entity()
 export default class PasswordModel {
-	@Column()
+	@Column({ type: "string" })
 	_value: string;
 
-	@Column()
+	@Column({ type: "int" })
 	_force: number;
 
-	constructor(
-		value: string,
-		force: number
-	) {
+	constructor(value: string, force: number) {
 		this._value = value;
 		this._force = force;
 	}
