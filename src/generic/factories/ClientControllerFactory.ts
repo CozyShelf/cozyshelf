@@ -1,4 +1,4 @@
-import {postgresDataSource} from "../../config/database/dataSources/postgresDataSource";
+import {postgresDataSource} from "../config/database/dataSources/postgresDataSource";
 import ClientController from "../../client/controller/ClientController";
 import {ClientDAOImpl} from "../../client/dao/typeORM/ClientDAOImpl";
 import IFactory from "./Factory";
