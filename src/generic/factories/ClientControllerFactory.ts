@@ -1,12 +1,12 @@
-import {postgresDataSource} from "../config/database/dataSources/postgresDataSource";
 import ClientController from "../../client/controller/ClientController";
-import {ClientDAOImpl} from "../../client/dao/typeORM/ClientDAOImpl";
+import {ClientDAO} from "../../client/dao/typeORM/ClientDAO";
 import IFactory from "./Factory";
 import {ClientService} from "../../client/service/ClientService";
+import postgresDataSource from "../config/database/datasources/postgresDataSource";
 
 export class ClientControllerFactory implements IFactory<ClientController> {
 	public make(): ClientController {
-		const dao = new ClientDAOImpl(postgresDataSource);
+		const dao = new ClientDAO(postgresDataSource);
 		const service = new ClientService(dao);
 		return new ClientController(service);
 	}
