@@ -1,5 +1,5 @@
 import Address from "../domain/Address";
-import {AddressDAOImpl} from "../dao/typeORM/AddressDAOImpl";
+import {AddressDAOImpl} from "../dao/typeORM/AddressDAO";
 import AddressModel from "../model/AddressModel";
 import CountryModel from "../model/CountryModel";
 
