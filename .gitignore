@@ -5,3 +5,4 @@ docs/.DS_Store
 coverage
 *.log
 .env
+.idea

@@ -1,5 +1,5 @@
 import { DataSource } from "typeorm";
-import DatabaseConnectionError from "../../errors/DatabaseConnectionError";
+import DatabaseConnectionError from "./errors/DatabaseConnectionError";
 
 export default class TypeOrmConnection {
 	static async connect(dataSource: DataSource) {
