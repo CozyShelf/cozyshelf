@@ -1,13 +1,11 @@
 import express, { Express } from "express";
-import defaultMiddlewareConfig from "./middlewares/defaultMiddleware.config";
-import configRoutes from "./middlewares/configRoutes";
+import defaultMiddlewareConfig from "./middlewares/defaultMiddlewareConfig";
 import environment from "./config/environment";
 import TypeOrmConnection from "./config/database/TypeOrmConnection";
 import postgresDataSource from "./config/database/datasources/postgresDataSource";
 
 const server: Express = express();
 defaultMiddlewareConfig(server);
-configRoutes(server);
 
 const errorsDuringInitialization: string[] = [];
 
