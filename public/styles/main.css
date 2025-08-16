@@ -1,0 +1,31 @@
+@import url("./components/header.css");
+@import url("./components/footer.css");
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: "Poppins";
+	background-color: white !important;
+}
+
+.cozyshelf-title {
+	font-weight: 600;
+	color: #B55926;
+	font-size: 26px;
+}
+
+.cozyshelf-list > li > a {
+	color: #B55926;
+	font-weight: 500;
+}
+
+.cozyshelf-list > li > a > span{
+	font-size: 20px;
+}
+
+.delimiter {
+	border: 1px solid #D4D4D4;
+}
