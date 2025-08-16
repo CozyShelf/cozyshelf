@@ -7,7 +7,7 @@ import ConfigDynamicPaths from "./ConfigDynamicPaths";
 export default function defaultMiddlewareConfig(app: Express) {
 	app.use(express.json());
 
-	app.use(express.static(path.join(__dirname, "../../public")));
+	app.use(express.static(path.join(__dirname, "../../../public")));
 	app.use(expressLayouts);
 
 	app.use(ConfigDynamicPaths.configLayoutPath(path.join(__dirname, "../views/layouts/defaultLayout.ejs")));
