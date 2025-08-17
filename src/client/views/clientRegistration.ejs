@@ -149,9 +149,7 @@
 				</div>
 			</div>
 
-			<button
-				class="text-bold text-3xl w-14 h-11 bg-brown text-white rounded-[5px] border-2 border-light-brown cursor-pointer hover:bg-dark-brown"
-				id="add-address" type="button">+</button>
+			<%- include('addFormFieldButton.ejs', { buttonId: 'add-address' }) %>
 		</div>
 
 		<div class="flex flex-col gap-5 justify-start">
@@ -193,9 +191,7 @@
 				</div>
 			</div>
 
-			<button
-				class="text-bold text-3xl w-14 h-11 bg-brown text-white rounded-[5px] border-2 border-light-brown cursor-pointer hover:bg-dark-brown"
-				id="add-card" type="button">+</button>
+			<%- include('addFormFieldButton.ejs', { buttonId: 'add-card' }) %>
 		</div>
 
 		<div class="flex justify-end">
