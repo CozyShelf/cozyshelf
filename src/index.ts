@@ -4,9 +4,13 @@ import defaultMiddlewareConfig from "./generic/middlewares/defaultMiddlewareConf
 import environment from "./generic/config/environment";
 import TypeOrmConnection from "./generic/config/database/TypeOrmConnection";
 import postgresDataSource from "./generic/config/database/datasources/postgresDataSource";
+import defaultRouter from "./generic/routes/defaultRouter";
+import viewsConfigMiddleware from "./generic/middlewares/viewsConfigMiddleware";
 
 const server: Express = express();
 defaultMiddlewareConfig(server);
+viewsConfigMiddleware(server);
+server.use(defaultRouter);
 
 const errorsDuringInitialization: string[] = [];
 
