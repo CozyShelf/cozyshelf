@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import ClientController from "../controller/ClientController";
 import { ClientControllerFactory } from "../../generic/factories/ClientControllerFactory";
-import ConfigDynamicPaths from "../../generic/middlewares/ConfigDynamicPaths";
+import ConfigDynamicPaths from "../../generic/helpers/ConfigDynamicPaths";
 import path from "path";
 
 const clientRouter = Router();
@@ -20,7 +20,9 @@ clientRouter.get("/", async (req: Request, res: Response) => {
 });
 
 clientRouter.get("/register", (req: Request, res: Response) => {
-	res.render("clientRegistration", { title: "Cadastre-se" });
+	res.render("clientRegistration", {
+		title: "Cadastro de Clientes"
+	});
 });
 
 clientRouter.get("/:id", async (req: Request, res: Response) => {
