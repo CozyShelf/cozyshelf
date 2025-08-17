@@ -1,5 +1,5 @@
 import {Column, Entity, OneToMany} from "typeorm";
-import {GenericModel} from "../../generic/model/GenericModel";
+import GenericModel from "../../generic/model/GenericModel";
 
 @Entity()
 export default class CardFlagModel extends GenericModel {

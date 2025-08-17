@@ -1,13 +1,16 @@
+import "reflect-metadata";
 import express, { Express } from "express";
-import defaultMiddlewareConfig from "./generic/middlewares/defaultMiddleware.config";
-import configRoutes from "./generic/middlewares/configRoutes";
+import defaultMiddlewareConfig from "./generic/middlewares/defaultMiddlewareConfig";
 import environment from "./generic/config/environment";
 import TypeOrmConnection from "./generic/config/database/TypeOrmConnection";
 import postgresDataSource from "./generic/config/database/datasources/postgresDataSource";
+import defaultRouter from "./generic/routes/defaultRouter";
+import viewsConfigMiddleware from "./generic/middlewares/viewsConfigMiddleware";
 
 const server: Express = express();
 defaultMiddlewareConfig(server);
-configRoutes(server);
+viewsConfigMiddleware(server);
+server.use(defaultRouter);
 
 const errorsDuringInitialization: string[] = [];
 
