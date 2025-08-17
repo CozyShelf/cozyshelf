@@ -1,5 +1,206 @@
 <div>
-	<h1>
-		<%= message %>
-	</h1>
+	<div class="mt-10">
+		<%- include("pageHeader.ejs", { pageTitle: "Cadastre-se" }) %>
+	</div>
+
+	<form class="flex flex-col w-full gap-5 mt-5 mb-10 px-32">
+		<div class="flex flex-col gap-5">
+			<h1 class="font-semibold text-[18px]">Dados Pessoais</h1>
+
+			<div class="flex flex-row gap-10">
+				<div class="flex flex-col w-full gap-5">
+					<label class="flex flex-col text-[14px] gap-2.5">
+						Nome Completo *
+						<input placeholder="Ex: José da Silva" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+							name="client-name" required>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5">
+						Data de Nascimento *
+						<input placeholder="DD/MM/AAAA" class="border rounded-[5px] border-gray h-10 p-2.5" type="date"
+							name="client-birth-date" required>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5">
+						Email *
+						<input placeholder="Ex: exemplo@hotmail.com" class="border rounded-[5px] border-gray h-10 p-2.5"
+							type="email" name="client-email" required>
+					</label>
+				</div>
+
+				<div class="flex flex-col w-full gap-5">
+					<label class="flex flex-col text-[14px] gap-2.5">
+						CPF *
+						<input placeholder="XXX XXX XXX XX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+							name="client-cpf" required>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5">
+						Telefone *
+						<input placeholder="(DD) NNNN-NNNN" class="border rounded-[5px] border-gray h-10 p-2.5" type="tel"
+							name="client-phone" required>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5">
+						Senha *
+						<input class="border rounded-[5px] border-gray h-10 p-2.5" type="password" name="client-password" required>
+					</label>
+				</div>
+
+				<div class="flex flex-col w-full gap-5">
+					<label class="flex flex-col text-[14px] gap-2.5">
+						Gênero *
+						<select name="client-gender" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+							<option value="">Selecione...</option>
+							<option value="Male">Masculino</option>
+							<option value="Female">Feminino</option>
+							<option value="Others">Outros</option>
+						</select>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5">
+						Tipo de Telefone *
+						<select name="client-phone-type" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+							<option value="">Selecione...</option>
+							<option value="Fixed">Fixo</option>
+							<option value="Mobile">Móvel</option>
+						</select>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5">
+						Repetir Senha *
+						<input placeholder="Repita a senha" class="border rounded-[5px] border-gray h-10 p-2.5" type="password"
+							name="client-password-repeat" required>
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="flex flex-col gap-5 justify-start">
+			<h1 class="font-semibold text-[18px]">Dados Endereço</h1>
+
+			<div class="flex flex-col gap-5">
+				<div class="flex flex-row gap-10">
+					<label class="flex flex-col text-[14px] gap-2.5 w-full">
+						Frase Curta *
+						<input placeholder="Ex: Minha Casa" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+							name="address-short-phrase" required>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5 w-full">
+						CEP *
+						<input placeholder="XXXXX-XXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+							name="address-cep" required>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5 w-full">
+						Estado *
+						<select name="address-state" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+							<option value="">Selecione...</option>
+							<option value="SP">SP</option>
+							<option value="RJ">RJ</option>
+							<option value="MA">MA</option>
+						</select>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5 w-full">
+						Cidade *
+						<input placeholder="Ex: Guararema, Biritiba" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+							name="address-city" required>
+					</label>
+				</div>
+
+				<div class="flex flex-row gap-10">
+					<label class="flex flex-col text-[14px] gap-2.5 w-full">
+						Tipo Logradouro *
+						<select name="address-street-type" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+							<option value="">Selecione...</option>
+							<option value="Rodovia">Rodovia</option>
+							<option value="Avenida">Avenida</option>
+							<option value="Beco">Beco</option>
+						</select>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5 w-full">
+						Logradouro *
+						<input placeholder="Ex: Rua Almirante Barbosa" class="border rounded-[5px] border-gray h-10 p-2.5"
+							type="text" name="address-street-name" required>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5 w-full">
+						Número *
+						<input class="border rounded-[5px] border-gray h-10 p-2.5" type="text" name="address-number" maxlength="4"
+							required>
+					</label>
+				</div>
+
+				<div class="flex flex-row gap-10">
+					<label class="flex flex-col text-[14px] gap-2.5 w-full">
+						Bairro *
+						<input placeholder="Ex: Centro" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+							name="address-neighborhood" required>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5 w-full">
+						Complemento *
+						<select name="address-residence-type" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+							<option value="">Selecione...</option>
+							<option value="Casa">Casa</option>
+							<option value="Apartamento">Apartamento</option>
+						</select>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5 w-full">
+						Tipo de Endereço *
+						<select name="address-street-type" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+							<option value="">Selecione...</option>
+							<option value="DELIVERY">Entrega</option>
+							<option value="BILLING">Cobrança</option>
+							<option value="DELIVERY_AND_BILLING">Entrega e Cobrança</option>
+						</select>
+					</label>
+				</div>
+			</div>
+
+			<button
+				class="text-bold text-3xl w-14 h-11 bg-brown text-white rounded-[5px] border-2 border-light-brown cursor-pointer hover:bg-dark-brown"
+				id="add-address" type="button">+</button>
+		</div>
+
+		<div class="flex flex-col gap-5 justify-start">
+			<div class="flex flex-row gap-10">
+				<h1 class="font-semibold text-[18px]">Dados Cartão</h1>
+				<%- include('toggleButton.ejs', { toggleName: "card-is-preferred" , toggleMessage: "Marcar como preferencial"
+					})%>
+			</div>
+
+			<div class="flex flex-col gap-5">
+				<div class="flex flex-row gap-10">
+					<label class="flex flex-col text-[14px] gap-2.5 w-full">
+						Número do Cartão *
+						<input placeholder="Ex: XXXX XXXX XXXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+							name="card-number" required>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5 w-full">
+						CVV *
+						<input placeholder="XXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text" name="card-cvv"
+							required>
+					</label>
+				</div>
+
+				<div class="flex flex-row gap-10">
+					<label class="flex flex-col text-[14px] gap-2.5 w-full">
+						Nome impresso no cartão *
+						<input placeholder="Ex: JOAO S D SILVA" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+							name="card-impress-name" required>
+					</label>
+					<label class="flex flex-col text-[14px] gap-2.5 w-full">
+						Bandeira *
+						<select name="card-flag" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+							<option value="">Selecione...</option>
+							<option value="Visa">Visa</option>
+							<option value="Mastercard">Mastercard</option>
+							<option value="Elo">Elo</option>
+						</select>
+					</label>
+				</div>
+			</div>
+
+			<button
+				class="text-bold text-3xl w-14 h-11 bg-brown text-white rounded-[5px] border-2 border-light-brown cursor-pointer hover:bg-dark-brown"
+				id="add-card" type="button">+</button>
+		</div>
+
+		<div class="flex justify-end">
+			<button
+				class="font-medium text-white bg-light-green w-[200px] h-11 rounded-[5px] cursor-pointer hover:bg-dark-green">Enviar</button>
+		</div>
+	</form>
 </div>
