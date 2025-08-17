@@ -149,13 +149,13 @@
 				</div>
 			</div>
 
-			<%- include('addFormFieldButton.ejs', { buttonId: 'add-address' }) %>
+			<%- include('buttons/addFormFieldButton.ejs', { buttonId: 'add-address' }) %>
 		</div>
 
 		<div class="flex flex-col gap-5 justify-start">
 			<div class="flex flex-row gap-10">
 				<h1 class="font-semibold text-[18px]">Dados Cartão</h1>
-				<%- include('toggleButton.ejs', { toggleName: "card-is-preferred" , toggleMessage: "Marcar como preferencial"
+				<%- include('buttons/toggleButton.ejs', { toggleName: "card-is-preferred" , toggleMessage: "Marcar como preferencial"
 					})%>
 			</div>
 
@@ -191,7 +191,7 @@
 				</div>
 			</div>
 
-			<%- include('addFormFieldButton.ejs', { buttonId: 'add-card' }) %>
+			<%- include('buttons/addFormFieldButton.ejs', { buttonId: 'add-card' }) %>
 		</div>
 
 		<div class="flex justify-end">
