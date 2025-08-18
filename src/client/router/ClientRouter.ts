@@ -16,7 +16,9 @@ clientRouter.post("/", async (req: Request, res: Response) => {
 });
 
 clientRouter.get("/", async (req: Request, res: Response) => {
-	await clientController.getAll(req, res);
+	res.render("clientTable", {
+		title: "Lista de Clientes",
+	});
 });
 
 clientRouter.get("/register", (req: Request, res: Response) => {
@@ -25,7 +27,7 @@ clientRouter.get("/register", (req: Request, res: Response) => {
 	});
 });
 
-clientRouter.get("/password", (req: Request, res: Response) => {
+clientRouter.get("/:id/password", (req: Request, res: Response) => {
 	res.render("passwordDetail", {
 		title: "Alterar Senha",
 		layout: "defaultClientDetailsLayout",

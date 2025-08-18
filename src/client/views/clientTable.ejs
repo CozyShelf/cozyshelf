@@ -1,0 +1,38 @@
+<div class="mt-10">
+    <%- include("pageHeader.ejs", { pageTitle: "Listagen de Clientes" }) %>
+</div>
+<div class="flex flex-col w-full gap-10 mt-9 mb-15 px-32 mb-25">
+    <div class="flex justify-between items-center">
+        <h1 class="font-semibold text-[20px]">Clientes (1)</h1>
+        <a href="/clients/register" class="flex items-center gap-2 px-6 py-2 bg-brown text-white rounded hover:bg-dark-brown">
+            <span class="material-symbols-outlined">add</span>
+            <span class="font-semibold">Adicionar</span>
+        </a>
+    </div>
+    <table class="w-full border-separate">
+        <thead>
+            <tr class="bg-dark-brown text-white text-center">
+            <th class="px-6 py-4 rounded-l-xl font-semibold">id</th>
+            <th class="px-6 py-4 font-semibold">Nome</th>
+            <th class="px-6 py-4 font-semibold">Email</th>
+            <th class="px-6 py-4 rounded-r-xl font-semibold"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="bg-lighter-brown h-10 border border-dark-brown text-center align-middle">
+                <td class="px-6 py-4 border-r border-dark-brown rounded-l-xl">1</td>
+                <td class="px-6 py-4 border-r border-dark-brown">José da Silva</td>
+                <td class="px-6 py-4 border-r border-dark-brown">jose123@hotmail.com</td>
+                <td class="px-6 py-4 rounded-r-xl flex gap-4 justify-center">
+                    <a href="/clients/id" class="hover:text-gray flex justify-center items-center">
+                        <span class="material-symbols-outlined">visibility</span>
+                    </a>
+                    <a href="/cards/id/edit" class="hover:text-gray flex justify-center items-center delete-btn">
+                        <span class="material-symbols-outlined">delete</span>                    
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script src="/scripts/deleteSubmit.js"></script>
