@@ -29,8 +29,8 @@ export default class ClientController implements ICRUDController<ClientControlle
 			return Promise.resolve(this);
 	}
 
-	public delete(req: Request, res: Response): Promise<ClientController> {
+	public delete(req: Request, res: Response): Promise<void> {
 		// Implementation for deleting a client
-		return Promise.resolve(this);
+		return Promise.resolve();
 	}
 }

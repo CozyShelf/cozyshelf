@@ -25,8 +25,21 @@ clientRouter.get("/register", (req: Request, res: Response) => {
 	});
 });
 
-clientRouter.get("/:id", async (req: Request, res: Response) => {
-	await clientController.getById(req, res);
+clientRouter.get("/password", (req: Request, res: Response) => {
+	res.render("passwordDetail", {
+		title: "Alterar Senha",
+		layout: "defaultClientDetailsLayout",
+		currentUrl: 'password',
+	});
+});
+
+clientRouter.get("/:id", async (_: Request, res: Response) => {
+	//await clientController.getById(req, res);
+	res.render("clientDetails", {
+		title: "Detalhes do Cliente",
+		layout: "defaultClientDetailsLayout",
+		currentUrl: `client`,
+	});
 });
 
 clientRouter.put("/:id", async (req: Request, res: Response) => {
