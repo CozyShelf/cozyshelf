@@ -1,0 +1,35 @@
+<div class="flex flex-col w-full gap-10 mt-9 mb-15 px-32">
+    <div class="flex justify-between items-center">
+        <h1 class="font-semibold text-[20px]">Cartões de Crédito(1)</h1>
+        <a href="/cards/new" class="flex items-center gap-2 px-6 py-2 bg-brown text-white rounded hover:bg-dark-brown">
+            <span class="material-symbols-outlined">add</span>
+            <span class="font-semibold">Adicionar</span>
+        </a>
+    </div>
+    <table class="w-full border-separate">
+        <thead>
+            <tr class="bg-dark-brown text-white text-center">
+            <th class="px-6 py-4 rounded-l-xl font-semibold">Bandeira</th>
+            <th class="px-6 py-4 font-semibold">Número</th>
+            <th class="px-6 py-4 font-semibold">Preferencial</th>
+            <th class="px-6 py-4 rounded-r-xl font-semibold"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="bg-lighter-brown h-10 border border-dark-brown text-center align-middle">
+                <td class="px-6 py-4 border-r border-dark-brown rounded-l-xl">Visa</td>
+                <td class="px-6 py-4 border-r border-dark-brown">0025 **** **** 06</td>
+                <td class="px-6 py-4 border-r border-dark-brown">
+                    <span class="bg-dark-green text-white px-3 py-1 rounded-full text-sm">
+                    Preferencial
+                    </span>
+                </td>
+                <td class="px-6 py-4 rounded-r-xl">
+                    <a href="/cards/id" class="hover:text-gray flex justify-center items-center">
+                    <span class="material-symbols-outlined">visibility</span>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
