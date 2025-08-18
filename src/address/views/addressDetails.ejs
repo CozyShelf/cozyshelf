@@ -1,0 +1,91 @@
+<form class="flex flex-col w-full gap-10 mt-9 mb-15 px-32" id="address-form">
+   <div class="flex flex-col gap-5">
+        <h1 class="font-semibold text-[20px]"><%= title %></h1>
+        <div class="flex flex-col gap-10" id="addresses">
+            <div class="flex flex-col gap-6 justify-start" id="address">
+                <div class="flex flex-row gap-10">
+                    <label class="flex flex-col text-[14px] gap-2.5 w-full">
+                        Frase Curta *
+                        <input placeholder="Ex: Minha Casa" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+                            name="address-short-phrase" required>
+                    </label>
+                    <label class="flex flex-col text-[14px] gap-2.5 w-full">
+                        CEP *
+                        <input placeholder="XXXXX-XXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+                            name="address-cep" required>
+                    </label>
+                    <label class="flex flex-col text-[14px] gap-2.5 w-full">
+                        Estado *
+                        <select name="address-state" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+                            <option value="">Selecione...</option>
+                            <option value="SP">SP</option>
+                            <option value="RJ">RJ</option>
+                            <option value="MA">MA</option>
+                        </select>
+                    </label>
+                    <label class="flex flex-col text-[14px] gap-2.5 w-full">
+                        Cidade *
+                        <input placeholder="Ex: Guararema, Biritiba" class="border rounded-[5px] border-gray h-10 p-2.5"
+                            type="text" name="address-city" required>
+                    </label>
+                </div>
+
+                <div class="flex flex-row gap-10">
+                    <label class="flex flex-col text-[14px] gap-2.5 w-full">
+                        Tipo Logradouro *
+                        <select name="address-street-type" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+                            <option value="">Selecione...</option>
+                            <option value="Rodovia">Rodovia</option>
+                            <option value="Avenida">Avenida</option>
+                            <option value="Beco">Beco</option>
+                        </select>
+                    </label>
+                    <label class="flex flex-col text-[14px] gap-2.5 w-full">
+                        Logradouro *
+                        <input placeholder="Ex: Rua Almirante Barbosa" class="border rounded-[5px] border-gray h-10 p-2.5"
+                            type="text" name="address-street-name" required>
+                    </label>
+                    <label class="flex flex-col text-[14px] gap-2.5 w-full">
+                        Número *
+                        <input class="border rounded-[5px] border-gray h-10 p-2.5" type="text" name="address-number" maxlength="4"
+                            required>
+                    </label>
+                </div>
+
+                <div class="flex flex-row gap-10">
+                    <label class="flex flex-col text-[14px] gap-2.5 w-full">
+                        Bairro *
+                        <input placeholder="Ex: Centro" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+                            name="address-neighborhood" required>
+                    </label>
+                    <label class="flex flex-col text-[14px] gap-2.5 w-full">
+                        Complemento *
+                        <select name="address-residence-type" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+                            <option value="">Selecione...</option>
+                            <option value="Casa">Casa</option>
+                            <option value="Apartamento">Apartamento</option>
+                        </select>
+                    </label>
+                    <label class="flex flex-col text-[14px] gap-2.5 w-full">
+                        Tipo de Endereço *
+                        <select name="address-street-type" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+                            <option value="">Selecione...</option>
+                            <option value="DELIVERY">Entrega</option>
+                            <option value="BILLING">Cobrança</option>
+                            <option value="DELIVERY_AND_BILLING">Entrega e Cobrança</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-row justify-between items-center mt-8">
+            <a href="/addresses" class="font-medium bg-brown text-white rounded hover:bg-dark-brown w-[200px] h-11 flex items-center justify-center">
+            Voltar
+            </a>
+            <button type="submit" class="font-medium text-white bg-light-green w-[200px] h-11 rounded-[5px] cursor-pointer hover:bg-dark-green flex items-center justify-center">
+            Salvar
+            </button>
+        </div>
+    </div>
+</form>
+<script src="/scripts/handleSubmit.mjs"></script>
