@@ -14,9 +14,9 @@
 </head>
 
 <body class="font-default">
-	<div class="wrapper">
+	<div class="wrapper min-h-screen flex flex-col">
 		<%- include('header.ejs') %>
-		<main><%- body %></main>
+		<main class="flex-grow"><%- body %></main>
 		<%- include('footer.ejs') %>
 	</div>
 </body>
