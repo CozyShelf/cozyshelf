@@ -30,7 +30,7 @@ clientRouter.get("/register", (req: Request, res: Response) => {
 clientRouter.get("/:id/password", (req: Request, res: Response) => {
 	res.render("passwordDetail", {
 		title: "Alterar Senha",
-		layout: "defaultClientDetailsLayout",
+		layout: "defaultDetailsLayout",
 		currentUrl: 'password',
 	});
 });
@@ -39,7 +39,7 @@ clientRouter.get("/:id", async (_: Request, res: Response) => {
 	//await clientController.getById(req, res);
 	res.render("clientDetails", {
 		title: "Detalhes do Cliente",
-		layout: "defaultClientDetailsLayout",
+		layout: "defaultDetailsLayout",
 		currentUrl: `client`,
 	});
 });

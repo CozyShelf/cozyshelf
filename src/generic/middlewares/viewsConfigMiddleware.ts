@@ -1,18 +1,16 @@
 import { Express } from "express";
-import ConfigDynamicPaths from "../helpers/ConfigDynamicPaths";
 import path from "path";
 
 export default function viewsConfigMiddleware(app: Express) {
-	app.use(
-		ConfigDynamicPaths.configLayoutPath(
-			path.join(__dirname, "../views/layouts/defaultLayout.ejs")
-		)
-	);
+	app.set("views", [
+		path.join(__dirname, "../views"),
+		path.join(__dirname, "../views/components"),
+		path.join(__dirname, "../views/layouts"),
+	]);
 
-	app.use(
-		ConfigDynamicPaths.configViewsPath(
-			path.join(__dirname, "../views/components")
-		)
+	app.set(
+		"layout", 
+		path.join(__dirname, "../views/layouts/defaultLayout.ejs")
 	);
 
 	app.set("view engine", "ejs");
