@@ -16,24 +16,24 @@ cardRouter.post("/", async (req: Request, res: Response) => {
 cardRouter.get("/", (req: Request, res: Response) => {
 	res.render("cardTable", {
 		title: "Meus Cartões",
-		layout: "defaultDetailsLayout",
-		currentUrl: 'card',
+		layout: "detailsLayout",
+		currentUrl: "card",
 	});
 });
 
 cardRouter.get("/new", (req: Request, res: Response) => {
 	res.render("cardDetails", {
 		title: "Novo Cartão",
-		layout: "defaultDetailsLayout",
-		currentUrl: 'card',
+		layout: "detailsLayout",
+		currentUrl: "card",
 	});
 });
 
 cardRouter.get("/:id", (req: Request, res: Response) => {
 	res.render("cardDetails", {
 		title: "Editar Cartão",
-		layout: "defaultDetailsLayout",
-		currentUrl: 'card',
+		layout: "detailsLayout",
+		currentUrl: "card",
 	});
 });
 
