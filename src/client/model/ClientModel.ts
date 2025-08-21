@@ -24,10 +24,6 @@ export default class ClientModel extends GenericModel {
 	@JoinColumn()
 	_password: PasswordModel;
 
-	@Column(() => AddressModel)
-	@JoinColumn()
-	_address: AddressModel;
-
 	@Column({ type: "int" })
 	_ranking: number;
 
@@ -56,11 +52,8 @@ export default class ClientModel extends GenericModel {
 		telephone: TelephoneModel,
 		email: string,
 		password: PasswordModel,
-		address: AddressModel,
 		ranking: number,
-		gender: Gender,
-		addresses?: AddressModel[],
-		cards?: Card[]
+		gender: Gender
 	) {
 		super();
 		this._name = name;
@@ -69,11 +62,8 @@ export default class ClientModel extends GenericModel {
 		this._telephone = telephone;
 		this._email = email;
 		this._password = password;
-		this._address = address;
 		this._ranking = ranking;
 		this._gender = gender;
-		this._addresses = addresses || [];
-		this._cards = cards || [];
 	}
 
 	get name(): string {
@@ -114,14 +104,6 @@ export default class ClientModel extends GenericModel {
 
 	set password(value: PasswordModel) {
 		this._password = value;
-	}
-
-	get address(): AddressModel {
-		return this._address;
-	}
-
-	set address(value: AddressModel) {
-		this._address = value;
 	}
 
 	get ranking(): number {

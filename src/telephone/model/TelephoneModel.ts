@@ -1,15 +1,17 @@
 import { Column, Entity } from "typeorm";
 import TelephoneType from "../domain/enums/TelephoneType";
+import GenericModel from "../../generic/model/GenericModel";
 
 @Entity()
-export default class TelephoneModel {
-	@Column({ type: "string" }) private _ddd: string;
+export default class TelephoneModel extends GenericModel {
+	@Column({ type: "varchar" }) private _ddd: string;
 
-	@Column({ type: "string" }) private _number: string;
+	@Column({ type: "varchar" }) private _number: string;
 
-	@Column({ type: "string" }) private _type: TelephoneType;
+	@Column({ type: "varchar" }) private _type: TelephoneType;
 
 	constructor(ddd: string, number: string, type: TelephoneType) {
+		super();
 		this._ddd = ddd;
 		this._number = number;
 		this._type = type;

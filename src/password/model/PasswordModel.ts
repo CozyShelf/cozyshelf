@@ -1,14 +1,16 @@
 import {Column, Entity} from "typeorm";
+import GenericModel from "../../generic/model/GenericModel";
 
 @Entity()
-export default class PasswordModel {
-	@Column({ type: "string" })
+export default class PasswordModel extends GenericModel {
+	@Column({ type: "varchar" })
 	_value: string;
 
 	@Column({ type: "int" })
 	_force: number;
 
 	constructor(value: string, force: number) {
+		super();
 		this._value = value;
 		this._force = force;
 	}

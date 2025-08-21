@@ -8,8 +8,9 @@ const postgresDataSource = new DataSource({
 	username: environment.database.postgres.username,
 	password: environment.database.postgres.password,
 	database: environment.database.postgres.database,
-	entities: [__dirname + "/../../entities/*.{ts,js}"],
+	entities: ["src/**/model/*{.js,.ts}"],
 	synchronize: true,
+	logging: true,
 });
 
 export default postgresDataSource;
