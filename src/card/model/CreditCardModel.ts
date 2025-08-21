@@ -2,6 +2,7 @@ import {Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import CardFlagModel from "./CardFlagModel";
 import ClientModel from "../../client/model/ClientModel";
 import GenericModel from "../../generic/model/GenericModel";
+
 @Entity("card")
 export default class CreditCardModel extends GenericModel {
 	@Column({type: "varchar"})

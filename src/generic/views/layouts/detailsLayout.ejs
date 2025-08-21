@@ -14,9 +14,21 @@
 </head>
 
 <body class="font-default">
-	<div class="wrapper min-h-screen flex flex-col">
+	<div class="wrapper">
 		<%- include('header.ejs') %>
-		<main class="flex-grow"><%- body %></main>
+		<main>
+			<div class="mt-10">
+				<%- include("pageHeader.ejs", { pageTitle: "Minha Conta" }) %>
+				<div class="flex gap-8 mb-16 mt-6">
+					<div class="w-1/4">
+						<%- include('menuBarSide.ejs') %>
+					</div>
+					<div class="w-3/4">
+						<%- body %>
+					</div>
+				</div>
+			</div>
+		</main>
 		<%- include('footer.ejs') %>
 	</div>
 </body>

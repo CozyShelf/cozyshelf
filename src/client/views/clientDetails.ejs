@@ -1,0 +1,66 @@
+<form class="flex flex-col w-full gap-10 mt-9 mb-15 px-32" id="client-register-form">
+    <div class="flex flex-col gap-4">
+        <h1 class="font-semibold text-[20px]">Informações Pessoais</h1>
+        <div class="flex flex-row gap-10">
+            <div class="flex flex-col w-full gap-5">
+                <label class="flex flex-col text-[12px] gap-3">
+                    Nome Completo *
+                    <input placeholder="Ex: José da Silva" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+                        name="client-name" required value="José da Silva">
+                </label>
+                <label class="flex flex-col text-[12px]  gap-3">
+                    Data de Nascimento *
+                    <input placeholder="DD/MM/AAAA" class="border rounded-[5px] border-gray h-10 p-2.5" type="date"
+                        name="client-birth-date" required value="2000-01-01">
+                </label>
+                
+            </div>
+
+            <div class="flex flex-col w-full gap-5">
+                <label class="flex flex-col text-[12px] gap-3">
+                    CPF *
+                    <input placeholder="XXX XXX XXX XX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+                        name="client-cpf" required value="123.456.789-00">
+                </label>
+                <label class="flex flex-col text-[12px] gap-3">
+                    Telefone *
+                    <input placeholder="(DD) NNNN-NNNN" class="border rounded-[5px] border-gray h-10 p-2.5" type="tel"
+                        name="client-phone" required value="(11) 91234-5678">
+                </label>
+            </div>
+
+            <div class="flex flex-col w-full gap-5">
+                <label class="flex flex-col text-[12px] gap-3">
+                    Gênero *
+                    <select name="client-gender" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+                        <option value="">Selecione...</option>
+                        <option value="Male" selected>Masculino</option>
+                        <option value="Female">Feminino</option>
+                        <option value="Others">Outros</option>
+                    </select>
+                </label>
+                <label class="flex flex-col text-[12px] gap-3">
+                    Tipo de Telefone *
+                    <select name="client-phone-type" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+                        <option value="">Selecione...</option>
+                        <option value="Fixed">Fixo</option>
+                        <option value="Mobile" selected>Móvel</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+            <div class="flex flex-col w-full gap-5">
+            <label class="flex flex-col text-[12px] gap-3">
+                Email *
+                <input placeholder="Ex: exemplo@hotmail.com" class="border rounded-[5px] border-gray h-10 p-2.5 w-full"
+                    type="email" name="client-email" required value="jose123@hotmail.com">
+            </label>
+        </div>
+        <div class="flex justify-end">
+            <button type="submit" class="font-medium text-sm text-white bg-light-green w-[150px] h-10 rounded-[5px] cursor-pointer hover:bg-dark-green flex items-center justify-center">
+                Salvar
+            </button>
+        </div>
+    </div>
+</form>
+<script src="/scripts/handleSubmit.mjs"></script>

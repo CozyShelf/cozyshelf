@@ -3,7 +3,7 @@ import IDAO from "../../../generic/dao/IDAO";
 import AddressModel from "../../model/AddressModel";
 
 
-export class AddressDAOImpl implements IDAO<AddressModel> {
+export class AddressDAO implements IDAO<AddressModel> {
     private dataSource: DataSource;
     private repository: Repository<AddressModel>;
     
