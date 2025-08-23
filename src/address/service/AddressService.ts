@@ -1,13 +1,13 @@
 import Address from "../domain/Address";
-import {AddressDAOImpl} from "../dao/typeORM/AddressDAO";
+import {AddressDAO} from "../dao/typeORM/AddressDAO";
 import AddressModel from "../model/AddressModel";
 import CountryModel from "../model/CountryModel";
 
 export class AddressService {
 
-	private readonly addressDAO: AddressDAOImpl;
+	private readonly addressDAO: AddressDAO;
 
-	constructor(addressDAO: AddressDAOImpl) {
+	constructor(addressDAO: AddressDAO) {
 		this.addressDAO = addressDAO;
 	}
 

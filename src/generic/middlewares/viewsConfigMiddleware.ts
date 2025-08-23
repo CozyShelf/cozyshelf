@@ -6,10 +6,11 @@ export default function viewsConfigMiddleware(app: Express) {
 		path.join(__dirname, "../views"),
 		path.join(__dirname, "../views/components"),
 		path.join(__dirname, "../views/layouts"),
+		path.join(__dirname, "../views/pages"),
 	]);
 
 	app.set(
-		"layout", 
+		"layout",
 		path.join(__dirname, "../views/layouts/defaultLayout.ejs")
 	);
 
