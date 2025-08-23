@@ -85,9 +85,15 @@
             <a href="/orders" class="font-semibold text-sm bg-brown text-white rounded hover:bg-dark-brown w-[150px] h-10 flex items-center justify-center">
             Voltar
             </a>
-            <button type="submit" class="font-medium text-sm text-white bg-light-green w-[150px] h-10 rounded-[5px] cursor-pointer hover:bg-dark-green flex items-center justify-center">
-            Salvar
-            </button>
+              <% if (isNewOrder) { %>
+                <button type="submit" class="font-semibold text-sm bg-light-green text-white rounded hover:bg-dark-green w-[150px] h-10 flex items-center justify-center">
+                    Finalizar Pedido
+                </button>
+            <% } else { %>
+                <button type="submit" class="font-semibold text-sm bg-orange text-white rounded hover:bg-dark-orange w-[150px] h-10 flex items-center justify-center">
+                    Pedir Troca
+                </button>
+            <% } %>
         </div>
     </div>
 </form>

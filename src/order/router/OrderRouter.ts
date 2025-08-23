@@ -20,6 +20,7 @@ orderRouter.get("/:id", (req: Request, res: Response) => {
     res.render("orderDetails", {
         title: "Detalhes do Pedido",
         layout: "detailsLayout",
+        isNewOrder: false,
         currentUrl: "orders",
     });
 });
