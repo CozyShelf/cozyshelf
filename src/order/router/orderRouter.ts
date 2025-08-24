@@ -5,28 +5,30 @@ import { BookControllerFactory } from "../../books/factories/BookControllerFacto
 
 const orderRouter = Router();
 orderRouter.use(
-    ConfigDynamicPaths.configViewsPath(path.join(__dirname, "../views"))
+	ConfigDynamicPaths.configViewsPath(path.join(__dirname, "../views"))
 );
 
 const bookController = new BookControllerFactory().make();
 
 orderRouter.get("/", (req: Request, res: Response) => {
-    res.render("ordersTable", {
+	res.render("ordersTable", {
 		title: "Meus Pedidos",
+		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "orders",
 	});
 });
 
 orderRouter.get("/:id", async (req: Request, res: Response) => {
-    const books = await bookController.getById(req, res);
-    res.render("orderDetails", {
-        title: "Detalhes do Pedido",
-        layout: "detailsLayout",
-        isNewOrder: false,
-        books: [books],
-        currentUrl: "orders",
-    });
+	const books = await bookController.getAll(req, res);
+	res.render("orderDetails", {
+		title: "Detalhes do Pedido",
+		currentHeaderTab: "profile",
+		layout: "detailsLayout",
+		isNewOrder: false,
+		books: books,
+		currentUrl: "orders",
+	});
 });
 
 export default orderRouter;
