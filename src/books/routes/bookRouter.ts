@@ -11,7 +11,7 @@ bookRouter.use(
 bookRouter.get("/", async (req: Request, res: Response) => {
 	const controller = new BookControllerFactory().make();
 	const books = await controller.getAll(req, res);
-	console.log(books)
+
 	res.render("books", {
 		title: "Explore nosso catálogo",
 		books,
