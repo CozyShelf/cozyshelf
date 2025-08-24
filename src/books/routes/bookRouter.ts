@@ -8,13 +8,25 @@ bookRouter.use(
 	ConfigDynamicPaths.configViewsPath(path.join(__dirname, "../views"))
 );
 
+const controller = new BookControllerFactory().make();
+
 bookRouter.get("/", async (req: Request, res: Response) => {
-	const controller = new BookControllerFactory().make();
 	const books = await controller.getAll(req, res);
 
 	res.render("listAllBooks", {
 		title: "Explore nosso catálogo",
+		currentHeaderTab: "books",
 		books,
+	});
+});
+
+bookRouter.get("/:id", async (req: Request, res: Response) => {
+	const book = await controller.getById(req, res);
+
+	res.render("bookDetails", {
+		title: `Detalhes do livro - ${book.name}`,
+		currentHeaderTab: "books",
+		book,
 	});
 });
 

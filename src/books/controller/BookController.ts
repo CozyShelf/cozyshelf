@@ -23,8 +23,9 @@ export default class BookController implements ICRUDController<Book> {
 		return await this.service.getAll(page, limit);
 	}
 
-	getById(req: Request, res: Response): Promise<Book | null> {
-		throw new Error("Method not implemented.");
+	async getById(req: Request, res: Response): Promise<Book> {
+		const id = parseInt(req.params.id, 10);
+		return await this.service.getById(id);
 	}
 
 	update(req: Request, res: Response): Promise<Book | null> {

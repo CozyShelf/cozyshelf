@@ -6,25 +6,25 @@
 			<span class="font-semibold">Adicionar</span>
 		</a>
 	</div>
-	<table class="w-full border-separate text-sm">
-		<thead>
-			<tr class="bg-dark-brown text-white text-center">
-				<th class="px-4 py-2 rounded-l-xl font-semibold">Frase curta</th>
-				<th class="px-4 py-2 font-semibold">Endereço</th>
-				<th class="px-4 py-2 font-semibold">Tipo de Endereço</th>
-				<th class="px-4 py-2 rounded-r-xl font-semibold"></th>
+	<table class="min-w-full border-none rounded-lg overflow-hidden shadow-md">
+		<thead class="bg-dark-brown text-white text-sm uppercase">
+			<tr>
+				<th class="px-6 py-3 text-left font-semibold">Frase curta</th>
+				<th class="px-6 py-3 text-left font-semibold">Endereço</th>
+				<th class="px-6 py-3 text-left font-semibold">Tipo de Endereço</th>
+				<th class="px-6 py-3 text-left font-semibold">Ações</th>
 			</tr>
 		</thead>
-		<tbody>
-			<tr class="bg-lighter-brown h-8 border border-dark-brown text-center align-middle">
-				<td class="px-4 py-2 border-r border-dark-brown rounded-l-xl">Minha Casa</td>
-				<td class="px-4 py-2 border-r border-dark-brown">Rua das Flores, 123</td>
-				<td class="px-4 py-2 border-r border-dark-brown">
+		<tbody class="divide-y divide-lighter-brown text-sm text-gray-2">
+			<tr>
+				<td class="px-6 py-3 font-medium text-gray-2">Minha Casa</td>
+				<td class="px-6 py-3">Rua das Flores, 123</td>
+				<td class="px-6 py-3">
 					<span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
 						Entrega e Cobrança
 					</span>
 				</td>
-				<td class="px-4 py-2 rounded-r-xl flex gap-2 justify-center">
+				<td class="px-6 py-3 flex gap-2">
 					<a href="/addresses/id" class="hover:text-gray flex justify-center items-center">
 						<span class="material-symbols-outlined text-base">visibility</span>
 					</a>

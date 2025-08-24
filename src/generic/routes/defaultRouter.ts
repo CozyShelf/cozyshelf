@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
-import clientRouter from "../../client/router/ClientRouter";
-import addressRouter from "../../address/router/AddressRouter";
-import cardRouter from "../../card/router/CardRouter";
+import clientRouter from "../../client/router/clientRouter";
+import addressRouter from "../../address/router/addressRouter";
+import cardRouter from "../../card/router/cardRouter";
 import { BookControllerFactory } from "../../books/factories/BookControllerFactory";
 import bookRouter from "../../books/routes/bookRouter";
 
@@ -13,6 +13,7 @@ defaultRouter.get("/", async (req: Request, res: Response) => {
 
 	res.render("homePage", {
 		title: "Seja bem vindo !",
+		currentHeaderTab: "home",
 		books,
 	});
 });

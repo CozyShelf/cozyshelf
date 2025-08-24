@@ -9,9 +9,43 @@ export default class BookDAO implements IDAO<Book> {
 	}
 
 	async findAll(): Promise<Book[] | null> {
-		const jsonFilePath: string = path.join(__dirname, "/books.json");
-		return JSON.parse(fs.readFileSync(jsonFilePath, "utf-8"));
-	}
+    try {
+			const jsonFilePath = path.join(__dirname, "/books.json");
+
+      if (!fs.existsSync(jsonFilePath)) {
+        console.error(`Arquivo não encontrado: ${jsonFilePath}`);
+        return null;
+      }
+
+      const jsonData = JSON.parse(fs.readFileSync(jsonFilePath, "utf-8"));
+
+      if (!Array.isArray(jsonData)) {
+        console.error("JSON não contém um array de livros");
+        return null;
+      }
+
+      if (jsonData.length === 0) {
+        return [];
+      }
+
+      const books: Book[] = [];
+
+      for (const data of jsonData) {
+        try {
+          const book = Book.fromJSON(data);
+          books.push(book);
+        } catch (error) {
+          console.warn(`Erro ao processar livro com ID ${data.id || 'desconhecido'}:`, error);
+        }
+      }
+
+      return books;
+
+    } catch (error) {
+      console.error("Erro ao ler arquivo de livros:", error);
+      return null;
+    }
+  }
 
 	async findAllWithPagination(limit: number, offset: number) {
 		const books = await this.findAll();
@@ -23,11 +57,13 @@ export default class BookDAO implements IDAO<Book> {
 		return books.slice(offset, offset + limit);
 	}
 
-	findById(id: string): Promise<Book | null> {
-		throw new Error("Method not implemented.");
+	findById(id: number): Promise<Book | null> {
+		return this.findAll().then((books) => {
+			return books?.find((book) => book.id === id) || null;
+		});
 	}
 
-	delete(id: string): Promise<void> {
+	delete(id: number): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
 }

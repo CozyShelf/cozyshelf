@@ -1,0 +1,127 @@
+<div class="flex flex-col gap-20 mt-10 mb-20 px-32 relative">
+	<%- include("buttons/backButton.ejs") %>
+
+	<div class="flex flex-row gap-48 justify-center">
+		<div class="flex justify-center items-center bg-lighter-brown p-8 w-fit rounded-2xl">
+			<img class="w-56 shadow-lg" src="<%= book.coverPath %>" alt="Capa do livro">
+		</div>
+
+		<div class="flex flex-col gap-5 w-6/12">
+			<h1 class="font-semibold text-3xl">
+				<%= book.name %>
+			</h1>
+
+			<div class="flex flex-row gap-2.5 text-sm">
+				<div class="flex flex-row gap-2 font-light">
+					<% book.categories.forEach((cat)=> { %>
+						<span class="text-center bg-gray-200 p-1 rounded-full px-3 text-gray-2">
+							<%= cat %>
+						</span>
+						<% }) %>
+				</div>
+			</div>
+
+			<span class="font-medium text-light-title text-[20px]">
+				R$ <%= book.price.toFixed(2) %>
+			</span>
+
+			<p class="text-justify text-sm">
+				<%= book.resume %>
+			</p>
+
+			<div class="flex flex-row gap-5">
+				<input class="flex justify-center items-center border-2 border-gray-300 rounded-2xl p-3 w-4/12" type="number"
+					name="book-qtd">
+
+				<button
+					class="flex flex-row items-center justify-center gap-5 p-4 w-6/12 bg-transparent font-semibold border text-gray-2 rounded-2xl hover:bg-gray-2 hover:text-white hover:cursor-pointer transition-all hover:scale-105">
+					Adicionar ao carrinho
+					<span class="material-symbols-outlined">
+						shopping_cart
+					</span>
+				</button>
+			</div>
+
+			<div class="pt-4">
+				<div class="border-[1px] border-gray-300 rounded-2xl"></div>
+			</div>
+
+			<ul class="flex flex-col gap-10 text-[14px]">
+				<li class="flex flex-row gap-2.5">
+					<span class="min-w-48 font-bold text-gray-2">Número de páginas :</span>
+					<p class="text-gray font-light">
+						<%= book.numberOfPages %>
+					</p>
+				</li>
+				<li class="flex flex-row gap-2.5">
+					<span class="min-w-48 font-bold text-gray-2">Ano de publicação :</span>
+					<p class="text-gray font-light">
+						<%= book.year %>
+					</p>
+				</li>
+				<li class="flex flex-row gap-2.5">
+					<span class="min-w-48 font-bold text-gray-2">Editora :</span>
+					<p class="text-gray font-light">
+						<%= book.publisher %>
+					</p>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="flex flex-col gap-10">
+		<div class="flex flex-col gap-2.5">
+			<h1 class="font-bold text-gray-2 text-[20px]">Informações adicionais</h1>
+			<div class="pt-4">
+				<div class="border-[1px] border-gray-300 rounded-2xl"></div>
+			</div>
+		</div>
+
+		<table class="min-w-full border-none rounded-lg overflow-hidden shadow-md">
+			<thead class="bg-light-brown text-white text-sm uppercase">
+				<tr>
+					<th class="px-4 py-2 text-left font-semibold">Atributo</th>
+					<th class="px-4 py-2 text-left font-semibold">Valor</th>
+				</tr>
+			</thead>
+			<tbody class="divide-y divide-lighter-brown text-sm text-gray-2">
+				<tr>
+					<td class="px-4 py-2 font-medium text-gray-2">ISBN</td>
+					<td class="px-4 py-2">
+						<%= book.isbn %>
+					</td>
+				</tr>
+				<tr>
+					<td class="px-4 py-2 font-medium text-gray-2">Edição</td>
+					<td class="px-4 py-2">
+						<%= book.edition %>
+					</td>
+				</tr>
+				<tr>
+					<td class="px-4 py-2 font-medium text-gray-2">Altura</td>
+					<td class="px-4 py-2">
+						<%= book.height %> cm
+					</td>
+				</tr>
+				<tr>
+					<td class="px-4 py-2 font-medium text-gray-2">Largura</td>
+					<td class="px-4 py-2">
+						<%= book.width %> cm
+					</td>
+				</tr>
+				<tr>
+					<td class="px-4 py-2 font-medium text-gray-2">Profundidade</td>
+					<td class="px-4 py-2">
+						<%= book.thickness %> cm
+					</td>
+				</tr>
+				<tr>
+					<td class="px-4 py-2 font-medium text-gray-2">Código de barras</td>
+					<td class="px-4 py-2">
+						<%= book.barCode %>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

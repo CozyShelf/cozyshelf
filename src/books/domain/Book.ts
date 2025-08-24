@@ -1,3 +1,5 @@
+import BookCategory from "./enums/BookCategory";
+
 export default class Book {
 	_id: number;
 	_name: string;
@@ -8,9 +10,10 @@ export default class Book {
 	_resume: string;
 	_isbn: string;
 	_numberOfPages: number;
-	_category: string;
+	_categories: BookCategory[];
 	_year: number;
 	_edition: string;
+	_publisher: string;
 	_height: number;
 	_width: number;
 	_weight: number;
@@ -29,9 +32,10 @@ export default class Book {
 		resume: string = "",
 		isbn: string = "",
 		numberOfPages: number = 0,
-		category: string = "",
+		categories: BookCategory[] | string[] = [],
 		year: number = 0,
 		edition: string = "",
+		publisher: string,
 		height: number = 0,
 		width: number = 0,
 		weight: number = 0,
@@ -49,9 +53,10 @@ export default class Book {
 		this._resume = resume;
 		this._isbn = isbn;
 		this._numberOfPages = numberOfPages;
-		this._category = category;
+		this._categories = this.parseCategories(categories);
 		this._year = year;
 		this._edition = edition;
+		this._publisher = publisher;
 		this._height = height;
 		this._width = width;
 		this._weight = weight;
@@ -59,6 +64,49 @@ export default class Book {
 		this._barCode = barCode;
 		this._inactivationCause = inactivationCause;
 		this._activationCause = activationCause;
+	}
+
+	private parseCategories(categories: BookCategory[] | string[]) {
+		if (!categories || categories.length === 0) return [];
+
+		return categories.map((cat) => {
+			if (typeof cat === "string") {
+				const enumValue = Object.values(BookCategory).find(
+					(value) => value === cat
+				);
+				if (enumValue) {
+					return enumValue as BookCategory;
+				}
+				console.warn(`Categoria desconhecida: ${cat}`);
+				return BookCategory.LITERATURA_CLASSICA;
+			}
+			return cat;
+		});
+	}
+
+	static fromJSON(data: any): Book {
+		return new Book(
+			data.id,
+			data.name,
+			data.author,
+			data.coverPath,
+			data.price,
+			data.rating,
+			data.resume,
+			data.isbn,
+			data.numberOfPages,
+			data.categories,
+			data.year,
+			data.edition,
+			data.publisher,
+			data.height,
+			data.width,
+			data.weight,
+			data.thickness,
+			data.barCode,
+			data.inactivationCause,
+			data.activationCause
+		);
 	}
 
 	get id(): number {
@@ -133,12 +181,12 @@ export default class Book {
 		this._numberOfPages = value;
 	}
 
-	get category(): string {
-		return this._category;
+	get categories(): BookCategory[] | string[] {
+		return this._categories;
 	}
 
-	set category(value: string) {
-		this._category = value;
+	set categories(value: BookCategory[] | string[]) {
+		this.parseCategories(value);
 	}
 
 	get year(): number {
@@ -155,6 +203,14 @@ export default class Book {
 
 	set edition(value: string) {
 		this._edition = value;
+	}
+
+	get publisher(): string {
+		return this._publisher;
+	}
+
+	set publisher(value: string) {
+		this._publisher = value;
 	}
 
 	get height(): number {
