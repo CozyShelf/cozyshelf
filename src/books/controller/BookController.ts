@@ -15,7 +15,10 @@ export default class BookController implements ICRUDController<Book> {
 	}
 
 	async getAll(req: Request, res: Response): Promise<Book[] | null> {
-		return await this.service.getAll();
+		const page = Number(req.query.page) || 1;
+		const limit = Number(req.query.limit ) || 10;
+
+		return await this.service.getAll(page, limit);
 	}
 
 	getById(req: Request, res: Response): Promise<Book | null> {
