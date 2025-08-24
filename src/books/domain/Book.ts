@@ -1,4 +1,5 @@
 export default class Book {
+	_id: number;
 	_name: string;
 	_author: string;
 	_coverPath: string;
@@ -19,6 +20,7 @@ export default class Book {
 	_activationCause: string;
 
 	constructor(
+		id: number,
 		name: string,
 		author: string,
 		coverPath: string,
@@ -38,6 +40,7 @@ export default class Book {
 		inactivationCause: string = "",
 		activationCause: string = ""
 	) {
+		this._id = id;
 		this._name = name;
 		this._author = author;
 		this._coverPath = coverPath;
@@ -56,6 +59,14 @@ export default class Book {
 		this._barCode = barCode;
 		this._inactivationCause = inactivationCause;
 		this._activationCause = activationCause;
+	}
+
+	get id(): number {
+		return this._id;
+	}
+
+	set id(value: number) {
+		this._id = value;
 	}
 
 	get name(): string {
