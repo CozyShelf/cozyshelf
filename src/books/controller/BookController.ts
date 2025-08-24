@@ -19,7 +19,7 @@ export default class BookController implements ICRUDController<Book> {
 	}
 
 	getById(req: Request, res: Response): Promise<Book | null> {
-		throw new Error("Method not implemented.");
+		return this.service.getById(req.params.id);
 	}
 
 	update(req: Request, res: Response): Promise<Book | null> {

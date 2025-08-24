@@ -47,4 +47,14 @@ export default class BookService {
 			),
 		];
 	}
+
+	public async getById(id: string): Promise<Book | null> {
+		return new Book(
+				"Crepúsculo",
+				"Stephenie Meyer",
+				"/assets/book-covers/crepusculo.png",
+				34.9,
+				3.9
+			);
+	}
 }

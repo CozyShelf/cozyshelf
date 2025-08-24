@@ -15,19 +15,19 @@
                     <h1 class="font-bold text-[18px] text-brown">Valores</h1>
                     <div class="flex justify-between">
                         <h2 class="text-gray-dark [12px]">Subtotal de itens:</h2>
-                        <p class="font-semibold">R$ 143,96</p>
+                        <p class="font-semibold">R$ 34,90</p>
                     </div>
                     <div class="flex justify-between">
                         <h2 class="text-gray-dark [12px]">Frete:</h2>
-                        <p class="font-semibold">R$ 10,50</p>
+                        <p class="font-semibold">R$ 10,10</p>
                     </div>
                     <div class="flex justify-between">
                         <h2 class="text-gray-dark [12px]">Descontos de cupons:</h2>
-                        <p class="text-light-green">- R$ 15,56</p>
+                        <p class="text-light-green">- R$ 15,00</p>
                     </div>
                     <div class="flex justify-between border-t border-gray pt-2">
                         <h2 class="font-semibold text-[16px] text-brown">Total:</h2>
-                        <p class="font-semibold text-[16px]">R$ 138,90</p>
+                        <p class="font-semibold text-[16px]">R$ 30,00</p>
                     </div>
                 </div>
                 
@@ -56,28 +56,18 @@
             <div class="flex flex-col gap-2 w-1/2">
                 <h1 class="font-bold text-[18px] text-brown mb-4">Itens do Pedido</h1>
                 <div class="flex flex-col gap-4">
-                    <div class="flex gap-4">
-                        <img src="/images/products/book1.png" alt="Capa do livro O Senhor dos Anéis" class="w-16 h-20 object-cover rounded">
-                        <div class="flex flex-col justify-between">
-                            <div>
-                                <h2 class="font-semibold text-[14px]">O Senhor dos Anéis - A Sociedade do Anel</h2>
-                                <p class="text-gray-dark text-[12px]">Autor: J.R.R. Tolkien</p>
-                                <p class="text-gray-dark text-[12px]">Quantidade: 1</p>
+                    <% books.forEach(function(book) { %>
+                        <div class="flex gap-4">
+                            <img src="<%= book.coverPath %>" alt="Capa do livro <%= book.name %>" class="w-16 h-20 object-cover rounded">
+                            <div class="flex flex-col justify-between">
+                                <h2 class="font-semibold text-[14px]"><%= book.name %></h2>
+                                <div class="flex items-center justify-between gap-15"></div>
+                                    <p class="text-gray-dark text-[12px]">Quantidade: 1</p>
+                                    <p class="font-semibold text-brown text-[14px]">R$ <%= book.price.toFixed(2).replace('.', ',') %></p>
+                                </div>
                             </div>
-                            <p class="font-semibold text-[14px]">R$ 79,90</p>
                         </div>
-                    </div>
-                    <div class="flex gap-4">
-                        <img src="/images/products/book2.png" alt="Capa do livro Harry Potter e a Pedra Filosofal" class="w-16 h-20 object-cover rounded">
-                        <div class="flex flex-col justify-between">
-                            <div>
-                                <h2 class="font-semibold text-[14px]">Harry Potter e a Pedra Filosofal</h2>
-                                <p class="text-gray-dark text-[12px]">Autor: J.K. Rowling</p>
-                                <p class="text-gray-dark text-[12px]">Quantidade: 1</p>
-                            </div>
-                            <p class="font-semibold text-[14px]">R$ 64,06</p>
-                        </div>
-                    </div>
+                    <% }); %>
                 </div>
             </div>
         </div>
@@ -85,15 +75,9 @@
             <a href="/orders" class="font-semibold text-sm bg-brown text-white rounded hover:bg-dark-brown w-[150px] h-10 flex items-center justify-center">
             Voltar
             </a>
-              <% if (isNewOrder) { %>
-                <button type="submit" class="font-semibold text-sm bg-light-green text-white rounded hover:bg-dark-green w-[150px] h-10 flex items-center justify-center">
-                    Finalizar Pedido
-                </button>
-            <% } else { %>
-                <button type="submit" class="font-semibold text-sm bg-orange text-white rounded hover:bg-dark-orange w-[150px] h-10 flex items-center justify-center">
-                    Pedir Troca
-                </button>
-            <% } %>
+            <button type="submit" class="font-semibold text-sm bg-orange text-white rounded hover:bg-dark-orange w-[150px] h-10 flex items-center justify-center">
+                Pedir Troca
+            </button>
         </div>
     </div>
 </form>
