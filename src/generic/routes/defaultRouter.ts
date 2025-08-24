@@ -9,9 +9,7 @@ const defaultRouter = Router();
 
 defaultRouter.get("/", async (req: Request, res: Response) => {
 	const bookController = new BookControllerFactory().make();
-	const allBooks = await bookController.getAll(req, res);
-
-	const books = allBooks?.slice(0, 5);
+	const books = await bookController.getAll(req, res);
 
 	res.render("homePage", {
 		title: "Seja bem vindo !",
