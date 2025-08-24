@@ -1,50 +1,22 @@
+import BookDAO from "../dao/BookDAO";
 import Book from "../domain/Book";
+import PaginationDTO from "../../generic/dto/PaginationDTO";
 
 export default class BookService {
-	public async getAll(): Promise<Book[]> {
-		return [
-			new Book(
-				"Crime e Castigo",
-				"Dostoiévski",
-				"/assets/book-covers/crime-e-castigo.png",
-				49.9,
-				4.5
-			),
-			new Book(
-				"Hipótese do Amor",
-				"Ali Hazelwood",
-				"/assets/book-covers/hipotese-do-amor.png",
-				39.9,
-				4.2
-			),
-			new Book(
-				"Senhor dos Anéis",
-				"J.R.R. Tolkien",
-				"/assets/book-covers/senhor-dos-aneis.png",
-				89.9,
-				4.8
-			),
-			new Book(
-				"Crepúsculo",
-				"Stephenie Meyer",
-				"/assets/book-covers/crepusculo.png",
-				34.9,
-				3.9
-			),
-			new Book(
-				"É Assim que Acaba",
-				"Colleen Hoover",
-				"/assets/book-covers/e-assim-que-acaba.png",
-				44.9,
-				4.6
-			),
-			new Book(
-				"Noites Brancas",
-				"Fiódor Dostoiévski",
-				"/assets/book-covers/noites-brancas.png",
-				79,
-				5
-			),
-		];
+	public constructor(private readonly dao: BookDAO) {}
+
+	public async getAll(page: number, limit: number): Promise<Book[]> {
+		const offset = PaginationDTO.calculateOffset(page, limit);
+		return await this.dao.findAllWithPagination(limit, offset);
+	}
+
+	public async getById(id: number): Promise<Book> {
+		const book = await this.dao.findById(id);
+
+		if (!book) {
+			throw new Error(`Book with id: ${id} was not found`);
+		}
+
+		return book;
 	}
 }

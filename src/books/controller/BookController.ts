@@ -5,6 +5,8 @@ import Book from "../domain/Book";
 
 export default class BookController implements ICRUDController<Book> {
 	private readonly service: BookService;
+	private readonly DEFAULT_PAGINATION_PAGE = 1;
+	private readonly DEFAULT_PAGINATION_LIMIT = 6;
 
 	constructor(service: BookService) {
 		this.service = service;
@@ -15,11 +17,15 @@ export default class BookController implements ICRUDController<Book> {
 	}
 
 	async getAll(req: Request, res: Response): Promise<Book[] | null> {
-		return await this.service.getAll();
+		const page = Number(req.query.page) || this.DEFAULT_PAGINATION_PAGE;
+		const limit = Number(req.query.limit ) || this.DEFAULT_PAGINATION_LIMIT;
+
+		return await this.service.getAll(page, limit);
 	}
 
-	getById(req: Request, res: Response): Promise<Book | null> {
-		throw new Error("Method not implemented.");
+	async getById(req: Request, res: Response): Promise<Book> {
+		const id = parseInt(req.params.id, 10);
+		return await this.service.getById(id);
 	}
 
 	update(req: Request, res: Response): Promise<Book | null> {

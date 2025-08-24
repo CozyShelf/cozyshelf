@@ -1,22 +1,24 @@
 <header class="w-full flex flex-row justify-between bg-lighter-brown pl-5 pr-10">
-	<div class="flex flex-row justify-start items-center gap-2.5">
-		<%- include("mascot.ejs") %>
-		<h1 class="font-bold text-light-title text-[20px]">Cozy Shelf</h1>
-	</div>
+	<a href="/">
+		<div class="flex flex-row justify-start items-center gap-2.5">
+			<%- include("mascot.ejs") %>
+				<h1 class="font-bold text-light-title text-[20px]">Cozy Shelf</h1>
+		</div>
+	</a>
 
 	<div class="flex justify-center items-center">
-		<ul class="flex flex-row gap-5 font-medium text-light-title">
+		<ul class="flex flex-row gap-5 text-light-title">
 			<li>
-				<a class="hover:text-light-brown" href="/">Home</a>
+				<a class="hover:text-light-brown <%= currentHeaderTab ? (currentHeaderTab === 'home' ? 'font-bold' : '') : '' %>"
+					href="/">Home</a>
 			</li>
 			<li>
-				<a class="hover:text-light-brown" href="#">Livros</a>
+				<a class="hover:text-light-brown <%=currentHeaderTab ? (currentHeaderTab === 'books' ? 'font-bold' : '' ) : '' %>"
+					href="/books">Livros</a>
 			</li>
 			<li>
-				<a class="hover:text-light-brown" href="#">Sobre</a>
-			</li>
-			<li>
-				<a class="hover:text-light-brown" href="/clients/register" aria-disabled="true" tabindex="-1" role="button">Cadastre-se</a>
+				<a class="hover:text-light-brown <%=currentHeaderTab ? (currentHeaderTab === 'registration' ? 'font-bold' : '' )
+					: '' %>" href="/clients/register" aria-disabled="true" tabindex="-1" role="button">Cadastre-se</a>
 			</li>
 		</ul>
 	</div>
@@ -38,7 +40,7 @@
 				</a>
 			</li>
 			<li>
-				<a class="hover:text-light-brown" href="/clients/id">
+				<a class="hover:text-light-brown <%= currentHeaderTab ? (currentHeaderTab === 'profile' ? 'text-brown' : '') : '' %>" href="/clients/id">
 					<span class="material-symbols-outlined">
 						person
 					</span>
