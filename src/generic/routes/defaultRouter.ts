@@ -8,9 +8,9 @@ import { BookControllerFactory } from "../../books/factories/BookControllerFacto
 import bookRouter from "../../books/routes/bookRouter";
 
 const defaultRouter = Router();
+const bookController = new BookControllerFactory().make();
 
 defaultRouter.get("/", async (req: Request, res: Response) => {
-	const bookController = new BookControllerFactory().make();
 	const books = await bookController.getAll(req, res);
 
 	res.render("homePage", {
@@ -21,12 +21,12 @@ defaultRouter.get("/", async (req: Request, res: Response) => {
 });
 
 defaultRouter.get("/shopping-cart", async (req: Request, res: Response) => {
-	const bookController = new BookControllerFactory().make();
-	const books = await bookController.getById(req, res);
+	const books = await bookController.getAll(req, res);
 
 	res.render("shoppingCart", {
 		title: "Carrinho de Compras",
-		books: [books],
+		currentHeaderTab: "cart",
+		books: books,
 		coupons: [],
 	});
 });

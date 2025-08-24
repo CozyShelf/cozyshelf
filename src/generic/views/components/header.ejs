@@ -33,7 +33,7 @@
 				</a>
 			</li>
 			<li>
-				<a class="hover:text-light-brown" href="/shopping-cart">
+				<a class="hover:text-light-brown <%= currentHeaderTab ? (currentHeaderTab === 'cart' ? 'text-brown' : '') : '' %>" href="/shopping-cart">
 					<span class="material-symbols-outlined">
 						shopping_cart
 					</span>
