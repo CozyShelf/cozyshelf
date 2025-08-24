@@ -1,19 +1,26 @@
 <div class="flex flex-col gap-10 justify-center items-center mt-10 mb-10">
 	<%- include("headers/pageHeader.ejs", {pageTitle: "Livros"}) %>
 
-	<div data-books='<%= JSON.stringify(books) %>' class="container mx-auto">
+	<div data-books='<%= JSON.stringify(books) %>' class="container mx-auto" id="bookContainer">
 		<div class="flex flex-wrap gap-2 justify-center">
 			<% books.forEach((book)=> { %>
 				<div class="flex flex-row gap-4 w-full max-w-sm rounded-lg p-4 relative">
 					<%- include("books/book.ejs", { bookCoverImgPath: book.coverPath, bookName: book.name, bookAuthor: book.author,
 						bookRating: book.rating, bookPrice: book.price }) %>
 				</div>
-				<% }) %>
+			<% }) %>
 		</div>
 	</div>
 
-	<a href="/books/?page=2"
-		class="flex flex-row justify-center items-center p-4 bg-light-title font-semibold text-white w-32 h-10 rounded-full hover:bg-brown hover:cursor-pointer">
-		Veja mais
-	</a>
+	<div class="flex flex-row gap-10 items-center">
+		<button id="prevPage" hidden
+			class="flex justify-center items-center p-4 bg-light-title font-semibold text-white w-auto h-12 rounded-full hover:bg-brown hover:cursor-pointer">
+			Voltar
+		</button>
+		<button id="nextPage"
+			class="flex justify-center items-center p-4 bg-light-title font-semibold text-white w-auto h-12 rounded-full hover:bg-brown hover:cursor-pointer">
+			Próxima
+		</button>
+	</div>
 </div>
+<script src="/scripts/handleBooksPagination.mjs"></script>
