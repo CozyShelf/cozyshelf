@@ -18,18 +18,21 @@ clientRouter.post("/", async (req: Request, res: Response) => {
 clientRouter.get("/", async (req: Request, res: Response) => {
 	res.render("clientTable", {
 		title: "Lista de Clientes",
+		currentHeaderTab: "profile",
 	});
 });
 
 clientRouter.get("/register", (req: Request, res: Response) => {
 	res.render("clientRegistration", {
 		title: "Cadastro de Clientes",
+		currentHeaderTab: "registration"
 	});
 });
 
 clientRouter.get("/:id/password", (req: Request, res: Response) => {
 	res.render("passwordDetail", {
 		title: "Alterar Senha",
+		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "password",
 	});
@@ -39,6 +42,7 @@ clientRouter.get("/:id", async (_: Request, res: Response) => {
 	//await clientController.getById(req, res);
 	res.render("clientDetails", {
 		title: "Detalhes do Cliente",
+		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: `client`,
 	});
