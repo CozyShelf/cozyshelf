@@ -1,58 +1,58 @@
 <div class="flex flex-col w-full gap-10 mt-9 mb-15 px-32">
-    <div class="flex justify-between align-middle">
-        <h1 class="font-semibold text-[20px]">Meus Pedidos (1)</h1>
-        <div class="flex items-center gap-2">
-            <h1 class="text-gray">Filtrar: </h1>
+	<div class="flex justify-between align-middle">
+		<h1 class="font-semibold text-[20px]">Meus Pedidos (1)</h1>
+		<div class="flex items-center gap-2">
+			<h1 class="text-gray">Filtrar: </h1>
             <select class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown">
-                <option value="all">Todos</option>
-                <option value="approved">Aprovados</option>
-                <option value="inTransport">Em Transporte</option>
-                <option value="delivered">Entregues</option>
-                <option value="canceled">Cancelados</option>
-                <option value="inExchange">Em Troca</option>
-                <option value="exchanging">Trocado</option>
-            </select>
-        </div>
-    </div>
-    <table class="min-w-full border-none rounded-lg overflow-hidden shadow-md">
-        <thead class="bg-dark-brown text-white text-sm uppercase">
-            <tr>
-                <th class="px-6 py-3 text-left font-semibold">ID</th>
-                <th class="px-6 py-3 text-left font-semibold">Data de Entrega</th>
-                <th class="px-6 py-3 text-left font-semibold">Status</th>
-                <th class="px-6 py-3 text-left font-semibold">Ações</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-light-brown text-sm text-gray-2 bg-lighter-brown">
-            <tr>
-                <td class="px-6 py-3 font-medium text-gray-2">12413113123123</td>
-                <td class="px-6 py-3">01/09/2025</td>
-                <td class="px-6 py-3">
-                    <span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
-                        Aprovado
-                    </span>
-                </td>
-                <td class="px-6 py-3 flex gap-2">
-                    <a href="/orders/id" class="hover:text-gray flex justify-center items-center">
-                        <span class="material-symbols-outlined text-base">visibility</span>
-                    </a>
-                </td>
-            </tr>
-            <tr>
-                <td class="px-6 py-3 font-medium text-gray-2">1241311312322</td>
-                <td class="px-6 py-3">01/07/2025</td>
-                <td class="px-6 py-3">
-                    <span class="bg-orange text-white px-2 py-0.5 rounded-full text-xs">
-                        Em Transporte
-                    </span>
-                </td>
-                <td class="px-6 py-3 flex gap-2">
-                    <a href="/orders/1" class="hover:text-gray flex justify-center items-center">
-                        <span class="material-symbols-outlined text-base">visibility</span>
-                    </a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+				<option value="all">Todos</option>
+				<option value="approved">Aprovados</option>
+				<option value="inTransport">Em Transporte</option>
+				<option value="delivered">Entregues</option>
+				<option value="canceled">Cancelados</option>
+				<option value="inExchange">Em Troca</option>
+				<option value="exchanging">Trocado</option>
+			</select>
+		</div>
+	</div>
+	<table class="min-w-full border-none rounded-lg overflow-hidden shadow-md">
+		<thead class="bg-dark-brown text-white text-sm uppercase">
+			<tr>
+				<th class="px-6 py-3 text-left font-semibold">ID</th>
+				<th class="px-6 py-3 text-left font-semibold">Data de Entrega</th>
+				<th class="px-6 py-3 text-left font-semibold">Status</th>
+				<th class="px-6 py-3 text-left font-semibold">Ações</th>
+			</tr>
+		</thead>
+		<tbody class="divide-y divide-light-brown text-sm text-gray-2 bg-lighter-brown">
+			<tr>
+				<td class="px-6 py-3 font-medium text-gray-2">12413113123123</td>
+				<td class="px-6 py-3">01/09/2025</td>
+				<td class="px-6 py-3">
+					<span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
+						Aprovado
+					</span>
+				</td>
+				<td class="px-6 py-3 flex gap-2">
+					<a href="<%= isAdmin ? "/orders/admin/1" : "/orders/1" %>" class="hover:text-gray flex justify-center items-center">
+						<span class="material-symbols-outlined text-base">visibility</span>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td class="px-6 py-3 font-medium text-gray-2">1241311312322</td>
+				<td class="px-6 py-3">01/07/2025</td>
+				<td class="px-6 py-3">
+					<span class="bg-orange text-white px-2 py-0.5 rounded-full text-xs">
+						Em Transporte
+					</span>
+				</td>
+				<td class="px-6 py-3 flex gap-2">
+					<a href="<%= isAdmin ? "/orders/admin/1" : "/orders/1" %>" class="hover:text-gray flex justify-center items-center">
+						<span class="material-symbols-outlined text-base">visibility</span>
+					</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>
 <script src="/scripts/deleteSubmit.js"></script>
