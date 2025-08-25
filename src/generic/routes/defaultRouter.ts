@@ -31,6 +31,34 @@ defaultRouter.get("/shopping-cart", async (req: Request, res: Response) => {
 	});
 });
 
+defaultRouter.get("/admin/dashboard", async (req: Request, res: Response) => {
+	const books = await bookController.getAll(req, res);
+
+	const labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
+
+	const salesHistory = (books ?? []).map((book: any) => {
+		const sales = labels.map(() => Math.floor(Math.random() * 50) + 10); // vendas aleatórias
+		return {
+			label: book.name,
+			data: sales,
+			fill: false,
+			borderColor: `#${Math.floor(Math.random()*16777215).toString(16)}`, // cor aleatória
+			tension: 0.3,
+		};
+	});
+
+	res.render("dashboard", {
+		title: "Dashboard - Grafico de linha de vendas",
+		currentHeaderTab: "profile",
+		layout: "detailsLayout",
+		currentUrl: "dashboard",
+		isAdmin: true,
+		books,
+		labels,
+		salesHistory
+	});
+});
+
 defaultRouter.use("/clients", clientRouter);
 defaultRouter.use("/addresses", addressRouter);
 defaultRouter.use("/cards", cardRouter);
