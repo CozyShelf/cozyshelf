@@ -9,6 +9,11 @@
         <li class="py-2">
             <a class="hover:text-gray <%= currentUrl === 'orders' ? 'font-bold' : '' %>" href="/orders">Meus Pedidos</a>
         </li>
+				<% if (isAdmin) { %>
+					<li class="py-2">
+						<a class="hover:text-gray <%= currentUrl === 'exchange-orders' ? 'font-bold' : '' %>" href="/orders/admin/exchange-orders">Pedidos de Troca</a>
+					</li>
+				<% } %>
         <li class="py-2">
             <a class="hover:text-gray <%= currentUrl === 'coupons' ? 'font-bold' : '' %>" href="/coupons">Meus Cupons</a>
         </li>

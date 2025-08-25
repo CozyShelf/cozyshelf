@@ -19,6 +19,7 @@ addressRouter.get("/", (req: Request, res: Response) => {
 		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "address",
+		isAdmin: false
 	});
 });
 
@@ -28,6 +29,7 @@ addressRouter.get("/new", (req: Request, res: Response) => {
 		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "address",
+		isAdmin: false,
 	});
 });
 
@@ -37,6 +39,7 @@ addressRouter.get("/:id", (req: Request, res: Response) => {
 		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "address",
+		isAdmin: false,
 	});
 });
 

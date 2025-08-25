@@ -30,6 +30,16 @@ orderRouter.get("/admin", (req: Request, res: Response) => {
 	});
 });
 
+orderRouter.get("/admin/exchange-orders", (req: Request, res: Response) => {
+	res.render("exchangeOrdersTable", {
+		title: "Pedidos de Troca",
+		currentHeaderTab: "profile",
+		layout: "detailsLayout",
+		currentUrl: "exchange-orders",
+		isAdmin: true,
+	});
+});
+
 orderRouter.get("/:id", async (req: Request, res: Response) => {
 	const books = await bookController.getAll(req, res);
 	res.render("orderDetails", {

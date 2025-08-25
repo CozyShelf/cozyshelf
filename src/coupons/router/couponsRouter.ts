@@ -13,6 +13,7 @@ couponsRouter.get("/", (req: Request, res: Response) => {
 		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "coupons",
+		isAdmin: false,
 	});
 });
 

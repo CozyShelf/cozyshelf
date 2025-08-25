@@ -19,6 +19,7 @@ cardRouter.get("/", (req: Request, res: Response) => {
 		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "card",
+		isAdmin: false,
 	});
 });
 
@@ -28,6 +29,7 @@ cardRouter.get("/new", (req: Request, res: Response) => {
 		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "card",
+		isAdmin: false,
 	});
 });
 
@@ -37,6 +39,7 @@ cardRouter.get("/:id", (req: Request, res: Response) => {
 		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "card",
+		isAdmin: false,
 	});
 });
 
