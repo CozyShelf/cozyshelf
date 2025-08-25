@@ -42,7 +42,7 @@
                     </div>
                 </div>
                 <!---BEGIN: valores-->
-                <div class="flex flex-col gap-4 p-4 border border-light-brown rounded-md">
+                <div class="flex flex-col gap-4 p-6 border border-light-brown rounded-md">
                     <h1 class="font-bold text-[18px] text-brown">Valores</h1>
                     <div class="flex justify-between">
                         <h2 class="text-gray-dark [12px]">Subtotal de itens:</h2>
@@ -62,24 +62,35 @@
                     </div>
                 </div>
                 <!---BEGIN: detalhes da compra-->
-                <div class="flex flex-col gap-4 p-4 border border-light-brown rounded-md">
+                <div class="flex flex-col gap-4 p-6 border border-light-brown rounded-md">
                     <h1 class="font-bold text-[18px] text-brown">Detalhes da Compra</h1>
                     <div class="flex flex-col gap-4">
                         <div>
                             <h2 class="font-semibold text-gray-dark [12px] mb-2">Endereço de Entrega:</h2>
-                            <select name="userAddress" class="border border-gray-dark text-gray-dark rounded px-2 py-1 w-full text-[12px]">
-                                <option value="1">Endereço preferido (Rod. das Palmeiras ...)</option>
-                            </select>
+                            <div class="flex gap-2 items-center">
+                                <select name="userAddress" class="border border-gray-dark text-gray-dark rounded px-2 py-1 w-full text-[12px]">
+                                    <option value="">Selecione um endereço</option>
+                                    <option value="1">Endereço preferido (Rod. das Palmeiras ...)</option>
+                                </select>
+                                <button class="text-bold w-10 h-7 bg-brown text-white rounded-[5px] border-2 border-light-brown cursor-pointer hover:bg-dark-brown"
+                                    id="add-address" type="button">+</button>
+                                <%- include('components/address/addressModal.ejs') %>
+                            </div>
                         </div>
                         <div>
                             <h2 class="font-semibold text-gray-dark [12px] mb-2">Método de Pagamento:</h2>
-                            <select name="paymentMethod" class="border border-gray-dark text-gray-dark rounded px-2 py-1 w-full text-[12px]">
-                                <option value="credit_card">Mastercard N 1234.1234.1234.24</option>
-                            </select>
+                            <div class="flex gap-2 items-center">
+                                <select name="paymentMethod" class="border border-gray-dark text-gray-dark rounded px-2 py-1 w-full text-[12px]">
+                                    <option value="">Selecione cartões de crédito</option>
+                                    <option value="credit_card">Mastercard N 1234.1234.1234.24</option>
+                                </select>
+                                <button class="text-bold w-10 h-7 bg-brown text-white rounded-[5px] border-2 border-light-brown cursor-pointer hover:bg-dark-brown"
+                                    id="add-payment" type="button">+</button>
+                                <%- include('components/card/cardModal.ejs') %>
+                            </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="flex justify-end">
                     <button type="submit" class="font-semibold text-sm bg-light-green text-white rounded hover:bg-dark-green w-[150px] h-10 flex items-center justify-center">
                         Finalizar Pedido
@@ -91,3 +102,6 @@
 </div>
 <script src="/scripts/handleSubmit.mjs"></script>
 <script src="/scripts/deleteSubmit.mjs"></script>
+
+<script src="/scripts/shoppingcard/addressModal.js"></script>
+<script src="/scripts/shoppingcard/cardModal.js"></script>

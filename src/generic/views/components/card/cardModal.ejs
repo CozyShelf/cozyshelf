@@ -1,0 +1,60 @@
+<div id="modal-container" class="hidden backdrop-blur-[2px] fixed inset-0 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-[600px]  border-dark-brown border-2">
+        <div class="flex flex-col gap-5" id="card-modal">
+                <div class="flex items-center justify-between mb-2">
+                    <h1 class="font-semibold text-[20px]">Cadastrar Novo Cartão</h1>
+                    <a class="ml-4 cursor-pointer bg-brown hover:bg-lighter-brown rounded w-7 h-7 flex items-center justify-center" id="close-modal">
+                        <span class="material-symbols-outlined text-white hover:text-brown">close</span>                    
+                    </a>
+                </div>
+                <form 
+                    action="/cards/new"
+                    method="POST"
+                    class="flex flex-col gap-10" id="card"
+                >
+                    <div class="flex flex-col gap-2.5 justify-start" id="card">
+                            <div class="flex flex-row gap-10">
+                                <%- include('buttons/toggleButton.ejs', { toggleName: "card-is-preferred" ,
+                                        toggleMessage: "Marcar como preferencial" })%>
+                            </div>
+
+                            <div class="flex flex-col gap-5">
+                                <div class="flex flex-row gap-10">
+                                    <label class="flex flex-col text-[14px] gap-2.5 w-full">
+                                        Número do Cartão *
+                                        <input placeholder="Ex: XXXX XXXX XXXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+                                                name="card-number" >
+                                    </label>
+                                    <label class="flex flex-col text-[14px] gap-2.5 w-full">
+                                        CVV *
+                                        <input placeholder="XXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text" name="card-cvv"
+                                                >
+                                    </label>
+                                </div>
+                                <div class="flex flex-row gap-10">
+                                    <label class="flex flex-col text-[14px] gap-2.5 w-full">
+                                        Nome impresso no cartão *
+                                        <input placeholder="Ex: JOAO S D SILVA" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+                                                name="card-impress-name" >
+                                    </label>
+                                    <label class="flex flex-col text-[14px] gap-2.5 w-full">
+                                        Bandeira *
+                                        <select name="card-flag" class="border rounded-[5px] border-gray h-10 p-2.5" >
+                                                <option value="">Selecione...</option>
+                                                <option value="Visa">Visa</option>
+                                                <option value="Mastercard">Mastercard</option>
+                                                <option value="Elo">Elo</option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <button id="save-modal" type="submit" class="font-semibold text-sm bg-light-green text-white rounded hover:bg-dark-green w-[150px] h-10 flex items-center justify-center">
+                            Salvar
+                        </button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
