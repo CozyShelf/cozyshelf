@@ -6,6 +6,7 @@ import orderRouter from "../../order/router/orderRouter";
 import couponsRouter from "../../coupons/router/couponsRouter";
 import { BookControllerFactory } from "../../books/factories/BookControllerFactory";
 import bookRouter from "../../books/routes/bookRouter";
+import stockRouter from "../../stock/router/orderRouter";
 
 const defaultRouter = Router();
 const bookController = new BookControllerFactory().make();
@@ -65,5 +66,6 @@ defaultRouter.use("/cards", cardRouter);
 defaultRouter.use("/orders", orderRouter);
 defaultRouter.use("/coupons", couponsRouter);
 defaultRouter.use("/books", bookRouter);
+defaultRouter.use("/admin/stock", stockRouter);
 
 export default defaultRouter;
