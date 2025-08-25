@@ -1,0 +1,71 @@
+<div class="flex flex-col w-full gap-10 mt-9 mb-15 px-32" id="client-register-form">
+    <div class="flex flex-col gap-4">
+        <div class="flex justify-between align-middle">
+            <h1 class="font-semibold text-[20px]">Dashboard de Vendas</h1>
+            <div class="flex items-center gap-2">
+                <h1 class="text-gray">Filtrar: </h1>
+
+                <input 
+                    type="date" id="start-date"
+                    class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
+                >
+                <span class="mx-1 text-gray">até</span>
+                <input 
+                    type="date" id="end-date" 
+                    class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
+                >
+                <button id="filter-btn" class="bg-brown text-white px-2 py-1 rounded hover:bg-dark-brown flex items-center h-[32px]">
+                    <span class="material-symbols-outlined text-[20px]">search</span>
+                </button>
+            </div>
+        </div>
+	</div>
+        <div class="flex justify-center">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>  
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setDefaultEndDate();
+        setupFilterButton();
+        renderSalesChart();
+    });
+
+    function setDefaultEndDate() {
+        const endDateInput = document.getElementById('end-date');
+        const today = new Date().toISOString().split('T')[0];
+        endDateInput.value = today;
+    }
+
+    function setupFilterButton() {
+        const button = document.getElementById('filter-btn');
+        button.addEventListener('click', function() {
+            location.reload(); // Atualiza a página, equivalente ao F5
+        });
+    }
+
+    function renderSalesChart() {
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: <%- JSON.stringify(labels) %>,
+                datasets: (<%- JSON.stringify(salesHistory) %>)
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Histórico de Vendas de Livros'
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+</script>
