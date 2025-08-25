@@ -10,12 +10,12 @@
                             <img src="<%= book.coverPath %>" alt="Capa do livro <%= book.name %>" class="w-16 h-20 object-cover rounded">
                             <h2 class="font-semibold text-dark-gray text-[14px] w-48 truncate"><%= book.name %></h2>
                             <div class="flex items-center gap-2 ml-4 w-28 justify-center">
-                                <button class="px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-2" title="Diminuir quantidade">-</button>
+                                <button type="button" class="px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-3" title="Diminuir quantidade">-</button>
                                 <input type="text" value="<%= book.quantity || 1 %>" class="w-8 text-center border rounded text-[12px] bg-white" readonly>
-                                <button class="px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-3" title="Aumentar quantidade">+</button>
+                                <button type="button" class="px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-3" title="Aumentar quantidade">+</button>
                             </div>
                             <p class="font-semibold text-brown text-[14px] ml-4 w-24 text-center">R$ <%= book.price.toFixed(2).replace('.', ',') %></p>
-                            <button class="justify-center items-center delete-btn text-red-700 rounded hover:bg-red-200 ml-4 w-10 flex" title="Remover do carrinho">
+                            <button type="button" class="justify-center items-center delete-btn text-red-700 rounded hover:bg-red-200 ml-4 w-10 flex" title="Remover do carrinho">
                                 <span class="material-symbols-outlined text-base">delete</span>
                             </button>
                         </li>
