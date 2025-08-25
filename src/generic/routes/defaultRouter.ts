@@ -3,7 +3,7 @@ import clientRouter from "../../client/router/clientRouter";
 import addressRouter from "../../address/router/addressRouter";
 import cardRouter from "../../card/router/cardRouter";
 import orderRouter from "../../order/router/orderRouter";
-import couponsRouter from "../../coupons/router/CouponsRouter";
+import couponsRouter from "../../coupons/router/couponsRouter";
 import { BookControllerFactory } from "../../books/factories/BookControllerFactory";
 import bookRouter from "../../books/routes/bookRouter";
 

@@ -4,15 +4,16 @@ import path from "path";
 
 const couponsRouter = Router();
 couponsRouter.use(
-    ConfigDynamicPaths.configViewsPath(path.join(__dirname, "../views"))
+	ConfigDynamicPaths.configViewsPath(path.join(__dirname, "../views"))
 );
 
 couponsRouter.get("/", (req: Request, res: Response) => {
-    res.render("couponsTable", {
-        title: "Meus Cupons",
-        layout: "detailsLayout",
-        currentUrl: "coupons",
-    });
+	res.render("couponsTable", {
+		title: "Meus Cupons",
+		currentHeaderTab: "profile",
+		layout: "detailsLayout",
+		currentUrl: "coupons",
+	});
 });
 
 export default couponsRouter;

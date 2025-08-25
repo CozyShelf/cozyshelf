@@ -1,46 +1,47 @@
 <div class="flex flex-col w-full gap-10 mt-9 mb-15 px-32">
-    <div class="flex justify-between align-middle">
-        <h1 class="font-semibold text-[20px]">Meus Cupons (1)</h1>
-        <div class="flex items-center gap-2">
-            <h1 class="text-gray">Filtrar: </h1>
-            <select class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown">
-                <option value="all">Todos</option>
-                <option value="approved">Troca</option>
-                <option value="inTransport">Desconto</option>
-            </select>
-        </div>
-    </div>
-    <table class="w-full border-separate text-sm">
-        <thead>
-            <tr class="bg-dark-brown text-white text-center">
-                <th class="px-4 py-2 rounded-l-xl font-semibold">ID</th>
-                <th class="px-4 py-2 font-semibold">Tipo</th>
-                <th class="px-4 py-2 font-semibold">Data de Validade</th>
-                <th class="px-4 py-2 rounded-r-xl font-semibold">Valor</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="bg-lighter-brown h-8 border border-dark-brown text-center align-middle">
-                <td class="font-semibold px-4 py-2 border-r border-dark-brown rounded-l-xl">255846</td>
-                <td class="px-4 py-2 border-r border-dark-brown">
-                    <span class="bg-orange text-white px-2 py-0.5 rounded-full text-xs">
-                        Troca
-                    </span>
-                </td>
-                <td class="px-4 py-2 border-r border-dark-brown">02/09/2025</td>
-                <td class="px-4 py-2 rounded-r-xl flex gap-2 justify-center">R$ 100,00</td>
-            </tr>
-            <tr class="bg-lighter-brown h-8 border border-dark-brown text-center align-middle">
-                <td class="font-semibold px-4 py-2 border-r border-dark-brown rounded-l-xl">255847</td>
-                <td class="px-4 py-2 border-r border-dark-brown">
-                    <span class="bg-gray text-white px-2 py-0.5 rounded-full text-xs">
-                        Promocional
-                    </span>
-                </td>
-                <td class="px-4 py-2 border-r border-dark-brown">02/09/2025</td>
-                <td class="px-4 py-2 rounded-r-xl flex gap-2 justify-center">R$ 10,00</td>
-            </tr>
-        </tbody>
-    </table>
+	<div class="flex justify-between align-middle">
+		<h1 class="font-semibold text-[20px]">Meus Cupons (1)</h1>
+		<div class="flex items-center gap-2">
+			<h1 class="text-gray">Filtrar: </h1>
+			<select
+				class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown">
+				<option value="all">Todos</option>
+				<option value="approved">Troca</option>
+				<option value="inTransport">Desconto</option>
+			</select>
+		</div>
+	</div>
+	<table class="min-w-full border-none rounded-lg overflow-hidden shadow-md">
+		<thead class="bg-dark-brown text-white text-sm uppercase">
+			<tr>
+				<th class="px-6 py-3 text-left font-semibold">ID</th>
+				<th class="px-6 py-3 text-left font-semibold">Tipo</th>
+				<th class="px-6 py-3 text-left font-semibold">Data de Validade</th>
+				<th class="px-6 py-3 text-left font-semibold">Valor</th>
+			</tr>
+		</thead>
+		<tbody class="divide-y divide-light-brown bg-lighter-brown text-sm text-gray-2">
+			<tr>
+				<td class="px-6 py-3 font-medium text-gray-2">255846</td>
+				<td class="px-6 py-3">
+					<span class="bg-orange text-white px-2 py-0.5 rounded-full text-xs">
+						Troca
+					</span>
+				</td>
+				<td class="px-6 py-3">02/09/2025</td>
+				<td class="px-6 py-3">R$ 100,00</td>
+			</tr>
+			<tr>
+				<td class="px-6 py-3 font-medium text-gray-2">255847</td>
+				<td class="px-6 py-3">
+					<span class="bg-gray text-white px-2 py-0.5 rounded-full text-xs">
+						Promocional
+					</span>
+				</td>
+				<td class="px-6 py-3">02/09/2025</td>
+				<td class="px-6 py-3">R$ 10,00</td>
+			</tr>
+		</tbody>
+	</table>
 </div>
 <script src="/scripts/deleteSubmit.js"></script>
