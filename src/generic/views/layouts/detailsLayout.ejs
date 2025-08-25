@@ -21,7 +21,7 @@
 				<%- include("headers/detailsHeader.ejs", { pageTitle: "Minha Conta" }) %>
 				<div class="flex gap-8 mb-16 mt-6">
 					<div class="w-1/4">
-						<%- include('menuBarSide.ejs') %>
+						<%- include('menuBarSide.ejs', { isAdmin }) %>
 					</div>
 					<div class="w-3/4">
 						<%- body %>

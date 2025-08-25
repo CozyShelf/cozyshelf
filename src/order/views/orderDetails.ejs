@@ -1,0 +1,93 @@
+<form class="flex flex-col w-full gap-10 mt-9 mb-15 px-32" id="client-register-form">
+    <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+            <h1 class="font-semibold text-[20px]">Pedido #12413113123123</h1>
+            <span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
+                Aprovado
+            </span>
+        </div>
+
+        <div class="flex justify-between">
+            <!-- LADO ESQUERDO-->
+            <div class="flex flex-col w-1/2 gap-5 mr-10 mt-4">
+                <!---BEGIN: valores-->
+                <div class="flex flex-col gap-4">
+                    <h1 class="font-bold text-[18px] text-brown">Valores</h1>
+                    <div class="flex justify-between">
+                        <h2 class="text-gray-dark [12px]">Subtotal de itens:</h2>
+                        <p class="font-semibold">R$ 34,90</p>
+                    </div>
+                    <div class="flex justify-between">
+                        <h2 class="text-gray-dark [12px]">Frete:</h2>
+                        <p class="font-semibold">R$ 10,10</p>
+                    </div>
+                    <div class="flex justify-between">
+                        <h2 class="text-gray-dark [12px]">Descontos de cupons:</h2>
+                        <p class="text-light-green">- R$ 15,00</p>
+                    </div>
+                    <div class="flex justify-between border-t border-gray pt-2">
+                        <h2 class="font-semibold text-[16px] text-brown">Total:</h2>
+                        <p class="font-semibold text-[16px]">R$ 30,00</p>
+                    </div>
+                </div>
+
+                <!---END: valores-->
+                <!---BEGIN: detalhes(endereço e cartao)-->
+                <div class="flex flex-col gap-4 mt-5">
+                    <h1 class="font-bold text-[18px] text-brown">Detalhes da Compra</h1>
+                    <div class="flex flex-col gap-4 mt-5">
+                        <div>
+                            <h2 class="font-semibold text-gray-dark [12px] mb-2">Endereço de Entrega:</h2>
+                            <select name="userAddress" class="border border-gray-dark text-gray-dark rounded px-2 py-1 w-full text-[12px]">
+                                <option value="1">Endereço preferido (Rod. das Palmeiras ...)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <h2 class="font-semibold text-gray-dark [12px] mb-2">Método de Pagamento:</h2>
+                            <select name="paymentMethod" class="border border-gray-dark text-gray-dark rounded px-2 py-1 w-full text-[12px]">
+                                <option value="credit_card">Mastercard N 1234.1234.1234.24</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!---END: detalhes(endereço e cartao)-->
+            </div>
+            <!-- LADO DIREITO-->
+            <div class="flex flex-col gap-2 w-1/2">
+                <h1 class="font-bold text-[18px] text-brown mb-4">Itens do Pedido</h1>
+                <div class="flex flex-col gap-4">
+                    <% books.forEach(function(book) { %>
+                        <div class="flex gap-4">
+													<img src="<%= book.coverPath %>" alt="Capa do livro <%= book.name %>" class="w-16 h-20 object-cover rounded">
+													<div class="flex flex-col justify-between">
+														<h2 class="font-semibold text-[14px]"><%= book.name %></h2>
+														<div class="flex items-center justify-between gap-15">
+																<p class="text-gray-dark text-[12px]">Quantidade: 1</p>
+																<p class="font-semibold text-brown text-[14px]">R$ <%= book.price.toFixed(2).replace('.', ',') %></p>
+														</div>
+													</div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-row justify-between items-center mt-4">
+            <a href="/orders" class="font-semibold text-sm bg-brown text-white rounded hover:bg-dark-brown w-[150px] h-10 flex items-center justify-center">
+            Voltar
+            </a>
+						<% if (!isAdmin) { %>
+							<button type="submit" class="font-semibold text-sm bg-orange text-white rounded hover:bg-dark-orange w-[150px] h-10 flex items-center justify-center">
+									Pedir Troca
+							</button>
+						<% } %>
+						<% if (isAdmin) { %>
+							<button type="submit" class="font-semibold text-sm bg-light-brown text-white rounded hover:bg-light-title w-[150px] h-10 flex items-center justify-center">
+									Solicitar Entrega
+							</button>
+							<button type="submit" class="font-semibold text-sm bg-light-green text-white rounded hover:bg-dark-green w-[150px] h-10 flex items-center justify-center">
+									Confirmar Entrega
+							</button>
+						<% } %>
+        </div>
+    </div>
+</form>

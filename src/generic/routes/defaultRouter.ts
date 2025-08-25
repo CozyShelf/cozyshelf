@@ -2,13 +2,15 @@ import { Router, Request, Response } from "express";
 import clientRouter from "../../client/router/clientRouter";
 import addressRouter from "../../address/router/addressRouter";
 import cardRouter from "../../card/router/cardRouter";
+import orderRouter from "../../order/router/orderRouter";
+import couponsRouter from "../../coupons/router/couponsRouter";
 import { BookControllerFactory } from "../../books/factories/BookControllerFactory";
 import bookRouter from "../../books/routes/bookRouter";
 
 const defaultRouter = Router();
+const bookController = new BookControllerFactory().make();
 
 defaultRouter.get("/", async (req: Request, res: Response) => {
-	const bookController = new BookControllerFactory().make();
 	const books = await bookController.getAll(req, res);
 
 	res.render("homePage", {
@@ -18,9 +20,22 @@ defaultRouter.get("/", async (req: Request, res: Response) => {
 	});
 });
 
+defaultRouter.get("/shopping-cart", async (req: Request, res: Response) => {
+	const books = await bookController.getAll(req, res);
+
+	res.render("shoppingCart", {
+		title: "Carrinho de Compras",
+		currentHeaderTab: "cart",
+		books: books,
+		coupons: [],
+	});
+});
+
 defaultRouter.use("/clients", clientRouter);
 defaultRouter.use("/addresses", addressRouter);
 defaultRouter.use("/cards", cardRouter);
+defaultRouter.use("/orders", orderRouter);
+defaultRouter.use("/coupons", couponsRouter);
 defaultRouter.use("/books", bookRouter);
 
 export default defaultRouter;

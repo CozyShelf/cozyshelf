@@ -23,3 +23,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+const buttons = document.querySelectorAll("#confirmExchange");
+buttons.forEach((button) => {
+	button.addEventListener("click", (e) => {
+		Swal.fire({
+			title: "Retorno para estoque",
+			text: "Os items dessa troca deverão retornar ao estoque ?",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#d33",
+			cancelButtonColor: "#9F9F9F",
+			cancelButtonText: "Não",
+			confirmButtonText: "Sim",
+		});
+	})
+})

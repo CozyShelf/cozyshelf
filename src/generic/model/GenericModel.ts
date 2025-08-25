@@ -1,11 +1,11 @@
-import {Column, Generated, PrimaryGeneratedColumn} from "typeorm";
+import {CreateDateColumn, Generated, PrimaryGeneratedColumn} from "typeorm";
 
 export default abstract class GenericModel {
 	@PrimaryGeneratedColumn("uuid")
 	@Generated("uuid")
 	_id!: string;
 
-	@Column({ type: "date"})
+	@CreateDateColumn()
 	_createdAt: Date;
 
 	constructor() {

@@ -35,6 +35,7 @@ clientRouter.get("/:id/password", (req: Request, res: Response) => {
 		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "password",
+		isAdmin: false,
 	});
 });
 
@@ -44,7 +45,8 @@ clientRouter.get("/:id", async (_: Request, res: Response) => {
 		title: "Detalhes do Cliente",
 		currentHeaderTab: "profile",
 		layout: "detailsLayout",
-		currentUrl: `client`,
+		currentUrl: "client",
+		isAdmin: false,
 	});
 });
 
