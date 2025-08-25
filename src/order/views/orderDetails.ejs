@@ -30,7 +30,7 @@
                         <p class="font-semibold text-[16px]">R$ 30,00</p>
                     </div>
                 </div>
-                
+
                 <!---END: valores-->
                 <!---BEGIN: detalhes(endereço e cartao)-->
                 <div class="flex flex-col gap-4 mt-5">
@@ -78,6 +78,14 @@
             <button type="submit" class="font-semibold text-sm bg-orange text-white rounded hover:bg-dark-orange w-[150px] h-10 flex items-center justify-center">
                 Pedir Troca
             </button>
+						<% if (isAdmin) { %>
+							<button type="submit" class="font-semibold text-sm bg-light-brown text-white rounded hover:bg-light-title w-[150px] h-10 flex items-center justify-center">
+									Solicitar Entrega
+							</button>
+							<button type="submit" class="font-semibold text-sm bg-light-green text-white rounded hover:bg-dark-green w-[150px] h-10 flex items-center justify-center">
+									Confirmar Entrega
+							</button>
+						<% } %>
         </div>
     </div>
 </form>
