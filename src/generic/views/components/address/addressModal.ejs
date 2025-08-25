@@ -1,0 +1,94 @@
+<div id="address-modal-container" class="hidden backdrop-blur-[2px] fixed inset-0 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-[600px]  border-dark-brown border-2">
+        <div class="flex flex-col gap-5" id="modal">
+            <div class="flex items-center justify-between mb-2">
+                <h1 class="font-semibold text-[20px]">Cadastrar Novo Endereço</h1>
+                <a class="ml-4 cursor-pointer bg-brown hover:bg-lighter-brown rounded w-7 h-7 flex items-center justify-center" id="close-address-modal">
+                    <span class="material-symbols-outlined text-white hover:text-brown">close</span>                    
+                </a>
+            </div>
+            <form 
+                action="/addresses/new" method="POST" 
+                class="flex flex-col gap-10" id="address"
+            >
+                <div class="flex flex-row gap-10">
+                    <label class="flex flex-col text-[14px] gap-1 w-full">
+                        Frase Curta *
+                        <input placeholder="Ex: Minha Casa" class="border rounded-[5px] border-gray h-10 p-2 w-full" type="text"
+                            name="address-short-phrase" >
+                    </label>
+                    <label class="flex flex-col text-[14px] gap-1 w-full">
+                        CEP *
+                        <input placeholder="XXXXX-XXX" class="border rounded-[5px] border-gray h-10 p-2 w-[120px]" type="text"
+                            name="address-cep" >
+                    </label>
+                    <label class="flex flex-col text-[14px] gap-1 w-full">
+                        Estado *
+                        <select name="address-state" class="border rounded-[5px] border-gray h-10 p-2 w-[120px]" >
+                            <option value="">Selecione...</option>
+                            <option value="SP">SP</option>
+                            <option value="RJ">RJ</option>
+                            <option value="MA">MA</option>
+                        </select>
+                    </label>
+                    <label class="flex flex-col text-[14px] gap-1 w-full">
+                        Cidade *
+                        <input placeholder="Ex: Guararema, Biritiba" class="border rounded-[5px] border-gray h-10 p-2 w-full"
+                            type="text" name="address-city" >
+                    </label>
+                </div>
+
+                <div class="flex flex-row gap-10">
+                    <label class="flex flex-col text-[14px] gap-1 w-full">
+                        Tipo Logradouro *
+                        <select name="address-street-type" class="border rounded-[5px] border-gray h-10 p-2 w-[150px]" >
+                            <option value="">Selecione...</option>
+                            <option value="Rodovia">Rodovia</option>
+                            <option value="Avenida">Avenida</option>
+                            <option value="Beco">Beco</option>
+                        </select>
+                    </label>
+                    <label class="flex flex-col text-[14px] gap-1 w-full">
+                        Logradouro *
+                        <input placeholder="Ex: Rua Almirante Barbosa" class="border rounded-[5px] border-gray h-10 p-2 w-full"
+                            type="text" name="address-street-name" >
+                    </label>
+                    <label class="flex flex-col text-[14px] gap-1 w-full">
+                        Número *
+                        <input class="border rounded-[5px] border-gray h-10 p-2 w-full" type="text" name="address-number" maxlength="4"
+                            >
+                    </label>
+                </div>
+
+                <div class="flex flex-row gap-10">
+                    <label class="flex flex-col text-[14px] gap-1 w-full">
+                        Bairro *
+                        <input placeholder="Ex: Centro" class="border rounded-[5px] border-gray h-10 p-2 w-full" type="text"
+                            name="address-neighborhood" >
+                    </label>
+                    <label class="flex flex-col text-[14px] gap-1 w-full">
+                        Complemento *
+                        <select name="address-residence-type" class="border rounded-[5px] border-gray h-10 p-2 w-[150px]" >
+                            <option value="">Selecione...</option>
+                            <option value="Casa">Casa</option>
+                            <option value="Apartamento">Apartamento</option>
+                        </select>
+                    </label>
+                    <label class="flex flex-col text-[14px] gap-1 w-full">
+                        Tipo de Endereço *
+                        <select name="address-street-type" class="border rounded-[5px] border-gray h-10 p-2 w-[180px]" >
+                            <option value="">Selecione...</option>
+                            <option value="DELIVERY">Entrega</option>
+                            <option value="DELIVERY_AND_BILLING">Entrega e Cobrança</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="flex justify-end">
+                    <button id="save-address-modal" type="submit" class="font-semibold text-sm bg-light-green text-white rounded hover:bg-dark-green w-[150px] h-10 flex items-center justify-center">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
