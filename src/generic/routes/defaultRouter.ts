@@ -7,6 +7,7 @@ import couponsRouter from "../../coupons/router/couponsRouter";
 import { BookControllerFactory } from "../../books/factories/BookControllerFactory";
 import bookRouter from "../../books/routes/bookRouter";
 import adminRouter from "../../admin/routes/adminRouter";
+import cartRouter from "../../cart/routes/cartRouter";
 
 const defaultRouter = Router();
 const bookController = new BookControllerFactory().make();
@@ -21,22 +22,12 @@ defaultRouter.get("/", async (req: Request, res: Response) => {
 	});
 });
 
-defaultRouter.get("/shopping-cart", async (req: Request, res: Response) => {
-	const books = await bookController.getAll(req, res);
-
-	res.render("shoppingCart", {
-		title: "Carrinho de Compras",
-		currentHeaderTab: "cart",
-		books: books,
-		coupons: [],
-	});
-});
-
 defaultRouter.use("/clients", clientRouter);
 defaultRouter.use("/addresses", addressRouter);
 defaultRouter.use("/cards", cardRouter);
 defaultRouter.use("/orders", orderRouter);
 defaultRouter.use("/coupons", couponsRouter);
+defaultRouter.use("/shopping-cart", cartRouter);
 defaultRouter.use("/books", bookRouter);
 defaultRouter.use("/admin", adminRouter);
 
