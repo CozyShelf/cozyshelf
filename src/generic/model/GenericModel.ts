@@ -1,4 +1,4 @@
-import { Generated, PrimaryGeneratedColumn, CreateDateColumn} from "typeorm";
+import {CreateDateColumn, Generated, PrimaryGeneratedColumn} from "typeorm";
 
 export default abstract class GenericModel {
 	@PrimaryGeneratedColumn("uuid")

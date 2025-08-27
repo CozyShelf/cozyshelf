@@ -16,24 +16,30 @@ addressRouter.post("/", async (req: Request, res: Response) => {
 addressRouter.get("/", (req: Request, res: Response) => {
 	res.render("addressTable", {
 		title: "Meus Endereços",
+		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "address",
+		isAdmin: false
 	});
 });
 
 addressRouter.get("/new", (req: Request, res: Response) => {
 	res.render("addressDetails", {
 		title: "Novo Endereço",
+		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "address",
+		isAdmin: false,
 	});
 });
 
 addressRouter.get("/:id", (req: Request, res: Response) => {
 	res.render("addressDetails", {
 		title: "Editar Endereço",
+		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "address",
+		isAdmin: false,
 	});
 });
 

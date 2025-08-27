@@ -16,24 +16,30 @@ cardRouter.post("/", async (req: Request, res: Response) => {
 cardRouter.get("/", (req: Request, res: Response) => {
 	res.render("cardTable", {
 		title: "Meus Cartões",
+		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "card",
+		isAdmin: false,
 	});
 });
 
 cardRouter.get("/new", (req: Request, res: Response) => {
 	res.render("cardDetails", {
 		title: "Novo Cartão",
+		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "card",
+		isAdmin: false,
 	});
 });
 
 cardRouter.get("/:id", (req: Request, res: Response) => {
 	res.render("cardDetails", {
 		title: "Editar Cartão",
+		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "card",
+		isAdmin: false,
 	});
 });
 

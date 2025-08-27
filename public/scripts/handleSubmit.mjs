@@ -1,9 +1,10 @@
 const forms = document.querySelectorAll("form");
+const modalAddress = document.getElementById("address-modal-container");
+const modalCard = document.getElementById("modal-container");
 
 forms.forEach(form => {
 	form.addEventListener("submit", (event) => {
 		event.preventDefault();
-
 		if (form.checkValidity()) {
 			Swal.fire({
 				title: "Dados enviados com sucesso",
@@ -14,6 +15,16 @@ forms.forEach(form => {
 				iconColor: "#D6AE7C",
 			});
 			form.reset();
+			
+			if (modalAddress) {
+				modalAddress.classList.add("hidden");
+				form.classList.add("form-modal-hidden");
+			}
+
+			if (modalCard) {
+				modalCard.classList.add("hidden");
+				form.classList.add("form-modal-hidden");
+			}
 		} else {
 			form.reportValidity();
 		}
