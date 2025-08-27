@@ -1,33 +1,38 @@
 <div class="flex justify-center flex-col w-full gap-10 mt-8 ml-5 mb-10 px-10">
-    <ul class="text-[14px] space-y-6 divide-y divide-gray-300">
-        <li class="py-2">
-            <a class="hover:text-gray <%= currentUrl === 'client' ? 'font-bold' : '' %>" href="/clients/id">Informações Pessoais</a>
-        </li>
-        <li class="py-2">
-            <a class="hover:text-gray <%= currentUrl === 'password' ? 'font-bold' : '' %>" href="/clients/id/password">Alterar Senha</a>
-        </li>
-        <li class="py-2">
-            <a class="hover:text-gray <%= currentUrl === 'orders' ? 'font-bold' : '' %>" href="/orders">Meus Pedidos</a>
-        </li>
-				<% if (isAdmin) { %>
-					<li class="py-2">
-						<a class="hover:text-gray <%= currentUrl === 'exchange-orders' ? 'font-bold' : '' %>" href="/orders/admin/exchange-orders">Pedidos de Troca</a>
-					</li>
-                    <li class="py-2">
-						<a class="hover:text-gray <%= currentUrl === 'dashboard' ? 'font-bold' : '' %>" href="/admin/dashboard">Dashboard</a>
-					</li>
-                    <li class="py-2">
-						<a class="hover:text-gray <%= currentUrl === 'stock' ? 'font-bold' : '' %>" href="/admin/stock">Estoque</a>
-					</li>
-				<% } %>
-        <li class="py-2">
-            <a class="hover:text-gray <%= currentUrl === 'coupons' ? 'font-bold' : '' %>" href="/coupons">Meus Cupons</a>
-        </li>
-        <li class="py-2">
-            <a class="hover:text-gray <%= currentUrl === 'address' ? 'font-bold' : '' %>" href="/addresses">Endereços</a>
-        </li>
-        <li class="py-2">
-            <a class="hover:text-gray <%= currentUrl === 'card' ? 'font-bold' : '' %>" href="/cards">Cartões de Crédito</a>
-        </li>
-    </ul>
+	<ul class="text-[14px] space-y-6 divide-y divide-gray-300">
+		<li class="py-2">
+			<a class="hover:text-gray <%= currentUrl === 'client' ? 'font-bold' : '' %>" href="/clients/id">Informações
+				Pessoais</a>
+		</li>
+		<li class="py-2">
+			<a class="hover:text-gray <%= currentUrl === 'password' ? 'font-bold' : '' %>" href="/clients/id/password">Alterar
+				Senha</a>
+		</li>
+		<li class="py-2">
+			<a class="hover:text-gray <%= currentUrl === 'orders' ? 'font-bold' : '' %>" href="/orders">Meus Pedidos</a>
+		</li>
+		<% if (isAdmin) { %>
+			<li class="py-2">
+				<a class="hover:text-gray <%= currentUrl === 'exchange-orders' ? 'font-bold' : '' %>"
+					href="/admin/orders/exchange-orders">Pedidos de Troca</a>
+			</li>
+			<li class="py-2">
+				<a class="hover:text-gray <%= currentUrl === 'dashboard' ? 'font-bold' : '' %>"
+					href="/admin/dashboard">Dashboard</a>
+			</li>
+			<li class="py-2">
+				<a class="hover:text-gray <%= currentUrl === 'stock' ? 'font-bold' : '' %>" href="/admin/stock">Estoque</a>
+			</li>
+			<% } %>
+				<li class="py-2">
+					<a class="hover:text-gray <%= currentUrl === 'coupons' ? 'font-bold' : '' %>" href="/coupons">Meus Cupons</a>
+				</li>
+				<li class="py-2">
+					<a class="hover:text-gray <%= currentUrl === 'address' ? 'font-bold' : '' %>" href="/addresses">Endereços</a>
+				</li>
+				<li class="py-2">
+					<a class="hover:text-gray <%= currentUrl === 'card' ? 'font-bold' : '' %>" href="/cards">Cartões de
+						Crédito</a>
+				</li>
+	</ul>
 </div>
