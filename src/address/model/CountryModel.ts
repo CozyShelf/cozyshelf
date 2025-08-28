@@ -11,7 +11,7 @@ export default class CountryModel extends GenericModel {
 	_acronym!: string;
 
 	@OneToMany(() => AddressModel, address => address.country)
-	addresses!: AddressModel[];
+	_addresses!: AddressModel[];
 
 	constructor(name: string, acronym: string) {
 		super();

@@ -1,6 +1,7 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, OneToOne } from "typeorm";
 import TelephoneType from "../domain/enums/TelephoneType";
 import GenericModel from "../../generic/model/GenericModel";
+import ClientModel from "../../client/model/ClientModel";
 
 @Entity()
 export default class TelephoneModel extends GenericModel {
@@ -9,6 +10,9 @@ export default class TelephoneModel extends GenericModel {
 	@Column({ type: "varchar" }) private _number: string;
 
 	@Column({ type: "varchar" }) private _type: TelephoneType;
+
+	@OneToOne(() => ClientModel, client => client._telephone)
+	_client?: ClientModel;
 
 	constructor(ddd: string, number: string, type: TelephoneType) {
 		super();

@@ -10,82 +10,95 @@ import users from "./users";
 
 export default class UserSeeder {
     static async execute(dataSource: DataSource): Promise<void> {
-        const clientDao = dataSource.getRepository(ClientModel);
-        const addressDao = dataSource.getRepository(AddressModel);
-        const countryDao = dataSource.getRepository(CountryModel);
-        const passwordDao = dataSource.getRepository(PasswordModel);
-        const telephoneDao = dataSource.getRepository(TelephoneModel);
-        const cardDao = dataSource.getRepository(CreditCardModel);
-        const cardFlagDao = dataSource.getRepository(CardFlagModel);
+        try {
+            const passwordDao = dataSource.getRepository(PasswordModel);
+            const telephoneDao = dataSource.getRepository(TelephoneModel);
+            const clientDao = dataSource.getRepository(ClientModel);
+            const countryDao = dataSource.getRepository(CountryModel);
+            const cardFlagDao = dataSource.getRepository(CardFlagModel);
+            const cardDao = dataSource.getRepository(CreditCardModel);
+            const addressDao = dataSource.getRepository(AddressModel);
 
-        for (const user of users) {
-            // Password
-            let password = passwordDao.create({ _value: user.password, _force: 8 });
-            await passwordDao.save(password);
+            for (const user of users) {
+                // === PASSWORD ===
+                let password = passwordDao.create({ _value: user.password, _force: 8 });
+                password = await passwordDao.save(password);
 
-            // Telephone
-            let telephone = telephoneDao.create({ _ddd: user.telephone._ddd, _number: user.telephone._number, _type: user.telephone._type });
-            await telephoneDao.save(telephone);
+                // === TELEPHONE ===
+                let telephone = telephoneDao.create({ 
+                    ddd: user.telephone._ddd, 
+                    number: user.telephone._number, 
+                    type: user.telephone._type 
+                });
+                telephone = await telephoneDao.save(telephone);
 
-            // Client
-            let client = clientDao.create({
-                _name: user.name,
-                _birthDate: user.birthDate,
-                _cpf: user.cpf,
-                _email: user.email,
-                _password: password,
-                _ranking: user.ranking,
-                _telephone: telephone,
-                _gender: user.gender
-            });
-            await clientDao.save(client);
+                // === CLIENT ===
+                let client = clientDao.create({
+                    _name: user.name,
+                    _birthDate: user.birthDate,
+                    _cpf: user.cpf,
+                    _email: user.email,
+                    _password: password,
+                    _ranking: user.ranking,
+                    _telephone: telephone,
+                    _gender: user.gender
+                });
+                client = await clientDao.save(client);
 
-            // Addresses
-            for (const addr of user.addresses) {
-                let country = await countryDao.findOneBy({ _name: addr.country.name });
-                if (!country) {
-                    country = countryDao.create({ _name: addr.country.name, _acronym: addr.country.acronym });
-                    country = await countryDao.save(country); // Save and get the managed entity with id
+                // === COUNTRY ===
+                let brazil = await countryDao.findOneBy({ _name: "Brasil" });
+                if (!brazil) {
+                    brazil = countryDao.create({ _name: "Brasil", _acronym: "BR" });
+                    brazil = await countryDao.save(brazil);
                 }
 
-                let address = addressDao.create({
-                    _zipCode: addr.zipCode,
-                    _number: addr.number,
-                    _residenceType: addr.residenceType,
-                    _streetName: addr.streetName,
-                    _streetType: addr.streetType,
-                    _neighborhood: addr.neighborhood,
-                    _shortPhrase: addr.shortPhrase,
-                    _observation: addr.observation,
-                    _city: addr.city,
-                    _state: addr.state,
-                    _country: country,
-                    _type: addr.type,
-                    _client: client
-                });
-                await addressDao.save(address);
-                console.log("[INFO] 🏠 Address seeded successfully");
-            }
+                // === CARDS ===
+                for (const cardInfo of user.cards) {                
+                    // Card Flag
+                    let cardFlag = await cardFlagDao.findOneBy({ _description: cardInfo.cardFlag });
+                    if (!cardFlag) {
+                        cardFlag = cardFlagDao.create({ _description: cardInfo.cardFlag });
+                        cardFlag = await cardFlagDao.save(cardFlag);
+                    }
 
-            // Cards
-            for (const cardInfo of user.cards) {
-                let cardFlag = await cardFlagDao.findOneBy({ description: cardInfo.cardFlag });
-                if (!cardFlag) {
-                    cardFlag = cardFlagDao.create({ description: cardInfo.cardFlag });
-                    await cardFlagDao.save(cardFlag);
+                    // Card
+                    let card = cardDao.create({
+                        _number: cardInfo.number,
+                        _nameOnCard: cardInfo.nameOnCard,
+                        _cvv: cardInfo.cvv,
+                        _isPreferred: cardInfo.isPreferred,
+                        _cardFlag: cardFlag,
+                        _client: client
+                    });
+                    card = await cardDao.save(card);
                 }
 
-                let card = cardDao.create({
-                    _number: cardInfo.number,
-                    _nameOnCard: cardInfo.nameOnCard,
-                    _cvv: cardInfo.cvv,
-                    _isPreferred: cardInfo.isPreferred,
-                    _cardFlag: cardFlag,
-                    _client: client
-                });
-                await cardDao.save(card);
+                // === ADDRESSES ===
+                for (const addr of user.addresses) {
+                    
+                    let address = addressDao.create({
+                        _zipCode: addr.zipCode,
+                        _number: addr.number,
+                        _residenceType: addr.residenceType,
+                        _streetName: addr.streetName,
+                        _streetType: addr.streetType,
+                        _neighborhood: addr.neighborhood,
+                        _shortPhrase: addr.shortPhrase,
+                        _observation: addr.observation,
+                        _city: addr.city,
+                        _state: addr.state,
+                        _country: brazil,
+                        _type: addr.type,
+                        _client: client
+                    });
+                    address = await addressDao.save(address);
+                }
             }
+            
+        } catch (error) {
+            console.error("[ERROR] 🔴 Error in corrected seeding:", error);
+            throw error;
         }
-    }
+    };
 }
     

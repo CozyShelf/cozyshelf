@@ -10,6 +10,7 @@ const postgresDataSource = new DataSource({
 	database: environment.database.postgres.database,
 	entities: ["src/**/model/*{.js,.ts}"],
 	synchronize: true,
+	dropSchema: true,  // ← Temporariamente true para limpar
 	logging: true,
 });
 
