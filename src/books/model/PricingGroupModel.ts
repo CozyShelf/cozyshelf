@@ -1,13 +1,17 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 import GenericModel from "../../generic/model/GenericModel";
+import BookModel from "./BookModel";
 
 @Entity()
 export default class PricingGroupModel extends GenericModel{
-    @Column({type: "double"})
+    @Column({type: "int"})
     _percentage!: number;
 
     @Column({type: "varchar", length: 200})
     _description!: string;
+
+    @OneToMany(() => BookModel, book => book.pricingGroup)
+    books!: BookModel[];
 
     constructor(description: string, percentage: number){
         super();

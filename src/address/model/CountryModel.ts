@@ -1,5 +1,6 @@
-import {Column, Entity} from "typeorm";
+import {Column, Entity, OneToMany} from "typeorm";
 import GenericModel from "../../generic/model/GenericModel";
+import AddressModel from "./AddressModel";
 
 @Entity()
 export default class CountryModel extends GenericModel {
@@ -8,6 +9,9 @@ export default class CountryModel extends GenericModel {
 
 	@Column({type: "varchar"})
 	_acronym!: string;
+
+	@OneToMany(() => AddressModel, address => address.country)
+	addresses!: AddressModel[];
 
 	constructor(name: string, acronym: string) {
 		super();
