@@ -32,6 +32,15 @@ defaultRouter.get("/shopping-cart", async (req: Request, res: Response) => {
 	});
 });
 
+defaultRouter.get("/admin", (req: Request, res: Response) => {
+	res.render("", {
+		title: "Admin - Painel de Controle",
+		currentHeaderTab: "admin",
+		layout: "defaultLayoutAdmin",
+		currentUrl: "dashboard"
+	});
+});
+
 defaultRouter.get("/admin/dashboard", async (req: Request, res: Response) => {
 	const books = await bookController.getAll(req, res);
 
@@ -51,9 +60,8 @@ defaultRouter.get("/admin/dashboard", async (req: Request, res: Response) => {
 	res.render("dashboard", {
 		title: "Dashboard - Grafico de linha de vendas",
 		currentHeaderTab: "profile",
-		layout: "detailsLayout",
+		layout: "defaultLayoutAdmin",
 		currentUrl: "dashboard",
-		isAdmin: true,
 		books,
 		labels,
 		salesHistory

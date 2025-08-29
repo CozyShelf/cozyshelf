@@ -22,9 +22,9 @@ orderRouter.get("/", (req: Request, res: Response) => {
 
 orderRouter.get("/admin", (req: Request, res: Response) => {
 	res.render("ordersTable", {
-		title: "Meus Pedidos",
+		title: "Pedidos",
 		currentHeaderTab: "profile",
-		layout: "detailsLayout",
+		layout: "defaultLayoutAdmin",
 		currentUrl: "orders",
 		isAdmin: true
 	});
@@ -34,9 +34,8 @@ orderRouter.get("/admin/exchange-orders", (req: Request, res: Response) => {
 	res.render("exchangeOrdersTable", {
 		title: "Pedidos de Troca",
 		currentHeaderTab: "profile",
-		layout: "detailsLayout",
+		layout: "defaultLayoutAdmin",
 		currentUrl: "exchange-orders",
-		isAdmin: true,
 	});
 });
 
@@ -58,7 +57,7 @@ orderRouter.get("/admin/:id", async (req: Request, res: Response) => {
 	res.render("orderDetails", {
 		title: "Detalhes do Pedido",
 		currentHeaderTab: "profile",
-		layout: "detailsLayout",
+		layout: "defaultLayoutAdmin",
 		isNewOrder: false,
 		books: books,
 		currentUrl: "orders",
