@@ -8,6 +8,7 @@ import { BookControllerFactory } from "../../books/factories/BookControllerFacto
 import bookRouter from "../../books/routes/bookRouter";
 import adminRouter from "../../admin/routes/adminRouter";
 import cartRouter from "../../cart/routes/cartRouter";
+import chatbotRouter from "../../ia/routes/chatbotRouter";
 
 const defaultRouter = Router();
 const bookController = new BookControllerFactory().make();
@@ -30,5 +31,6 @@ defaultRouter.use("/coupons", couponsRouter);
 defaultRouter.use("/shopping-cart", cartRouter);
 defaultRouter.use("/books", bookRouter);
 defaultRouter.use("/admin", adminRouter);
+defaultRouter.use("/chatbot", chatbotRouter);
 
 export default defaultRouter;
