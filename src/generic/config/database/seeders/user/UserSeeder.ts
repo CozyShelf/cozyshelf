@@ -20,85 +20,71 @@ export default class UserSeeder {
             const addressDao = dataSource.getRepository(AddressModel);
 
             for (const user of users) {
-                // === PASSWORD ===
-                let password = passwordDao.create({ _value: user.password, _force: 8 });
-                password = await passwordDao.save(password);
+							let password = passwordDao.create(user.password);
+							password = await passwordDao.save(password);
 
-                // === TELEPHONE ===
-                let telephone = telephoneDao.create({ 
-                    ddd: user.telephone._ddd, 
-                    number: user.telephone._number, 
-                    type: user.telephone._type 
-                });
-                telephone = await telephoneDao.save(telephone);
+							let telephone = telephoneDao.create(user.telephone);
+							telephone = await telephoneDao.save(telephone);
 
-                // === CLIENT ===
-                let client = clientDao.create({
-                    _name: user.name,
-                    _birthDate: user.birthDate,
-                    _cpf: user.cpf,
-                    _email: user.email,
-                    _password: password,
-                    _ranking: user.ranking,
-                    _telephone: telephone,
-                    _gender: user.gender
-                });
-                client = await clientDao.save(client);
+							let client = clientDao.create({
+								_name: user.name,
+								_birthDate: user.birthDate,
+								_cpf: user.cpf,
+								_email: user.email,
+								_password: password,
+								_ranking: user.ranking,
+								_telephone: telephone,
+								_gender: user.gender,
+							});
+							client = await clientDao.save(client);
 
-                // === COUNTRY ===
-                let brazil = await countryDao.findOneBy({ _name: "Brasil" });
-                if (!brazil) {
-                    brazil = countryDao.create({ _name: "Brasil", _acronym: "BR" });
-                    brazil = await countryDao.save(brazil);
-                }
+							for (const cardInfo of user.cards) {
+								let cardFlag = await cardFlagDao.findOneBy(cardInfo.cardFlag);
+								if (!cardFlag) {
+									cardFlag = cardFlagDao.create(cardInfo.cardFlag);
+									cardFlag = await cardFlagDao.save(cardFlag);
+								}
 
-                // === CARDS ===
-                for (const cardInfo of user.cards) {                
-                    // Card Flag
-                    let cardFlag = await cardFlagDao.findOneBy({ _description: cardInfo.cardFlag });
-                    if (!cardFlag) {
-                        cardFlag = cardFlagDao.create({ _description: cardInfo.cardFlag });
-                        cardFlag = await cardFlagDao.save(cardFlag);
-                    }
+								let card = cardDao.create({
+									_number: cardInfo.number,
+									_nameOnCard: cardInfo.nameOnCard,
+									_cvv: cardInfo.cvv,
+									_isPreferred: cardInfo.isPreferred,
+									_cardFlag: cardFlag,
+									_client: client,
+								});
+								card = await cardDao.save(card);
+							}
 
-                    // Card
-                    let card = cardDao.create({
-                        _number: cardInfo.number,
-                        _nameOnCard: cardInfo.nameOnCard,
-                        _cvv: cardInfo.cvv,
-                        _isPreferred: cardInfo.isPreferred,
-                        _cardFlag: cardFlag,
-                        _client: client
-                    });
-                    card = await cardDao.save(card);
-                }
+							let country = await countryDao.findOneBy(user.country);
+							if (!country) {
+								country = countryDao.create(user.country);
+								country = await countryDao.save(country);
+							}
 
-                // === ADDRESSES ===
-                for (const addr of user.addresses) {
-                    
-                    let address = addressDao.create({
-                        _zipCode: addr.zipCode,
-                        _number: addr.number,
-                        _residenceType: addr.residenceType,
-                        _streetName: addr.streetName,
-                        _streetType: addr.streetType,
-                        _neighborhood: addr.neighborhood,
-                        _shortPhrase: addr.shortPhrase,
-                        _observation: addr.observation,
-                        _city: addr.city,
-                        _state: addr.state,
-                        _country: brazil,
-                        _type: addr.type,
-                        _client: client
-                    });
-                    address = await addressDao.save(address);
-                }
-            }
-            
+							for (const addr of user.addresses) {
+								let address = addressDao.create({
+									_zipCode: addr.zipCode,
+									_number: addr.number,
+									_residenceType: addr.residenceType,
+									_streetName: addr.streetName,
+									_streetType: addr.streetType,
+									_neighborhood: addr.neighborhood,
+									_shortPhrase: addr.shortPhrase,
+									_observation: addr.observation,
+									_city: addr.city,
+									_state: addr.state,
+									_country: country,
+									_type: addr.type,
+									_client: client,
+								});
+								address = await addressDao.save(address);
+							}
+						}
+
         } catch (error) {
             console.error("[ERROR] 🔴 Error in corrected seeding:", error);
             throw error;
         }
     };
 }
-    
