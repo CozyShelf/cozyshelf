@@ -11,7 +11,7 @@ const postgresDataSource = new DataSource({
 	entities: ["src/**/model/*{.js,.ts}"],
 	synchronize: true,
 	dropSchema: true,  // ← Temporariamente true para limpar
-	logging: true,
+	logging: false,
 });
 
 export default postgresDataSource;
