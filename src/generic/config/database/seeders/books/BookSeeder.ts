@@ -17,21 +17,18 @@ export default class BookSeeder {
         const imagesDao = dataSource.getRepository(ImagesModel);
 
         for (const book of books) {
-            // Author
-            let author = await authorDao.findOneBy({ _name: book.author });
+            let author = await authorDao.findOneBy(book.author);
             if (!author) {
-                author = authorDao.create({ _name: book.author });
+                author = authorDao.create(book.author);
                 await authorDao.save(author);
             }
 
-            // Publisher
-            let publisher = await publisherDao.findOneBy({ _description: book.publisher });
+            let publisher = await publisherDao.findOneBy(book.publisher);
             if (!publisher) {
-                publisher = publisherDao.create({ _description: book.publisher });
+                publisher = publisherDao.create(book.publisher);
                 await publisherDao.save(publisher);
             }
 
-            // Categories
             const categories: CategoryModel[] = [];
             for (const catName of book.categories) {
                 let category = await categoryDao.findOneBy({ _description: catName });
@@ -42,18 +39,15 @@ export default class BookSeeder {
                 categories.push(category);
             }
 
-            // PricingGroup (dummy, you can adjust logic)
-            let pricingGroup = await pricingGroupDao.findOneBy({ _description: "Default" });
+            let pricingGroup = await pricingGroupDao.findOneBy({ _description: "default" });
             if (!pricingGroup) {
-                pricingGroup = pricingGroupDao.create({ _description: "Default", _percentage: 0 });
+                pricingGroup = pricingGroupDao.create({ _description: "default", _percentage: 0 });
                 await pricingGroupDao.save(pricingGroup);
             }
 
-            // Images
             const image = imagesDao.create({ path: book.coverPath });
             await imagesDao.save(image);
 
-            // Book
             const bookEntity = bookDao.create({
                 saleValue: book.price,
                 title: book.name,
