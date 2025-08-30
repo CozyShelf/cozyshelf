@@ -18,7 +18,5 @@ export default class CardFlagSeeder {
 		];
 
 		await cardFlagDAO.save(cardFlags);
-
-		console.log("Bandeiras salvas com sucesso");
 	}
 }
