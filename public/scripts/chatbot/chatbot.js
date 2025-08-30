@@ -1,67 +1,70 @@
-const input = document.getElementById("chatbotInput");
-const button = document.getElementById("sendMessage");
-const messagesContainer = document.getElementById("chatbotMessages");
-
 function renderChatbot() {
 	const containerToRender = document.getElementById("chatbotContainer");
-	containerToRender.removeAttribute("hidden");
-	const iaChatbot = document.getElementById("chatbot");
-	iaChatbot.removeAttribute("hidden");
+	const chatbot = document.getElementById("chatbot");
+	const messagesContainer = document.getElementById("chatbotMessages");
+	const input = document.getElementById("chatbotInput");
+	const button = document.getElementById("sendMessage");
 	const closeButton = document.getElementById("closeChatbotModal");
+
+	containerToRender.removeAttribute("hidden");
+	chatbot.removeAttribute("hidden");
 
 	closeButton.addEventListener("click", () => {
 		containerToRender.setAttribute("hidden", true);
 	});
-
-	containerToRender.appendChild(iaChatbot);
 
 	messagesContainer.scrollIntoView({
 		behavior: "smooth",
 		block: "start",
 	});
 
-	function createUserMessage(text) {
+	function createMessage(botMessage, text) {
 		const messageDiv = document.createElement("div");
-		messageDiv.className = "flex justify-end mb-4";
+		messageDiv.className = `flex ${
+			botMessage ? "justify-start" : "justify-end"
+		} mb-4`;
 
 		const messageContent = document.createElement("div");
-		messageContent.className =
-			"bg-light-brown text-dark-brown px-4 py-2 rounded-2xl rounded-br-sm max-w-xs shadow-sm";
+		messageContent.className = `${
+			botMessage ? "bg-lighter-brown" : "bg-light-brown"
+		} text-dark-brown px-4 py-2 rounded-2xl ${
+			botMessage ? "rounded-bl-sm" : "rounded-br-sm"
+		} max-w-xs shadow-sm`;
 		messageContent.innerText = text;
 
 		messageDiv.appendChild(messageContent);
 		return messageDiv;
 	}
 
-	function createBotMessage(text) {
-		const messageDiv = document.createElement("div");
-		messageDiv.className = "flex justify-start mb-4";
-
-		const messageContent = document.createElement("div");
-		messageContent.className =
-			"bg-lighter-brown text-dark-brown px-4 py-2 rounded-2xl rounded-bl-sm max-w-xs shadow-sm";
-		messageContent.innerText = text;
-
-		messageDiv.appendChild(messageContent);
-		return messageDiv;
+	function toggleBtn() {
+		button.hasAttribute("disabled")
+			? button.removeAttribute("disabled")
+			: button.setAttribute("disabled", true);
 	}
 
 	button.addEventListener("click", (e) => {
 		e.preventDefault();
+
+		toggleBtn();
+
 		const messageToSend = input.value.trim();
 
 		if (messageToSend) {
-			const userMessage = createUserMessage(messageToSend);
+			const userMessage = createMessage(false, messageToSend);
+
 			messagesContainer.appendChild(userMessage);
+			messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
 			input.value = "";
 
 			setTimeout(() => {
-				const botMessage = createBotMessage(
+				const botMessage = createMessage(
+					true,
 					"Olá! Esta é uma resposta automática da IA."
 				);
 				messagesContainer.appendChild(botMessage);
-				scrollToBottom();
+				messagesContainer.scrollTop = messagesContainer.scrollHeight;
+				toggleBtn();
 			}, 1000);
 		}
 	});

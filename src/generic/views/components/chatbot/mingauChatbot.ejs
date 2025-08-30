@@ -1,5 +1,5 @@
 <div id="chatbot"
-	class="flex flex-col wrapper w-4/12 mt-10 min-h-10/12 fixed bottom-1 right-5 bg-white shadow-lg rounded-2xl"
+	class="flex flex-col wrapper w-4/12 mt-10 fixed bottom-1 right-5 bg-white shadow-lg rounded-2xl min-h-[80vh] max-h-[80vh]"
 	hidden>
 	<div class="relative">
 		<a class="absolute right-5 top-5 cursor-pointer bg-brown hover:bg-lighter-brown rounded w-7 h-7 flex items-center justify-center"
@@ -8,14 +8,14 @@
 		</a>
 	</div>
 
-	<div class="flex-1 flex flex-col p-4 pt-16 overflow-y-scroll" id="chatbotMessages"></div>
+	<div class="flex-1 p-4 pt-16 overflow-y-auto" id="chatbotMessages"></div>
 
 	<form class="flex flex-row items-center gap-3 p-3 w-full h-14 rounded-b-2xl bg-light-title relative">
 		<input
 			class="bg-lighter-brown p-2 pl-3 pr-12 rounded-full font-medium text-dark-brown placeholder-light-brown flex-1 outline-none border-none text-sm"
 			type="text" placeholder="Faça suas perguntas ao mingau" id="chatbotInput">
 		<button
-			class="cursor-pointer bg-dark-brown hover:bg-opacity-90 hover:bg-brown rounded-full p-3 flex items-center justify-center min-w-10 min-h-10 absolute right-1"
+			class="cursor-pointer bg-dark-brown hover:bg-opacity-90 hover:bg-brown disabled:bg-light-brown transition-colors rounded-full p-3 flex items-center justify-center min-w-10 min-h-10 absolute right-1"
 			id="sendMessage">
 			<span class="material-symbols-outlined text-lighter-brown text-lg">
 				send
