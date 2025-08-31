@@ -21,7 +21,9 @@ export default class CreditCardModel extends GenericModel {
 	@JoinColumn()
 	_cardFlag!: CardFlagModel;
 
-	@ManyToOne(() => ClientModel, (client: ClientModel) => client.cards) private _client!: ClientModel;
+	@ManyToOne(() => ClientModel, (client: ClientModel) => client.cards) 
+	@JoinColumn()
+	private _client!: ClientModel;
 
 	constructor(
 		number: string,
