@@ -27,8 +27,9 @@ export default class ClientModel extends GenericModel {
 	@Column({ type: "int" })
 	_ranking: number;
 
-	@Column(() => TelephoneModel)
-	_telephone: TelephoneModel;
+	@OneToOne(() => TelephoneModel)
+    @JoinColumn()
+    _telephone: TelephoneModel;
 
 	@Column({ type: "enum", enum: Gender })
 	_gender!: Gender;
