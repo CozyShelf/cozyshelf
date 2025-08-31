@@ -25,6 +25,15 @@ clientRouter.get("/admin", async (req: Request, res: Response) => {
 	});
 });
 
+clientRouter.get("/admin/:id", async (req: Request, res: Response) => {
+	res.render("clientDetailsAdmin", {
+		title: "Detalhes do Cliente",
+		currentHeaderTab: "profile",
+		layout: "defaultLayoutAdmin",
+		currentUrl: "clients"
+	});
+});
+
 clientRouter.get("/register", (req: Request, res: Response) => {
 	res.render("clientRegistration", {
 		title: "Cadastro de Clientes",
