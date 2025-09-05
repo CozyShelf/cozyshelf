@@ -1,34 +1,38 @@
-<div class="mt-10">
-    <%- include("headers/detailsHeader.ejs", { pageTitle: "Listagem de Clientes" }) %>
-</div>
-<div class="flex flex-col w-full gap-8 mt-7 mb-12 px-32">
-    <div class="flex justify-between items-center">
-        <h1 class="font-semibold text-[16px]">Clientes (1)</h1>
-        <a href="/clients/register" class="flex items-center gap-1 px-4 py-1 bg-brown text-white rounded hover:bg-dark-brown text-[14px] h-8">
-            <span class="material-symbols-outlined text-[18px]">add</span>
-            <span class="font-semibold">Adicionar</span>
-        </a>
+<div class="flex flex-col w-full gap-10 mt-9 mb-15 px-32">
+    <div class="flex justify-between align-middle">
+        <h1 class="font-semibold text-[20px]">Clientes (1)</h1>
+        <div class="flex items-center gap-4 justify-center">
+            <h1 class="text-gray whitespace-nowrap">Filtrar: </h1>
+            <select class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown">
+                <option value="all">Todos</option>
+                <option value="active">Ativos</option>
+                <option value="inactive">Inativos</option>
+            </select>
+            <a href="/clients/register" class="flex items-center gap-1 bg-brown text-white rounded hover:bg-dark-brown text-[14px] h-8 px-2 self-center">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+            </a>
+        </div>
     </div>
-    <table class="w-full border-separate">
-        <thead>
-            <tr class="bg-dark-brown text-white text-center">
-            <th class="px-4 py-2 rounded-l-xl font-semibold text-[14px]">id</th>
-            <th class="px-4 py-2 font-semibold text-[14px]">Nome</th>
-            <th class="px-4 py-2 font-semibold text-[14px]">Email</th>
-            <th class="px-4 py-2 rounded-r-xl font-semibold"></th>
+    <table class="min-w-full border-none rounded-lg overflow-hidden shadow-md">
+        <thead class="bg-dark-brown text-white text-sm uppercase">
+            <tr>
+                <th class="px-6 py-3 text-left font-semibold">ID</th>
+                <th class="px-6 py-3 text-left font-semibold">Nome</th>
+                <th class="px-6 py-3 text-left font-semibold">Email</th>
+                <th class="px-6 py-3 text-left font-semibold">Ações</th>
             </tr>
         </thead>
-        <tbody>
-            <tr class="bg-lighter-brown h-8 border border-dark-brown text-center align-middle">
-                <td class="px-4 py-2 border-r border-dark-brown rounded-l-xl text-[13px]">1</td>
-                <td class="px-4 py-2 border-r border-dark-brown text-[13px]">José da Silva</td>
-                <td class="px-4 py-2 border-r border-dark-brown text-[13px]">jose123@hotmail.com</td>
-                <td class="px-4 py-2 rounded-r-xl flex gap-2 justify-center">
-                    <a href="/clients/id" class="hover:text-gray flex justify-center items-center text-[16px] h-6 w-6">
-                        <span class="material-symbols-outlined text-[16px]">visibility</span>
+        <tbody class="divide-y divide-light-brown text-sm text-gray-2 bg-lighter-brown">
+            <tr>
+                <td class="px-6 py-3 font-medium text-gray-2">1</td>
+                <td class="px-6 py-3">José da Silva</td>
+                <td class="px-6 py-3">jose123@hotmail.com</td>
+                <td class="px-6 py-3 flex gap-2">
+                    <a href="/clients/admin/id" class="hover:text-gray flex justify-center items-center">
+                        <span class="material-symbols-outlined text-base">visibility</span>
                     </a>
-                    <a href="/cards/delete/id" class="hover:text-gray flex justify-center items-center delete-btn text-[16px] h-6 w-6">
-                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                    <a href="/clients/delete/id" class="hover:text-gray flex justify-center items-center delete-btn">
+                        <span class="material-symbols-outlined text-base">delete</span>
                     </a>
                 </td>
             </tr>

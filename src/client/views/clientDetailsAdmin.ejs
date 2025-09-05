@@ -1,0 +1,13 @@
+<div class="flex flex-col w-full mt-9">
+    <div class="flex justify-between align-middle gap-10 mb-5 px-32">
+        <h1 class="font-semibold text-[20px]">Detalhes do Cliente: José da Silva</h1>
+    </div>
+    <%- include('../../client/views/clientDetails.ejs', {title: "Informações Pessoais", currentUrl: "client"}) %>
+ 
+    <%- include('../../client/views/passwordDetail.ejs', {title: "Alterar Senha"}) %>
+   
+    <%- include('../../address/views/addressDetails.ejs', {title: "Endereços", isAdmin: true}) %>
+
+    <%- include('../../card/views/cardDetails.ejs', {title: "Cartões de Crédito", currentUrl: "card", isAdmin: true}) %>
+</div>
+<script src="/scripts/handleSubmit.mjs"></script>

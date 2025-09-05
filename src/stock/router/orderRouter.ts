@@ -16,12 +16,10 @@ stockRouter.get("/", async (req: Request, res: Response) => {
 	res.render("stockTable", {
 		title: "Estoque",
 		currentHeaderTab: "profile",
-		layout: "detailsLayout",
+		layout: "defaultLayoutAdmin",
 		currentUrl: "stock",
-		isAdmin: true,
 		books: books
 	});
 });
-
 
 export default stockRouter;
