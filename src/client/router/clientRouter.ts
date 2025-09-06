@@ -3,6 +3,7 @@ import ClientController from "../controller/ClientController";
 import { ClientControllerFactory } from "../factories/ClientControllerFactory";
 import ConfigDynamicPaths from "../../generic/helpers/ConfigDynamicPaths";
 import path from "path";
+import { createSecureContext } from "tls";
 
 const clientRouter = Router();
 clientRouter.use(
@@ -15,10 +16,21 @@ clientRouter.post("/", async (req: Request, res: Response) => {
 	await clientController.create(req, res);
 });
 
-clientRouter.get("/", async (req: Request, res: Response) => {
+clientRouter.get("/admin", async (req: Request, res: Response) => {
 	res.render("clientTable", {
 		title: "Lista de Clientes",
 		currentHeaderTab: "profile",
+		layout: "defaultLayoutAdmin",
+		currentUrl: "clients"
+	});
+});
+
+clientRouter.get("/admin/:id", async (req: Request, res: Response) => {
+	res.render("clientDetailsAdmin", {
+		title: "Detalhes do Cliente",
+		currentHeaderTab: "profile",
+		layout: "defaultLayoutAdmin",
+		currentUrl: "clients"
 	});
 });
 

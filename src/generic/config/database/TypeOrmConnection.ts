@@ -9,9 +9,9 @@ export default class TypeOrmConnection {
 		if (!dataSource.isInitialized) {
 			console.log("[INFO] 🔌 Establishing database connection");
 
-			await dataSource.initialize().catch((error) => {
-				throw new DatabaseConnectionError(error);
-			});
+			// await dataSource.initialize().catch((error) => {
+			// 	throw new DatabaseConnectionError(error);
+			// });
 
 			console.log("[INFO] 🟢 Database initialized successfully");
 

@@ -51,9 +51,8 @@ defaultRouter.get("/admin/dashboard", async (req: Request, res: Response) => {
 	res.render("dashboard", {
 		title: "Dashboard - Grafico de linha de vendas",
 		currentHeaderTab: "profile",
-		layout: "detailsLayout",
+		layout: "defaultLayoutAdmin",
 		currentUrl: "dashboard",
-		isAdmin: true,
 		books,
 		labels,
 		salesHistory
