@@ -16,6 +16,7 @@ cartRouter.get("/", async (req: Request, res: Response) => {
 	res.render("shoppingCart", {
 		title: "Carrinho de Compras",
 		currentHeaderTab: "cart",
+		layout: "defaultLayoutAdmin",
 		books: books,
 		coupons: [],
 	});

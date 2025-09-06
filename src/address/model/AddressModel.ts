@@ -34,7 +34,7 @@ export default class AddressModel extends GenericModel {
 	@Column({type: "varchar"})
 	_state!: string;
 
-	@ManyToOne(() => CountryModel, {cascade: true})
+	@ManyToOne(() => CountryModel)
 	@JoinColumn()
 	_country!: CountryModel;
 
@@ -45,6 +45,7 @@ export default class AddressModel extends GenericModel {
 	_observation?: string;
 
 	@ManyToOne(() => ClientModel, (client: ClientModel) => client.addresses)
+	@JoinColumn()
 	_client!: ClientModel;
 
 	constructor(

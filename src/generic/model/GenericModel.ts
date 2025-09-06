@@ -6,11 +6,9 @@ export default abstract class GenericModel {
 	_id!: string;
 
 	@CreateDateColumn()
-	_createdAt: Date;
+	_createdAt!: Date;
 
-	constructor() {
-		this._createdAt = new Date();
-	}
+	constructor(){}
 
 	get id(): string {
 		return this._id;

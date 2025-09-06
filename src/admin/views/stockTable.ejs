@@ -1,6 +1,6 @@
 <div class="flex flex-col w-full gap-10 mt-9 mb-15 px-32">
 	<div class="flex justify-between align-middle">
-		<h1 class="font-semibold text-[20px]">Estoque</h1>
+		<h1 class="font-semibold text-[20px]">Estoque (6)</h1>
 		<div class="flex items-center gap-2">
 			<h1 class="text-gray">Filtrar: </h1>
             <select class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown">
@@ -19,7 +19,7 @@
 				<th class="px-6 py-3 text-left font-semibold flex flex-row justify-center">Ações</th>
 			</tr>
 		</thead>
-		<tbody class="divide-y divide-light-brown text-sm text-gray-2 bg-lighter-brown">
+		<tbody class="divide-y divide-light-brown text-sm text-gray-2 bg-lighter-brown justify-centers">
 			<% books.forEach(function(book) { %>
 				<tr>
 					<td class="px-6 py-3 font-medium text-gray-2"><%= book.id %></td>
@@ -28,7 +28,7 @@
 						<span><%= book.name %></span>
 					</td>
 					<td class="px-6 py-3">
-						<div class="flex items-center gap-2 ml-4 w-28 justify-center">
+						<div class="flex items-center gap-2 w-28 ">
 							<button type="button" class="px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-3" title="Diminuir quantidade">-</button>
 							<input type="text" value="<%= book.quantity || 1 %>" class="w-8 text-center border rounded text-[12px] bg-white" readonly>
 							<button type="button" class="px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-3" title="Aumentar quantidade">+</button>

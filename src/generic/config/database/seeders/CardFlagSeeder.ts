@@ -12,13 +12,11 @@ export default class CardFlagSeeder {
 		}
 
 		const cardFlags = [
-			{ description: "Visa" },
-			{ description: "Elo" },
-			{ description: "Mastercard" },
+			{ _description: "Visa" },
+			{ _description: "Elo" },
+			{ _description: "Mastercard" },
 		];
 
 		await cardFlagDAO.save(cardFlags);
-
-		console.log("Bandeiras salvas com sucesso");
 	}
 }
