@@ -9,14 +9,13 @@ const users = [
 		birthDate: new Date("1990-05-15"),
 		cpf: "12345678901",
 		email: "joao.silva@email.com",
-		password: { _value: "senha123@@", _force: 8 },
+		password: "senha123@@",
 		ranking: 5,
 		gender: Gender.MALE,
-		country: { _name: "Brasil", _acronym: "BR" },
 		telephone: {
-			_ddd: "55",
-			_number: "11999999999",
-			_type: TelephoneType.MOBILE,
+			ddd: "55",
+			number: "11999999999",
+			type: TelephoneType.MOBILE,
 		} as unknown as TelephoneModel,
 		addresses: [
 			{
@@ -40,7 +39,7 @@ const users = [
 				nameOnCard: "João Silva",
 				cvv: "123",
 				isPreferred: true,
-				cardFlag: { _description: "Visa" },
+				cardFlag: { description: "Visa" },
 			},
 		],
 	},

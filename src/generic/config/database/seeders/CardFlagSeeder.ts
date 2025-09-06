@@ -12,9 +12,9 @@ export default class CardFlagSeeder {
 		}
 
 		const cardFlags = [
-			{ _description: "Visa" },
-			{ _description: "Elo" },
-			{ _description: "Mastercard" },
+			{ description: "Visa" },
+			{ description: "Elo" },
+			{ description: "Mastercard" },
 		];
 
 		await cardFlagDAO.save(cardFlags);

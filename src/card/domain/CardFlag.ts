@@ -1,8 +1,12 @@
-export default class CardFlag {
+import DomainEntity from "../../generic/domain/DomainEntity";
+import ICardFlagData from "../types/ICardFlagData";
+
+export default class CardFlag extends DomainEntity {
 	_description!: string;
 
 	constructor(description: string) {
-		this._description = description;
+		super();
+		this.description = description;
 	}
 
 	get description(): string {
@@ -11,5 +15,9 @@ export default class CardFlag {
 
 	set description(value: string) {
 		this._description = value;
+	}
+
+	public static fromRequestData(requestData: ICardFlagData) {
+		return new CardFlag(requestData.description);
 	}
 }

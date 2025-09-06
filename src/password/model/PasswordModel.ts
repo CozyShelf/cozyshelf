@@ -1,33 +1,28 @@
-import {Column, Entity} from "typeorm";
+import {Column, Entity, OneToOne} from "typeorm";
 import GenericModel from "../../generic/model/GenericModel";
+import ClientModel from "../../client/model/ClientModel";
+import Password from "../domain/Password";
 
 @Entity()
 export default class PasswordModel extends GenericModel {
 	@Column({ type: "varchar" })
-	_value: string;
+	value: string;
 
-	@Column({ type: "int" })
-	_force: number;
+	@OneToOne(() => ClientModel, (client) => client.password)
+	client!: ClientModel;
 
-	constructor(value: string, force: number) {
+	constructor(value: string) {
 		super();
-		this._value = value;
-		this._force = force;
+		this.value = value;
 	}
 
-	get value(): string {
-		return this._value;
+	public toEntity(): Password {
+		const password = new Password(this.value);
+		password.id = this.id;
+		return password;
 	}
 
-	set value(value: string) {
-		this._value = value;
-	}
-
-	get force(): number {
-		return this._force;
-	}
-
-	set force(value: number) {
-		this._force = value;
+	public static fromEntity(password: Password): PasswordModel {
+		return new PasswordModel(password.value);
 	}
 }

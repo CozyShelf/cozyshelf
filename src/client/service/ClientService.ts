@@ -1,51 +1,33 @@
+import ClientDAO from "../dao/typeORM/ClientDAO";
+import Client from "../domain/Client";
 import ClientModel from "../model/ClientModel";
-import IClientDAO from "../dao/typeORM/IClientDAO";
 
 export class ClientService {
+	private readonly clientDAO: ClientDAO;
 
-	private readonly clientDAO: IClientDAO;
-
-	constructor(clientDAO: IClientDAO) {
+	constructor(clientDAO: ClientDAO) {
 		this.clientDAO = clientDAO;
 	}
 
-	public async create(client: ClientModel): Promise<ClientModel> {
-		return this.clientDAO.save(client);
+	public async create(client: Client): Promise<Client> {
+		const model = ClientModel.fromEntity(client);
+		const savedClient = await this.clientDAO.save(model);
+		return savedClient.toEntity();
 	}
 
-	public async getAll(): Promise<ClientModel[] | null> {
-		return this.clientDAO.getAll();
+	public async getAll(): Promise<Client[] | null> {
+		throw new Error("Not implemented method");
 	}
 
-	public async getById(id: string): Promise<ClientModel | null> {
-		return this.clientDAO.getById(id);
+	public async getById(_: string): Promise<Client | null> {
+		throw new Error("Not implemented method");
 	}
 
-	public async update(id: string, newClient: ClientModel): Promise<ClientModel> {
-		const existingClient = await this.clientDAO.getById(id);
-		if (!existingClient) {
-			throw new Error(`Client with id ${id} not found`);
-		}
-
-		existingClient.name = newClient.name;
-		existingClient.birthDate = newClient.birthDate;
-		existingClient.cpf = newClient.cpf;
-		existingClient.email = newClient.email;
-		existingClient.password = newClient.password;
-		existingClient.address = newClient.address;
-		existingClient.ranking = newClient.ranking;
-		existingClient.telephone = newClient.telephone;
-		existingClient.gender = newClient.gender;
-
-		return this.clientDAO.save(existingClient);
+	public async update(_: string, __: Client): Promise<Client> {
+		throw new Error("Not implemented method");
 	}
 
-	public async delete(id: string): Promise<void> {
-		const existingClient = await this.clientDAO.getById(id);
-		if (!existingClient) {
-			throw new Error(`Client with id ${id} not found`);
-		}
-
-		return this.clientDAO.delete(id);
+	public async delete(_: string): Promise<void> {
+		throw new Error("Not implemented method");
 	}
 }

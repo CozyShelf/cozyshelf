@@ -1,10 +1,14 @@
-export default class Country {
+import DomainEntity from "../../generic/domain/DomainEntity";
+import ICountryData from "../types/ICountryData";
+
+export default class Country extends DomainEntity {
 	_name!: string;
 	_acronym!: string;
 
 	constructor(name: string, acronym: string) {
-		this._name = name;
-		this._acronym = acronym;
+		super();
+		this.name = name;
+		this.acronym = acronym;
 	}
 
 	get name(): string {
@@ -21,5 +25,9 @@ export default class Country {
 
 	set acronym(value: string) {
 		this._acronym = value;
+	}
+
+	public static fromRequestData(requestData: ICountryData) {
+		return new Country(requestData.name, requestData.acronym);
 	}
 }

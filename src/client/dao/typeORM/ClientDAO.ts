@@ -2,13 +2,11 @@ import {DataSource, Repository} from "typeorm";
 import ClientModel from "../../model/ClientModel";
 import IDAO from "../../../generic/dao/IDAO";
 
-export class ClientDAO implements IDAO<ClientModel> {
-	private dataSource: DataSource;
+export default class ClientDAO implements IDAO<ClientModel> {
 	private repository: Repository<ClientModel>;
 
 	constructor(dataSource: DataSource) {
-		this.dataSource = dataSource;
-		this.repository = this.dataSource.getRepository(ClientModel);
+		this.repository = dataSource.getRepository(ClientModel);
 	}
 
 	public async save(client: ClientModel): Promise<ClientModel> {

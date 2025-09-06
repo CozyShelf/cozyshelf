@@ -3,16 +3,25 @@ import InvalidEmailFormat from "./exceptions/InvalidEmailFormat";
 import MandatoryParameter from "../../generic/domain/exceptions/MandatoryParameter";
 import Password from "../../password/domain/Password";
 import Telephone from "../../telephone/domain/Telephone";
+import Address from "../../address/domain/Address";
+import CreditCard from "../../card/domain/CreditCard";
+import AddressType from "../../address/domain/enums/AddressType";
+import InvalidAddressesProvided from "./exceptions/InvalidAddressesProvided";
+import InvalidCardsProvided from "./exceptions/InvalidCardsProvided";
+import INewClientInputData from "../types/INewClientRequestData";
+import DomainEntity from "../../generic/domain/DomainEntity";
 
-export default class Client {
-	_name: string;
-	_birthDate: Date;
-	_cpf: string;
-	_email: string;
-	_password: Password;
-	_ranking: number;
-	_telephone: Telephone;
+export default class Client extends DomainEntity {
+	_name!: string;
+	_birthDate!: Date;
+	_cpf!: string;
+	_email!: string;
+	_password!: Password;
+	_ranking!: number;
+	_telephone!: Telephone;
 	_gender!: Gender;
+	_addresses!: Address[];
+	_cards!: CreditCard[];
 
 	constructor(
 		name: string,
@@ -21,18 +30,20 @@ export default class Client {
 		telephone: Telephone,
 		email: string,
 		password: Password,
-		ranking: number,
-		gender: Gender
-		// address e cards
+		gender: Gender,
+		addresses: Address[],
+		cards: CreditCard[]
 	) {
-		this._name = name;
-		this._birthDate = birthDate;
-		this._cpf = cpf;
-		this._telephone = telephone;
-		this._email = email;
-		this._password = password;
-		this._ranking = ranking;
-		this._gender = gender;
+		super();
+		this.name = name;
+		this.birthDate = birthDate;
+		this.cpf = cpf;
+		this.telephone = telephone;
+		this.email = email;
+		this.password = password;
+		this.gender = gender;
+		this.addresses = addresses;
+		this.cards = cards;
 	}
 
 	get name(): string {
@@ -73,7 +84,8 @@ export default class Client {
 		if (!value || value.trim().length === 0) {
 			throw new MandatoryParameter("email");
 		}
-		const emailRegex: RegExp = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
+		const emailRegex: RegExp =
+			/^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
 		if (!emailRegex.test(value)) {
 			throw new InvalidEmailFormat(value);
 		}
@@ -122,5 +134,73 @@ export default class Client {
 			throw new MandatoryParameter("gender");
 		}
 		this._gender = value;
+	}
+
+	get addresses(): Address[] {
+		return this._addresses;
+	}
+
+	set addresses(addresses: Address[]) {
+		let billing = 0;
+		let delivery = 0;
+
+		addresses.forEach((address) => {
+			if (address.type === AddressType.BILLING) {
+				billing++;
+			}
+			if (address.type === AddressType.DELIVERY) {
+				delivery++;
+			}
+			if (address.type === AddressType.DELIVERY_AND_BILLING) {
+				billing++;
+				delivery++;
+			}
+		});
+
+		if (billing === 0) {
+			throw new InvalidAddressesProvided(AddressType.BILLING);
+		}
+
+		if (delivery === 0) {
+			throw new InvalidAddressesProvided(AddressType.DELIVERY);
+		}
+
+		this._addresses = addresses;
+	}
+
+	get cards(): CreditCard[] {
+		return this._cards;
+	}
+
+	set cards(cards: CreditCard[]) {
+		let preferred = 0;
+
+		cards.forEach((card) => {
+			if (card.isPreferred) {
+				preferred++;
+			}
+		});
+
+		if (preferred === 0) {
+			throw new InvalidCardsProvided();
+		}
+
+		this._cards = cards;
+	}
+
+	public static fromRequestData(requestData: INewClientInputData) {
+		return new Client(
+			requestData.clientData.name,
+			requestData.clientData.birthDate,
+			requestData.clientData.cpf,
+			Telephone.fromRequestData(requestData.clientData.telephone),
+			requestData.clientData.email,
+			Password.fromRequestData(requestData.clientData.password),
+			requestData.clientData.gender,
+			requestData.addresses.map((addressData) =>
+				Address.fromRequestData(addressData)
+			),
+			requestData.cards.map((cardData) => CreditCard.fromRequestData(cardData))
+		);
 	}
 }

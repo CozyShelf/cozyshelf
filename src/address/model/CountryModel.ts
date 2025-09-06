@@ -1,37 +1,32 @@
-import {Column, Entity, OneToMany} from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 import GenericModel from "../../generic/model/GenericModel";
 import AddressModel from "./AddressModel";
+import Country from "../domain/Country";
 
 @Entity()
 export default class CountryModel extends GenericModel {
-	@Column({type: "varchar"})
-	_name!: string;
+	@Column({ type: "varchar" })
+	name!: string;
 
-	@Column({type: "varchar"})
-	_acronym!: string;
+	@Column({ type: "varchar" })
+	acronym!: string;
 
-	@OneToMany(() => AddressModel, address => address.country)
-	_addresses!: AddressModel[];
+	@OneToMany(() => AddressModel, (address) => address.country)
+	addresses!: AddressModel[];
 
 	constructor(name: string, acronym: string) {
 		super();
-		this._name = name;
-		this._acronym = acronym;
+		this.name = name;
+		this.acronym = acronym;
 	}
 
-	get name(): string {
-		return this._name;
+	public toEntity(): Country {
+		const country = new Country(this.name, this.acronym);
+		country.id = this.id;
+		return country;
 	}
 
-	set name(value: string) {
-		this._name = value;
-	}
-
-	get acronym(): string {
-		return this._acronym;
-	}
-
-	set acronym(value: string) {
-		this._acronym = value;
+	public static fromEntity(country: Country): CountryModel {
+		return new CountryModel(country.name, country.acronym);
 	}
 }

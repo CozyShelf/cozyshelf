@@ -1,50 +1,51 @@
-import {Column, Entity, JoinColumn, OneToMany, OneToOne} from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import Gender from "../domain/enums/Gender";
 import AddressModel from "../../address/model/AddressModel";
-import Card from "../../card/model/CreditCardModel";
+import CreditCardModel from "../../card/model/CreditCardModel";
 import GenericModel from "../../generic/model/GenericModel";
 import PasswordModel from "../../password/model/PasswordModel";
 import TelephoneModel from "../../telephone/model/TelephoneModel";
+import Client from "../domain/Client";
 
 @Entity()
 export default class ClientModel extends GenericModel {
 	@Column({ type: "varchar" })
-	_name: string;
+	name: string;
 
-	@Column({type: "date"})
-	_birthDate: Date;
-
-	@Column({ type: "varchar" })
-	_cpf: string;
+	@Column({ type: "date" })
+	birthDate: Date;
 
 	@Column({ type: "varchar" })
-	_email: string;
+	cpf: string;
 
-	@OneToOne(() => PasswordModel)
+	@Column({ type: "varchar" })
+	email: string;
+
+	@OneToOne(() => PasswordModel, { cascade: true, eager: true })
 	@JoinColumn()
-	_password: PasswordModel;
+	password: PasswordModel;
 
-	@Column({ type: "int" })
-	_ranking: number;
+	@Column({ type: "int", default: 0 })
+	ranking: number;
 
-	@OneToOne(() => TelephoneModel)
-    @JoinColumn()
-    _telephone: TelephoneModel;
+	@OneToOne(() => TelephoneModel, { cascade: true, eager: true })
+	@JoinColumn()
+	telephone: TelephoneModel;
 
 	@Column({ type: "enum", enum: Gender })
-	_gender!: Gender;
+	gender!: Gender;
 
-	@OneToMany(() => Card, (card: Card) => card.client, {
+	@OneToMany(() => CreditCardModel, (card: CreditCardModel) => card.client, {
 		cascade: true,
 		eager: true,
 	})
-	_cards!: Card[];
+	cards!: CreditCardModel[];
 
 	@OneToMany(() => AddressModel, (address: AddressModel) => address.client, {
 		cascade: true,
 		eager: true,
 	})
-	_addresses!: AddressModel[];
+	addresses!: AddressModel[];
 
 	constructor(
 		name: string,
@@ -54,96 +55,61 @@ export default class ClientModel extends GenericModel {
 		email: string,
 		password: PasswordModel,
 		ranking: number,
-		gender: Gender
+		gender: Gender,
+		addresses: AddressModel[],
+		cards: CreditCardModel[]
 	) {
 		super();
-		this._name = name;
-		this._birthDate = birthDate;
-		this._cpf = cpf;
-		this._telephone = telephone;
-		this._email = email;
-		this._password = password;
-		this._ranking = ranking;
-		this._gender = gender;
+		this.name = name;
+		this.birthDate = birthDate;
+		this.cpf = cpf;
+		this.telephone = telephone;
+		this.email = email;
+		this.password = password;
+		this.ranking = ranking;
+		this.gender = gender;
+		this.addresses = addresses;
+		this.cards = cards;
 	}
 
-	get name(): string {
-		return this._name;
+	public toEntity(): Client {
+		const telephone = this.telephone.toEntity();
+		const password = this.password.toEntity();
+
+		const adresses = this.addresses.map((addressModel) =>
+			addressModel.toEntity()
+		);
+
+		const cards = this.cards.map((cardModel) => cardModel.toEntity());
+
+		const client = new Client(
+			this.name,
+			this.birthDate,
+			this.cpf,
+			telephone,
+			this.email,
+			password,
+			this.gender,
+			adresses,
+			cards
+		);
+		client.id = this.id;
+
+		return client;
 	}
 
-	set name(value: string) {
-		this._name = value;
-	}
-
-	get birthDate(): Date {
-		return this._birthDate;
-	}
-
-	set birthDate(value: Date) {
-		this._birthDate = value;
-	}
-
-	get cpf(): string {
-		return this._cpf;
-	}
-
-	set cpf(value: string) {
-		this._cpf = value;
-	}
-
-	get email(): string {
-		return this._email;
-	}
-
-	set email(value: string) {
-		this._email = value;
-	}
-
-	get password(): PasswordModel {
-		return this._password;
-	}
-
-	set password(value: PasswordModel) {
-		this._password = value;
-	}
-
-	get ranking(): number {
-		return this._ranking;
-	}
-
-	set ranking(value: number) {
-		this._ranking = value;
-	}
-
-	get telephone(): TelephoneModel {
-		return this._telephone;
-	}
-
-	set telephone(value: TelephoneModel) {
-		this._telephone = value;
-	}
-
-	get gender(): Gender {
-		return this._gender;
-	}
-
-	set gender(value: Gender) {
-		this._gender = value;
-	}
-
-	get cards(): Card[] {
-		return this._cards;
-	}
-
-	set cards(value: Card[]) {
-		this._cards = value;
-	}
-
-	get addresses(): AddressModel[] {
-		return this._addresses;
-	}
-
-	set addresses(value: AddressModel[]) {
-		this._addresses = value;
+	public static fromEntity(client: Client): ClientModel {
+		return new ClientModel(
+			client.name,
+			client.birthDate,
+			client.cpf,
+			TelephoneModel.fromEntity(client.telephone),
+			client.email,
+			PasswordModel.fromEntity(client.password),
+			client.ranking,
+			client.gender,
+			client.addresses.map((address) => AddressModel.fromEntity(address)),
+			client.cards.map((card) => CreditCardModel.fromEntity(card))
+		);
 	}
 }

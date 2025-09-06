@@ -1,32 +1,24 @@
-import {Column, Entity, OneToMany} from "typeorm";
+import { Column, Entity } from "typeorm";
 import GenericModel from "../../generic/model/GenericModel";
+import CardFlag from "../domain/CardFlag";
 
 @Entity()
 export default class CardFlagModel extends GenericModel {
-	@Column({type: "varchar"})
-	_description!: string;
-
-	@OneToMany(() => CardFlagModel, (cardFlag: CardFlagModel) => cardFlag._cards)
-	_cards!: CardFlagModel[];
+	@Column({ type: "varchar" })
+	description!: string;
 
 	constructor(description: string) {
 		super();
-		this._description = description;
+		this.description = description;
 	}
 
-	get description(): string {
-		return this._description;
+	public toEntity(): CardFlag {
+		const cardFlag = new CardFlag(this.description);
+		cardFlag.id = this.id;
+		return cardFlag;
 	}
 
-	set description(value: string) {
-		this._description = value;
-	}
-
-	get cards(): CardFlagModel[] {
-		return this._cards;
-	}
-
-	set cards(value: CardFlagModel[]) {
-		this._cards = value;
+	public static fromEntity(cardFlag: CardFlag): CardFlagModel {
+		return new CardFlagModel(cardFlag.description);
 	}
 }

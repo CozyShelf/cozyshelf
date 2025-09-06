@@ -1,4 +1,5 @@
-import {CreateDateColumn, Generated, PrimaryGeneratedColumn} from "typeorm";
+import { CreateDateColumn, Generated, PrimaryGeneratedColumn } from "typeorm";
+import Entity from "../domain/DomainEntity";
 
 export default abstract class GenericModel {
 	@PrimaryGeneratedColumn("uuid")
@@ -8,7 +9,7 @@ export default abstract class GenericModel {
 	@CreateDateColumn()
 	_createdAt!: Date;
 
-	constructor(){}
+	constructor() {}
 
 	get id(): string {
 		return this._id;
@@ -21,4 +22,6 @@ export default abstract class GenericModel {
 	set createdAt(value: Date) {
 		this._createdAt = value;
 	}
+
+	abstract toEntity(): Entity;
 }

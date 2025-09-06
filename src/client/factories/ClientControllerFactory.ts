@@ -1,5 +1,5 @@
 import ClientController from "../controller/ClientController";
-import { ClientDAO } from "../dao/typeORM/ClientDAO";
+import ClientDAO from "../dao/typeORM/ClientDAO";
 import IFactory from "../../generic/factories/Factory";
 import { ClientService } from "../service/ClientService";
 import postgresDataSource from "../../generic/config/database/datasources/postgresDataSource";

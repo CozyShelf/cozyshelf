@@ -1,15 +1,14 @@
+import DomainEntity from "../../generic/domain/DomainEntity";
+import IPasswordData from "../types/IPasswordData";
+import InvalidPasswordConfirmation from "./exceptions/InvalidPasswordConfirmation";
 import InvalidPasswordStrength from "./exceptions/InvalidPasswordStrength";
 
-export default class Password {
-	private _value: string;
-	private _force: number;
+export default class Password extends DomainEntity {
+	private _value!: string;
 
-	constructor(
-		value: string,
-		force: number
-	) {
-		this._value = value;
-		this._force = force;
+	constructor(value: string) {
+		super();
+		this.value = value;
 	}
 
 	get value(): string {
@@ -21,15 +20,15 @@ export default class Password {
 		if (!senhaRegex.test(value)) {
 			throw new InvalidPasswordStrength();
 		}
+
 		this._value = value;
 	}
 
-	//NOTE: Nao precisa de force...
-	get force(): number {
-		return this._force;
-	}
+	public static fromRequestData(requestData: IPasswordData) {
+		if (!(requestData.value == requestData.confirmation)) {
+			throw new InvalidPasswordConfirmation();
+		}
 
-	set force(value: number) {
-		this._force = value;
+		return new Password(requestData.value);
 	}
 }
