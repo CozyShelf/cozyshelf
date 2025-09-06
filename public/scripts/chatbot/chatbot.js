@@ -5,8 +5,13 @@ function renderChatbot() {
 	const input = document.getElementById("chatbotInput");
 	const button = document.getElementById("sendMessage");
 	const closeButton = document.getElementById("closeChatbotModal");
+	const chatbotInitialMessage = document.getElementById("chatbotWelcome");
 
 	containerToRender.removeAttribute("hidden");
+	if (button.hasAttribute("disabled")) {
+		button.removeAttribute("disabled");
+	}
+
 	chatbot.removeAttribute("hidden");
 
 	closeButton.addEventListener("click", () => {
@@ -45,27 +50,33 @@ function renderChatbot() {
 	button.addEventListener("click", (e) => {
 		e.preventDefault();
 
-		toggleBtn();
+		if (input.value.trim() != "") {
+			toggleBtn();
 
-		const messageToSend = input.value.trim();
+			const messageToSend = input.value.trim();
 
-		if (messageToSend) {
-			const userMessage = createMessage(false, messageToSend);
+			if (!chatbotInitialMessage.hasAttribute("hidden")) {
+				chatbotInitialMessage.setAttribute("hidden", true);
+			}
 
-			messagesContainer.appendChild(userMessage);
-			messagesContainer.scrollTop = messagesContainer.scrollHeight;
+			if (messageToSend) {
+				const userMessage = createMessage(false, messageToSend);
 
-			input.value = "";
-
-			setTimeout(() => {
-				const botMessage = createMessage(
-					true,
-					"Olá! Esta é uma resposta automática da IA."
-				);
-				messagesContainer.appendChild(botMessage);
+				messagesContainer.appendChild(userMessage);
 				messagesContainer.scrollTop = messagesContainer.scrollHeight;
-				toggleBtn();
-			}, 1000);
+
+				input.value = "";
+
+				setTimeout(() => {
+					const botMessage = createMessage(
+						true,
+						"Olá! Esta é uma resposta automática da IA."
+					);
+					messagesContainer.appendChild(botMessage);
+					messagesContainer.scrollTop = messagesContainer.scrollHeight;
+					toggleBtn();
+				}, 1000);
+		}
 		}
 	});
 
