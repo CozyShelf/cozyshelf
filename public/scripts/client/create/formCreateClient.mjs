@@ -1,12 +1,18 @@
+import { getCleanValue, extractPhoneData } from './inputMasks.mjs';
+
 export function setupClientForm() {
     const form = document.getElementById("client-register-form");
     
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
         
+        if (!validateForm(form)) {
+            return;
+        }
+    
         try {
             const requestBody = buildRequestBody(form);
-            console.log("Request Body:", requestBody); // Debug
+            console.log("Request Body:", requestBody);
             await submitClientRegistration(requestBody);
         } catch (error) {
             console.error("Erro ao processar formulário:", error);
@@ -22,11 +28,15 @@ export function setupClientForm() {
 function buildRequestBody(form) {
     const formData = new FormData(form);
     
+    // Extrair dados do telefone
+    const phoneInput = form.querySelector("input[name='client-phone']");
+    const phoneData = extractPhoneData(phoneInput.value);
+    
     // Dados pessoais do cliente
     const clientData = {
         name: formData.get("client-name"),
         birthDate: formData.get("client-birth-date"),
-        cpf: formData.get("client-cpf"),
+        cpf: getCleanValue(form.querySelector("input[name='client-cpf']")),
         email: formData.get("client-email"),
         password: {
             value: formData.get("client-password"),
@@ -34,8 +44,8 @@ function buildRequestBody(form) {
         },
         gender: formData.get("client-gender"),
         telephone: {
-            ddd: formData.get("client-phone").substring(0, 2), // Extrair DDD
-            number: formData.get("client-phone").substring(2), // Extrair número
+            ddd: phoneData.ddd,
+            number: phoneData.number,
             type: formData.get("client-phone-type")
         }
     };
@@ -53,29 +63,29 @@ function buildRequestBody(form) {
                 addressData.set(input.name, input.value);
             }
         });
-
+        
         const address = {
-            zipCode: addressData.get("address-cep"),
+            zipCode:addressData.get("address-zip-code"),
             number: addressData.get("address-number"),
             residenceType: addressData.get("address-residence-type"),
             streetName: addressData.get("address-street-name"),
             streetType: addressData.get("address-street-type"),
             neighborhood: addressData.get("address-neighborhood"),
             shortPhrase: addressData.get("address-short-phrase"),
-            observation: "", // Campo não presente no formulário
+            observation: "",
             city: addressData.get("address-city"),
             state: addressData.get("address-state"),
             country: {
                 name: "Brasil",
                 acronym: "BR"
             },
-            type: addressData.get("address-street-type") // Assumindo que é o último select
+            type: addressData.get("address-type")
         };
 
         addresses.push(address);
     });
     
-     // Processar cartões
+    // Processar cartões
     const cards = [];
     const cardDivs = form.querySelectorAll("#card");
     
@@ -89,15 +99,17 @@ function buildRequestBody(form) {
             }
         });
 
-        // Verificar se é preferencial - correção aqui
         const isPreferredCheckbox = cardDiv.querySelector("input[name='card-is-preferred'][type='checkbox']");
         const isPreferred = isPreferredCheckbox ? isPreferredCheckbox.checked : false;
 
+        const cardNumberInput = cardDiv.querySelector("input[name='card-number']");
+        const expirationInput = cardDiv.querySelector("input[name='card-expiration']");
+        
         const card = {
-            number: cardData.get("card-number"),
+            number: getCleanValue(cardNumberInput),
             nameOnCard: cardData.get("card-impress-name"),
             cvv: cardData.get("card-cvv"),
-            expiryDate: generateExpiryDate(), // Função auxiliar para gerar data de expiração
+            expiryDate: formatExpirationDate(expirationInput.value),
             isPreferred: isPreferred,
             cardFlag: {
                 description: cardData.get("card-flag")
@@ -114,17 +126,23 @@ function buildRequestBody(form) {
     };
 }
 
-function generateExpiryDate() {
-    // Gera uma data de expiração futura (2 anos a partir de agora)
-    const now = new Date();
-    const expiryYear = (now.getFullYear() + 2).toString().slice(-2);
-    const expiryMonth = String(now.getMonth() + 1).padStart(2, '0');
-    return `${expiryMonth}/${expiryYear}`;
+function formatExpirationDate(dateString) {
+    if (!dateString) return '';
+    
+    // Se estiver no formato MM/AAAA, converte para MM/AA
+    if (dateString.includes('/')) {
+        const [month, year] = dateString.split('/');
+        if (year.length === 4) {
+            return `${month}/${year.slice(-2)}`;
+        }
+        return dateString;
+    }
+    
+    return dateString;
 }
 
 async function submitClientRegistration(requestBody) {
     try {
-        // Mostrar loading
         Swal.fire({
             title: 'Processando...',
             text: 'Cadastrando cliente, aguarde...',
@@ -134,7 +152,7 @@ async function submitClientRegistration(requestBody) {
             }
         });
 
-        const response = await fetch('/client/new', {
+        const response = await fetch('/api/clients/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -145,7 +163,6 @@ async function submitClientRegistration(requestBody) {
         const result = await response.json();
 
         if (response.ok) {
-            // Sucesso
             Swal.fire({
                 icon: 'success',
                 title: 'Sucesso!',
@@ -153,12 +170,10 @@ async function submitClientRegistration(requestBody) {
                 confirmButtonText: 'OK'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Redirecionar ou limpar formulário
-                    window.location.href = '/client/login'; // ou outra página
+                    window.location.href = '/client/login';
                 }
             });
         } else {
-            // Erro do servidor
             throw new Error(result.message || 'Erro no servidor');
         }
 
@@ -182,7 +197,6 @@ async function submitClientRegistration(requestBody) {
     }
 }
 
-// Função auxiliar para validar formulário antes do envio
 function validateForm(form) {
     const passwords = {
         password: form.querySelector("input[name='client-password']").value,

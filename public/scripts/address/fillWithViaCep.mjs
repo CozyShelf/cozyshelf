@@ -1,6 +1,6 @@
 export function setupViaCepIntegration() {
     document.addEventListener('input', async (event) => {
-        if (event.target.name === 'address-cep') {
+        if (event.target.name === 'address-zip-code') {
             const cepInput = event.target;
             const cep = cepInput.value.replace(/\D/g, '');
             if (cep.length === 8) {
@@ -38,8 +38,6 @@ async function fillAddressWithViaCep(cepInput, cep) {
     }
 }
 
-/* ========================================================== */
-
 function fillAddressFields(addressDiv, viaCepData) {
     const fieldMappings = {
         'address-street-name': viaCepData.logradouro || '',
@@ -60,26 +58,6 @@ function fillAddressFields(addressDiv, viaCepData) {
             }, 2000);
         }
     });
-
-    mapStreetType(addressDiv, viaCepData.logradouro);
-}
-
-function mapStreetType(addressDiv, logradouro) {
-    if (!logradouro) return;
-
-    const streetTypeSelect = addressDiv.querySelector('[name="address-street-type"]');
-    if (!streetTypeSelect) return;
-
-    const logradouroLower = logradouro.toLowerCase();
-    
-    // Mapear tipos comuns de logradouro
-    if (logradouroLower.includes('avenida') || logradouroLower.includes('av ')) {
-        streetTypeSelect.value = 'Avenida';
-    } else if (logradouroLower.includes('rodovia') || logradouroLower.includes('rod ')) {
-        streetTypeSelect.value = 'Rodovia';
-    } else if (logradouroLower.includes('beco')) {
-        streetTypeSelect.value = 'Beco';
-    }
 }
 
 /* ========================================================== */
@@ -93,7 +71,7 @@ function showLoadingState(cepInput, isLoading) {
     } else {
         cepInput.style.backgroundColor = '';
         cepInput.style.borderColor = '';
-        cepInput.setAttribute('placeholder', 'XXXXXXXX');
+        cepInput.setAttribute('placeholder', 'XXXXX-XXX');
         cepInput.disabled = false;
     }
 }

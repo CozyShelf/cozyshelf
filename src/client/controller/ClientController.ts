@@ -7,6 +7,7 @@ import ClientDetailsDTO from "../dto/ClientDetailsDTO";
 import IUpdateClientData from "../types/IUpdateClientData";
 import IUpdatePasswordData from "../../password/types/IUpdatePasswordData";
 import PasswordService from "../../password/service/PasswordService";
+import { brazilStates } from "../../generic/config/database/seeders/address/states";
 
 export default class ClientController {
 	public constructor(
@@ -159,6 +160,7 @@ export default class ClientController {
 		res.render("clientRegistration", {
 			title: "Cadastro de Clientes",
 			currentHeaderTab: "registration",
+			states: brazilStates,
 		});
 	}
 

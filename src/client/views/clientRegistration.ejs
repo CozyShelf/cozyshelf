@@ -46,8 +46,8 @@
 					</label>
 					<label class="flex flex-col text-[14px] gap-2.5">
 						Telefone *
-						<input placeholder="(DD) NNNN-NNNN" class="border rounded-[5px] border-gray h-10 p-2.5" type="tel"
-							name="client-phone" required maxlength="11">
+						<input placeholder="(DD) NNNNN-NNNN" class="border rounded-[5px] border-gray h-10 p-2.5" type="tel"
+							name="client-phone" required maxlength="15">
 					</label>
 					<label class="flex flex-col text-[14px] gap-2.5">
 						Senha *
@@ -63,17 +63,17 @@
 						Gênero *
 						<select name="client-gender" class="border rounded-[5px] border-gray h-10 p-2.5" required>
 							<option value="">Selecione...</option>
-							<option value="Male">Masculino</option>
-							<option value="Female">Feminino</option>
-							<option value="Others">Outros</option>
+							<option value="MALE">Masculino</option>
+							<option value="FEMALE">Feminino</option>
+							<option value="OTHER">Outros</option>
 						</select>
 					</label>
 					<label class="flex flex-col text-[14px] gap-2.5">
 						Tipo de Telefone *
 						<select name="client-phone-type" class="border rounded-[5px] border-gray h-10 p-2.5" required>
 							<option value="">Selecione...</option>
-							<option value="Fixed">Fixo</option>
-							<option value="Mobile">Móvel</option>
+							<option value="FIXED">Fixo</option>
+							<option value="MOBILE">Móvel</option>
 						</select>
 					</label>
 					<label class="flex flex-col text-[14px] gap-2.5">
@@ -103,7 +103,7 @@
 						<label class="flex flex-col text-[14px] gap-2.5 w-full">
 							CEP *
 							<input placeholder="XXXXXXXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-								name="address-cep" required maxlength="8">
+								name="address-zip-code" required maxlength="9">
 						</label>
 						<label class="flex flex-col text-[14px] gap-2.5 w-full">
 							Estado *
@@ -138,7 +138,7 @@
 						</label>
 						<label class="flex flex-col text-[14px] gap-2.5 w-full">
 							Número *
-							<input class="border rounded-[5px] border-gray h-10 p-2.5" type="text" 
+							<input placeholder="Ex: 123" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
 								name="address-number" maxlength="4" required>
 						</label>
 					</div>
@@ -159,7 +159,7 @@
 						</label>
 						<label class="flex flex-col text-[14px] gap-2.5 w-full">
 							Tipo de Endereço *
-							<select name="address-street-type" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+							<select name="address-type" class="border rounded-[5px] border-gray h-10 p-2.5" required>
 								<option value="">Selecione...</option>
 								<option value="DELIVERY">Entrega</option>
 								<option value="BILLING">Cobrança</option>
@@ -196,6 +196,11 @@
 								CVV *
 								<input placeholder="XXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text" name="card-cvv"
 									required maxlength="3">
+							</label>
+							<label class="flex flex-col text-[14px] gap-2.5 w-full">
+								Validade *
+								<input placeholder="MM/AAAA" class="border rounded-[5px] border-gray h-10 p-2.5" type="TEXT"
+									name="card-expiration" required maxlength="7">
 							</label>
 						</div>
 						<div class="flex flex-row gap-10">
