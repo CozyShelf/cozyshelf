@@ -25,12 +25,11 @@ export default class Password extends DomainEntity {
 	public static fromRequestData(requestData: IPasswordData) {
 		const password = requestData.value;
 
-		const passwordRegex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,20}$/;
-		if (!passwordRegex.test(password)) {
-			throw new InvalidPasswordStrength();
-		}
+		Password.validatePassword(password);
 
-		if (!(password == requestData.confirmation)) {
+		if (
+			!Password.validatePasswordConfirmation(password, requestData.confirmation)
+		) {
 			throw new InvalidPasswordConfirmation();
 		}
 
@@ -44,17 +43,31 @@ export default class Password extends DomainEntity {
 		}
 
 		if (
-			!(updatedPassData.newPassword == updatedPassData.newPasswordConfirmation)
+			!Password.validatePasswordConfirmation(
+				updatedPassData.newPassword,
+				updatedPassData.newPasswordConfirmation
+			)
 		) {
 			throw new InvalidPasswordConfirmation();
 		}
 
-		const passwordRegex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,20}$/;
-		if (!passwordRegex.test(updatedPassData.newPassword)) {
-			throw new InvalidPasswordStrength();
-		}
+		Password.validatePassword(updatedPassData.newPassword);
 
 		this.value = Password.encrytPassword(updatedPassData.newPassword);
+	}
+
+	public static validatePassword(password: string) {
+		const passwordRegex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,20}$/;
+		if (!passwordRegex.test(password)) {
+			throw new InvalidPasswordStrength();
+		}
+	}
+
+	public static validatePasswordConfirmation(
+		password: string,
+		confirmation: string
+	) {
+		return password == confirmation;
 	}
 
 	public static encrytPassword(notEncryptedPassword: string) {
@@ -68,5 +81,9 @@ export default class Password extends DomainEntity {
 
 	private comparePasswords(plainTextPassword: string) {
 		return compareSync(plainTextPassword, this.value);
+	}
+
+	public inactivate() {
+		this.isActive = false;
 	}
 }
