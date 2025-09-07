@@ -1,0 +1,31 @@
+<div id="chatbot"
+	class="flex flex-col wrapper w-4/12 mt-10 fixed bottom-1 right-5 bg-white shadow-lg rounded-2xl min-h-[80vh] max-h-[80vh]"
+	hidden>
+	<div class="relative">
+		<a class="absolute right-5 top-5 cursor-pointer bg-brown hover:bg-lighter-brown rounded w-7 h-7 flex items-center justify-center"
+			id="closeChatbotModal">
+			<span class="material-symbols-outlined text-white hover:text-brown">close</span>
+		</a>
+	</div>
+
+	<div class="flex-1 p-4 pt-16 overflow-y-auto" id="chatbotMessages">
+		<div class="flex flex-col items-center justify-center mt-32" id="chatbotWelcome">
+			<div class="flex flex-row justify-center"><img class="w-28" src="/assets/mingau-full.png" alt="Imagem do mascote">
+			</div>
+			<h1 class="text-center text-gray font-medium">Faça suas perguntas ao Mingau</h1>
+		</div>
+	</div>
+
+	<form class="flex flex-row items-center gap-3 p-3 w-full h-14 rounded-b-2xl bg-light-title relative">
+		<input
+			class="bg-lighter-brown p-2 pl-3 pr-12 rounded-full font-medium text-dark-brown placeholder-light-brown flex-1 outline-none border-none text-sm"
+			type="text" placeholder=">" id="chatbotInput">
+		<button
+			class="cursor-pointer bg-dark-brown hover:bg-opacity-90 hover:bg-brown disabled:bg-light-brown transition-colors rounded-full p-3 flex items-center justify-center min-w-10 min-h-10 absolute right-1"
+			id="sendMessage">
+			<span class="material-symbols-outlined text-lighter-brown text-lg">
+				send
+			</span>
+		</button>
+	</form>
+</div>
