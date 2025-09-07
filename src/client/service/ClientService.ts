@@ -82,6 +82,18 @@ export class ClientService {
 			throw new NoClientsFound(id);
 		}
 
-		await this.clientDAO.delete(id);
+		existingClient.isActive = false;
+		existingClient.telephone.isActive = false;
+		existingClient.password.isActive = false;
+
+		for (const address of existingClient.addresses) {
+			address.isActive = false;
+		}
+
+		for (const card of existingClient.cards) {
+			card.isActive = false;
+		}
+
+		await this.clientDAO.save(existingClient);
 	}
 }
