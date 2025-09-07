@@ -2,6 +2,7 @@ import DomainEntity from "../../generic/domain/DomainEntity";
 import IPasswordData from "../types/IPasswordData";
 import InvalidPasswordConfirmation from "./exceptions/InvalidPasswordConfirmation";
 import InvalidPasswordStrength from "./exceptions/InvalidPasswordStrength";
+import { genSaltSync, hashSync } from "bcrypt";
 
 export default class Password extends DomainEntity {
 	private _value!: string;
@@ -16,19 +17,28 @@ export default class Password extends DomainEntity {
 	}
 
 	set value(value: string) {
-		const senhaRegex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,20}$/;
-		if (!senhaRegex.test(value)) {
-			throw new InvalidPasswordStrength();
-		}
-
 		this._value = value;
 	}
 
 	public static fromRequestData(requestData: IPasswordData) {
-		if (!(requestData.value == requestData.confirmation)) {
+		const password = requestData.value;
+
+		const passwordRegex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,20}$/;
+		if (!passwordRegex.test(password)) {
+			throw new InvalidPasswordStrength();
+		}
+
+		if (!(password == requestData.confirmation)) {
 			throw new InvalidPasswordConfirmation();
 		}
 
-		return new Password(requestData.value);
+		const encryptedPassword = Password.encrytPassword(requestData.value);
+
+		return new Password(encryptedPassword);
+	}
+
+	private static encrytPassword(notEncryptedPassword: string) {
+		const salt = genSaltSync(10);
+		return hashSync(notEncryptedPassword, salt);
 	}
 }
