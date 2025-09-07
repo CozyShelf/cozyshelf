@@ -1,5 +1,4 @@
 import CreditCard from "../domain/CreditCard";
-import CreditCardModel from "../model/CreditCardModel";
 
 export default class CardDetailsDTO {
 	public readonly id: string;

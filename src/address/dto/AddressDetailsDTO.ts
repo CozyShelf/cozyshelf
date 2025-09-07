@@ -1,5 +1,4 @@
 import Address from "../domain/Address";
-import AddressModel from "../model/AddressModel";
 import AddressType from "../domain/enums/AddressType";
 
 export default class AddressDetailsDTO {
