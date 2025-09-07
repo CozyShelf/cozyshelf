@@ -5,19 +5,18 @@ import INewClientInputData from "../types/INewClientRequestData";
 import ClientListDTO from "../dto/ClientListDTO";
 import ClientDetailsDTO from "../dto/ClientDetailsDTO";
 import IUpdateClientData from "../types/IUpdateClientData";
+import IUpdatePasswordData from "../../password/types/IUpdatePasswordData";
+import PasswordService from "../../password/service/PasswordService";
 
 export default class ClientController {
-	public constructor(private readonly service: ClientService) {}
+	public constructor(
+		private readonly service: ClientService,
+		private readonly passwordService: PasswordService
+	) {}
 
 	public async create(req: Request, res: Response): Promise<void> {
 		try {
-			if (!req.body || Object.keys(req.body).length === 0) {
-				res.status(400).json({
-					error: true,
-					message: 'Dados do cliente são obrigatórios para o cadastro!'
-				});
-				return;
-			}
+			this.verifyRequestBody(req, res);
 
 			const client = Client.fromRequestData(req.body as INewClientInputData);
 			const createdClient = await this.service.create(client);
@@ -41,7 +40,7 @@ export default class ClientController {
 			res.status(200).json({
 				message: `${clients.length} cliente(s) encontrado(s)!`,
 				count: clients.length,
-				data: clientListDTOs
+				data: clientListDTOs,
 			});
 		} catch (e) {
 			this.createErrorResponse(res, e as Error);
@@ -56,7 +55,7 @@ export default class ClientController {
 
 			res.status(200).json({
 				message: `Dados do cliente carregados com sucesso!`,
-				data: clientDetailsDTO
+				data: clientDetailsDTO,
 			});
 		} catch (e) {
 			this.createErrorResponse(res, e as Error);
@@ -67,13 +66,7 @@ export default class ClientController {
 		try {
 			const { id } = req.params;
 
-			if (!req.body || Object.keys(req.body).length === 0) {
-				res.status(400).json({
-					error: true,
-					message: 'Dados para atualização são obrigatórios!'
-				});
-				return;
-			}
+			this.verifyRequestBody(req, res);
 
 			const updatedClient = await this.service.update(
 				id,
@@ -89,14 +82,34 @@ export default class ClientController {
 		}
 	}
 
+	public async updatePassword(req: Request, res: Response): Promise<void> {
+		try {
+			const { id } = req.params;
+
+			this.verifyRequestBody(req, res);
+
+			await this.passwordService.updatePasswordByClientId(
+				id,
+				req.body as IUpdatePasswordData
+			);
+
+			res.status(200).json({
+				message: `Senha do cliente de id: ${id} atualizada com sucesso!`,
+				clientId: id,
+			});
+		} catch (e) {
+			this.createErrorResponse(res, e as Error);
+		}
+	}
+
 	public async delete(req: Request, res: Response): Promise<void> {
 		try {
 			const { id } = req.params;
 
-			if (!id || id.trim() === '') {
+			if (!id || id.trim() === "") {
 				res.status(400).json({
 					error: true,
-					message: 'ID do cliente é obrigatório para exclusão!'
+					message: "ID do cliente é obrigatório para exclusão!",
 				});
 				return;
 			}
@@ -104,7 +117,7 @@ export default class ClientController {
 			await this.service.delete(id);
 			res.status(200).json({
 				message: `Cliente removido com sucesso!`,
-				clientId: id
+				clientId: id,
 			});
 		} catch (e) {
 			this.createErrorResponse(res, e as Error);
@@ -159,16 +172,35 @@ export default class ClientController {
 		});
 	}
 
+	private verifyRequestBody(req: Request, res: Response) {
+		if (!req.body || Object.keys(req.body).length === 0) {
+			res.status(400).json({
+				error: true,
+				message: "Dados do cliente são obrigatórios para o cadastro!",
+			});
+			return;
+		}
+	}
+
 	private createErrorResponse(res: Response, e: Error) {
-		console.error('[ERROR] ❌ Erro na operação:', e.message);
+		console.error("[ERROR] ❌ Erro na operação:", e.message);
 
 		let statusCode = 400;
 
-		if (e.message.includes('não encontrado') || e.message.includes('Cliente não encontrado')) {
+		if (
+			e.message.includes("não encontrado") ||
+			e.message.includes("Cliente não encontrado")
+		) {
 			statusCode = 404;
-		} else if (e.message.includes('já cadastrado') || e.message.includes('Cliente já cadastrado')) {
+		} else if (
+			e.message.includes("já cadastrado") ||
+			e.message.includes("Cliente já cadastrado")
+		) {
 			statusCode = 409;
-		} else if (e.message.includes('obrigatório') || e.message.includes('inválido')) {
+		} else if (
+			e.message.includes("obrigatório") ||
+			e.message.includes("inválido")
+		) {
 			statusCode = 422;
 		}
 

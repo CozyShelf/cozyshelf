@@ -21,6 +21,10 @@ clientAPIRouter.put("/:id", async (req: Request, res: Response) => {
 	await clientController.update(req, res);
 });
 
+clientAPIRouter.put("/:id/password", async (req: Request, res: Response) => {
+	await clientController.updatePassword(req, res);
+});
+
 clientAPIRouter.delete("/:id", async (req: Request, res: Response) => {
 	await clientController.delete(req, res);
 });

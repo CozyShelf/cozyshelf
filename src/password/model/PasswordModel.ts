@@ -1,4 +1,4 @@
-import {Column, Entity, OneToOne} from "typeorm";
+import { Column, Entity, OneToOne } from "typeorm";
 import GenericModel from "../../generic/model/GenericModel";
 import ClientModel from "../../client/model/ClientModel";
 import Password from "../domain/Password";
@@ -24,5 +24,11 @@ export default class PasswordModel extends GenericModel {
 
 	public static fromEntity(password: Password): PasswordModel {
 		return new PasswordModel(password.value);
+	}
+
+	public updateFromEntity(updatedPassword: Password) {
+		if (updatedPassword.value != this.value) {
+			this.value = updatedPassword.value;
+		}
 	}
 }

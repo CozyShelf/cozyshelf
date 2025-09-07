@@ -4,14 +4,18 @@ import IFactory from "../../generic/factories/Factory";
 import { ClientService } from "../service/ClientService";
 import postgresDataSource from "../../generic/config/database/datasources/postgresDataSource";
 import CardFlagDAO from "../../card/dao/typeORM/CardFlagDAO";
+import PasswordService from "../../password/service/PasswordService";
+import PasswordDAO from "../../password/dao/PasswordDAO";
 
 export class ClientControllerFactory implements IFactory<ClientController> {
 	public make(): ClientController {
 		const clientDAO = new ClientDAO(postgresDataSource);
 		const cardFlagDAO = new CardFlagDAO(postgresDataSource);
+		const passwordDAO = new PasswordDAO(postgresDataSource);
 
 		const service = new ClientService(clientDAO, cardFlagDAO);
+		const passwordService = new PasswordService(passwordDAO, clientDAO);
 
-		return new ClientController(service);
+		return new ClientController(service, passwordService);
 	}
 }
