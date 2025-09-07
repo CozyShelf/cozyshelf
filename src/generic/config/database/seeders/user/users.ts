@@ -9,7 +9,7 @@ const users = [
 		birthDate: new Date("1990-05-15"),
 		cpf: "12345678901",
 		email: "joao.silva@email.com",
-		password: "senha123@@",
+		password: "Senha123@@",
 		ranking: 5,
 		gender: Gender.MALE,
 		telephone: {
@@ -19,7 +19,7 @@ const users = [
 		} as unknown as TelephoneModel,
 		addresses: [
 			{
-				zipCode: "01234567",
+				zipCode: "08900-000",
 				number: "100",
 				residenceType: "Apartment",
 				streetName: "Rua das Flores",
