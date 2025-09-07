@@ -1,3 +1,15 @@
+<style>
+	.auto-filled {
+		background-color: #f0fdf4 !important;
+		border-color: #10b981 !important;
+		transition: all 0.3s ease;
+	}
+
+	input[name="address-cep"]:focus {
+		outline: none;
+		box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+	}
+</style>
 <div>
 	<div class="mt-10">
 		<%- include("headers/pageHeader.ejs", { pageTitle: "Cadastre-se" }) %>
@@ -12,7 +24,7 @@
 					<label class="flex flex-col text-[14px] gap-2.5">
 						Nome Completo *
 						<input placeholder="Ex: José da Silva" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-							name="client-name" required>
+							name="client-name" required maxlength="100">
 					</label>
 					<label class="flex flex-col text-[14px] gap-2.5">
 						Data de Nascimento *
@@ -22,7 +34,7 @@
 					<label class="flex flex-col text-[14px] gap-2.5">
 						Email *
 						<input placeholder="Ex: exemplo@hotmail.com" class="border rounded-[5px] border-gray h-10 p-2.5"
-							type="email" name="client-email" required>
+							type="email" name="client-email" required maxlength="100">
 					</label>
 				</div>
 
@@ -30,16 +42,19 @@
 					<label class="flex flex-col text-[14px] gap-2.5">
 						CPF *
 						<input placeholder="XXX XXX XXX XX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-							name="client-cpf" required>
+							name="client-cpf" required maxlength="11">
 					</label>
 					<label class="flex flex-col text-[14px] gap-2.5">
 						Telefone *
 						<input placeholder="(DD) NNNN-NNNN" class="border rounded-[5px] border-gray h-10 p-2.5" type="tel"
-							name="client-phone" required>
+							name="client-phone" required maxlength="11">
 					</label>
 					<label class="flex flex-col text-[14px] gap-2.5">
 						Senha *
-						<input class="border rounded-[5px] border-gray h-10 p-2.5" type="password" name="client-password" required>
+						<input 
+							class="border rounded-[5px] border-gray h-10 p-2.5"  placeholder="Digite a senha"
+							type="password" name="client-password" required minlength="8"
+						>
 					</label>
 				</div>
 
@@ -64,7 +79,7 @@
 					<label class="flex flex-col text-[14px] gap-2.5">
 						Repetir Senha *
 						<input placeholder="Repita a senha" class="border rounded-[5px] border-gray h-10 p-2.5" type="password"
-							name="client-password-repeat" required>
+							name="client-password-repeat" required minlength="8">
 					</label>
 				</div>
 			</div>
@@ -75,32 +90,34 @@
 
 			<div class="flex flex-col gap-10" id="addresses">
 				<div class="flex flex-col gap-2.5 justify-start" id="address">
-					<h4 class="font-bold text-brown" id="address-field-number">Endereço 1</h4>
-
+					<div class="flex justify-between items-center">
+						<h4 class="font-bold text-brown" id="address-field-number">Endereço 1</h4>
+						<%- include('buttons/removeFormFieldButton.ejs', { buttonId: 'remove-address' }) %>
+					</div>
 					<div class="flex flex-row gap-10">
 						<label class="flex flex-col text-[14px] gap-2.5 w-full">
 							Frase Curta *
 							<input placeholder="Ex: Minha Casa" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-								name="address-short-phrase" required>
+								name="address-short-phrase" required maxlength="50">
 						</label>
 						<label class="flex flex-col text-[14px] gap-2.5 w-full">
 							CEP *
-							<input placeholder="XXXXX-XXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-								name="address-cep" required>
+							<input placeholder="XXXXXXXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+								name="address-cep" required maxlength="8">
 						</label>
 						<label class="flex flex-col text-[14px] gap-2.5 w-full">
 							Estado *
 							<select name="address-state" class="border rounded-[5px] border-gray h-10 p-2.5" required>
 								<option value="">Selecione...</option>
-								<option value="SP">SP</option>
-								<option value="RJ">RJ</option>
-								<option value="MA">MA</option>
+								<% states.forEach(state => { %>
+									<option value="<%= state %>"><%= state %></option>
+								<% }) %>
 							</select>
 						</label>
 						<label class="flex flex-col text-[14px] gap-2.5 w-full">
 							Cidade *
 							<input placeholder="Ex: Guararema, Biritiba" class="border rounded-[5px] border-gray h-10 p-2.5"
-								type="text" name="address-city" required>
+								type="text" name="address-city" required maxlength="100">
 						</label>
 					</div>
 
@@ -117,12 +134,12 @@
 						<label class="flex flex-col text-[14px] gap-2.5 w-full">
 							Logradouro *
 							<input placeholder="Ex: Rua Almirante Barbosa" class="border rounded-[5px] border-gray h-10 p-2.5"
-								type="text" name="address-street-name" required>
+								type="text" name="address-street-name" required maxlength="100">
 						</label>
 						<label class="flex flex-col text-[14px] gap-2.5 w-full">
 							Número *
-							<input class="border rounded-[5px] border-gray h-10 p-2.5" type="text" name="address-number" maxlength="4"
-								required>
+							<input class="border rounded-[5px] border-gray h-10 p-2.5" type="text" 
+								name="address-number" maxlength="4" required>
 						</label>
 					</div>
 
@@ -130,7 +147,7 @@
 						<label class="flex flex-col text-[14px] gap-2.5 w-full">
 							Bairro *
 							<input placeholder="Ex: Centro" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-								name="address-neighborhood" required>
+								name="address-neighborhood" required maxlength="100">
 						</label>
 						<label class="flex flex-col text-[14px] gap-2.5 w-full">
 							Complemento *
@@ -160,30 +177,32 @@
 
 			<div class="flex flex-col gap-10" id="cards">
 				<div class="flex flex-col gap-2.5 justify-start" id="card">
-					<div class="flex flex-row gap-10">
-						<h4 class="font-bold text-brown" id="card-field-number">Cartão 1</h4>
-						<%- include('buttons/toggleButton.ejs', { toggleName: "card-is-preferred" ,
-							toggleMessage: "Marcar como preferencial" })%>
+					<div class="flex justify-between items-center w-full">
+						<div class="flex flex-row gap-10">							
+							<h4 class="font-bold text-brown" id="card-field-number">Cartão 1</h4>
+							<%- include('buttons/toggleButton.ejs', { toggleName: "card-is-preferred" ,
+								toggleMessage: "Marcar como preferencial" })%>
+						</div>
+						<%- include('buttons/removeFormFieldButton.ejs', { buttonId: 'remove-card' }) %>
 					</div>
-
 					<div class="flex flex-col gap-5">
 						<div class="flex flex-row gap-10">
 							<label class="flex flex-col text-[14px] gap-2.5 w-full">
 								Número do Cartão *
 								<input placeholder="Ex: XXXX XXXX XXXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-									name="card-number" required>
+									name="card-number" required maxlength="16">
 							</label>
 							<label class="flex flex-col text-[14px] gap-2.5 w-full">
 								CVV *
 								<input placeholder="XXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text" name="card-cvv"
-									required>
+									required maxlength="3">
 							</label>
 						</div>
 						<div class="flex flex-row gap-10">
 							<label class="flex flex-col text-[14px] gap-2.5 w-full">
 								Nome impresso no cartão *
 								<input placeholder="Ex: JOAO S D SILVA" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-									name="card-impress-name" required>
+									name="card-impress-name" required maxlength="100">
 							</label>
 							<label class="flex flex-col text-[14px] gap-2.5 w-full">
 								Bandeira *
@@ -207,5 +226,5 @@
 		</div>
 	</form>
 </div>
-<script src="/scripts/addNewFormFields.mjs"></script>
-<script src="/scripts/handleSubmit.mjs"></script>
+
+<script type="module" src="/scripts/client/create/index.mjs"></script>
