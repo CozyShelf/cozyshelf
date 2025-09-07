@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
 import { ClientService } from "../service/ClientService";
-import ICRUDController from "../../generic/controller/ICRUDController";
 import Client from "../domain/Client";
 import INewClientInputData from "../types/INewClientRequestData";
+import ClientListDTO from "../dto/ClientListDTO";
+import ClientDetailsDTO from "../dto/ClientDetailsDTO";
 
-export default class ClientController implements ICRUDController<Client> {
+export default class ClientController {
 	public constructor(private readonly service: ClientService) {}
 
 	public async create(req: Request, res: Response): Promise<void> {
@@ -14,33 +15,133 @@ export default class ClientController implements ICRUDController<Client> {
 
 			res.status(200).json({
 				message: `Client ${createdClient.name} created successfully`,
-				clientId: createdClient.id
+				clientId: createdClient.id,
 			});
 		} catch (e) {
-			throw e;
-			// res.status(400).json({
-			// 	message: (e as Error).message
-			// });
+			this.createErrorResponse(res, e as Error);
 		}
 	}
 
-	public getAll(req: Request, res: Response): Promise<Client[]> {
-		// Implementation for getting all clients
-		return Promise.resolve([]);
+	public async getAll(_: Request, res: Response): Promise<void> {
+		try {
+			const clients = await this.service.getAll();
+			const clientListDTOs = clients.map((client) =>
+				ClientListDTO.fromEntity(client)
+			);
+			res.status(200).json(clientListDTOs);
+		} catch (e) {
+			this.createErrorResponse(res, e as Error);
+		}
 	}
 
-	public getById(req: Request, res: Response): Promise<Client> {
-		// Implementation for getting a client by ID
-		throw new Error("Not implemented method");
+	public async getById(req: Request, res: Response): Promise<void> {
+		try {
+			const { id } = req.params;
+			const client = await this.service.getById(id);
+
+			const clientDetailsDTO = ClientDetailsDTO.fromEntity(client);
+			res.status(200).json(clientDetailsDTO);
+		} catch (e) {
+			this.createErrorResponse(res, e as Error);
+		}
 	}
 
-	public update(req: Request, res: Response): Promise<Client> {
-		// Implementation for updating a client
-		throw new Error("Not implemented method");
+	public async update(req: Request, res: Response): Promise<void> {
+		try {
+			const { id } = req.params;
+			const client = Client.fromRequestData(req.body as INewClientInputData);
+			const updatedClient = await this.service.update(id, client);
+
+			res.status(200).json({
+				message: `Client ${updatedClient.name} updated successfully`,
+				clientId: updatedClient.id,
+			});
+		} catch (e) {
+			this.createErrorResponse(res, e as Error);
+		}
 	}
 
-	public delete(req: Request, res: Response): Promise<void> {
-		// Implementation for deleting a client
-		throw new Error("Not implemented method");
+	public async delete(req: Request, res: Response): Promise<void> {
+		try {
+			const { id } = req.params;
+			await this.service.delete(id);
+			res.status(200).json({ message: "Client deleted successfully" });
+		} catch (e) {
+			this.createErrorResponse(res, e as Error);
+		}
+	}
+
+	public async renderClientTable(_: Request, res: Response): Promise<void> {
+		try {
+			const clients = await this.service.getAll();
+			const clientListDTOs = clients.map((client) =>
+				ClientListDTO.fromEntity(client)
+			);
+
+			res.render("clientTable", {
+				title: "Lista de Clientes",
+				currentHeaderTab: "profile",
+				layout: "defaultLayoutAdmin",
+				currentUrl: "clients",
+				clients: clientListDTOs,
+			});
+		} catch (e) {
+			this.createErrorResponse(res, e as Error);
+		}
+	}
+
+	public async renderClientDetails(req: Request, res: Response): Promise<void> {
+		try {
+			const { id } = req.params;
+			const client = await this.service.getById(id);
+
+			const clientDetailsDTO = ClientDetailsDTO.fromEntity(client);
+
+			res.render("clientDetails", {
+				title: "Detalhes do Cliente",
+				currentHeaderTab: "profile",
+				layout: "detailsLayout",
+				currentUrl: "client",
+				isAdmin: false,
+				client: clientDetailsDTO,
+			});
+		} catch (e) {
+			this.createErrorResponse(res, e as Error);
+		}
+	}
+
+	public async renderClientDetailsAdmin(
+		req: Request,
+		res: Response
+	): Promise<void> {
+		try {
+			const { id } = req.params;
+			const client = await this.service.getById(id);
+
+			const clientDetailsDTO = ClientDetailsDTO.fromEntity(client);
+
+			res.render("clientDetailsAdmin", {
+				title: "Detalhes do Cliente",
+				currentHeaderTab: "profile",
+				layout: "defaultLayoutAdmin",
+				currentUrl: "clients",
+				client: clientDetailsDTO,
+			});
+		} catch (e) {
+			this.createErrorResponse(res, e as Error);
+		}
+	}
+
+	public renderClientRegistration(_: Request, res: Response): void {
+		res.render("clientRegistration", {
+			title: "Cadastro de Clientes",
+			currentHeaderTab: "registration",
+		});
+	}
+
+	private createErrorResponse(res: Response, e: Error) {
+		res.status(400).json({
+			message: (e as Error).message,
+		});
 	}
 }

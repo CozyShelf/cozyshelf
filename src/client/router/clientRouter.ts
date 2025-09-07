@@ -3,7 +3,6 @@ import ClientController from "../controller/ClientController";
 import { ClientControllerFactory } from "../factories/ClientControllerFactory";
 import ConfigDynamicPaths from "../../generic/helpers/ConfigDynamicPaths";
 import path from "path";
-import { createSecureContext } from "tls";
 
 const clientRouter = Router();
 clientRouter.use(
@@ -16,32 +15,35 @@ clientRouter.post("/", async (req: Request, res: Response) => {
 	await clientController.create(req, res);
 });
 
+clientRouter.get("/", async (req: Request, res: Response) => {
+	await clientController.getAll(req, res);
+});
+
+clientRouter.get("/:id", async (req: Request, res: Response) => {
+	await clientController.getById(req, res);
+});
+
+clientRouter.put("/:id", async (req: Request, res: Response) => {
+	await clientController.update(req, res);
+});
+
+clientRouter.delete("/:id", async (req: Request, res: Response) => {
+	await clientController.delete(req, res);
+});
+
 clientRouter.get("/admin", async (req: Request, res: Response) => {
-	res.render("clientTable", {
-		title: "Lista de Clientes",
-		currentHeaderTab: "profile",
-		layout: "defaultLayoutAdmin",
-		currentUrl: "clients"
-	});
+	await clientController.renderClientTable(req, res);
 });
 
 clientRouter.get("/admin/:id", async (req: Request, res: Response) => {
-	res.render("clientDetailsAdmin", {
-		title: "Detalhes do Cliente",
-		currentHeaderTab: "profile",
-		layout: "defaultLayoutAdmin",
-		currentUrl: "clients"
-	});
+	await clientController.renderClientDetailsAdmin(req, res);
 });
 
 clientRouter.get("/register", (req: Request, res: Response) => {
-	res.render("clientRegistration", {
-		title: "Cadastro de Clientes",
-		currentHeaderTab: "registration"
-	});
+	clientController.renderClientRegistration(req, res);
 });
 
-clientRouter.get("/:id/password", (req: Request, res: Response) => {
+clientRouter.get("/:id/password", (_: Request, res: Response) => {
 	res.render("passwordDetail", {
 		title: "Alterar Senha",
 		currentHeaderTab: "profile",
@@ -51,23 +53,8 @@ clientRouter.get("/:id/password", (req: Request, res: Response) => {
 	});
 });
 
-clientRouter.get("/:id", async (_: Request, res: Response) => {
-	//await clientController.getById(req, res);
-	res.render("clientDetails", {
-		title: "Detalhes do Cliente",
-		currentHeaderTab: "profile",
-		layout: "detailsLayout",
-		currentUrl: "client",
-		isAdmin: false,
-	});
-});
-
-clientRouter.put("/:id", async (req: Request, res: Response) => {
-	await clientController.update(req, res);
-});
-
-clientRouter.delete("/:id", async (req: Request, res: Response) => {
-	await clientController.delete(req, res);
+clientRouter.get("/:id/details", async (req: Request, res: Response) => {
+	await clientController.renderClientDetails(req, res);
 });
 
 export default clientRouter;
