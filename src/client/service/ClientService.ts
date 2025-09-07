@@ -1,3 +1,4 @@
+import CountryDAO from "../../address/dao/typeORM/CountryDAO";
 import CardFlagDAO from "../../card/dao/typeORM/CardFlagDAO";
 import ClientDAO from "../dao/typeORM/ClientDAO";
 import Client from "../domain/Client";
@@ -9,7 +10,8 @@ import NoClientsFound from "./exceptions/NoClientsFound";
 export class ClientService {
 	constructor(
 		private readonly clientDAO: ClientDAO,
-		private readonly cardFlagDAO: CardFlagDAO
+		private readonly cardFlagDAO: CardFlagDAO,
+		private readonly countryDAO: CountryDAO
 	) {}
 
 	public async create(client: Client): Promise<Client> {
@@ -19,6 +21,7 @@ export class ClientService {
 		}
 
 		const clientModel = ClientModel.fromEntity(client);
+
 		for (const cardModel of clientModel.cards) {
 			const flagModel = await this.cardFlagDAO.getFlagByDescription(
 				cardModel.flagDescription
@@ -29,12 +32,24 @@ export class ClientService {
 			}
 		}
 
+		for (const address of clientModel.addresses) {
+			let country = await this.countryDAO.findByAcronym(
+				address.country.acronym
+			);
+
+			if (country) {
+				address.country = country;
+			}
+		}
+
 		const savedClient = await this.clientDAO.save(clientModel);
 		return savedClient.toEntity();
 	}
 
 	private async verifyIfClientAlreadyExists(client: Client) {
-		const alreadyExistsWithEmail = await this.clientDAO.findByEmail(client.email);
+		const alreadyExistsWithEmail = await this.clientDAO.findByEmail(
+			client.email
+		);
 		const alreadyExistsWithCPF = await this.clientDAO.findByCPF(client.cpf);
 
 		return !!alreadyExistsWithEmail || !!alreadyExistsWithCPF;
