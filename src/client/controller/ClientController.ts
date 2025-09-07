@@ -72,70 +72,50 @@ export default class ClientController {
 	}
 
 	public async renderClientTable(_: Request, res: Response): Promise<void> {
-		try {
-			const clients = await this.service.getAll();
-			const clientListDTOs = clients.map((client) =>
-				ClientListDTO.fromEntity(client)
-			);
-
-			res.render("clientTable", {
-				title: "Lista de Clientes",
-				currentHeaderTab: "profile",
-				layout: "defaultLayoutAdmin",
-				currentUrl: "clients",
-				clients: clientListDTOs,
-			});
-		} catch (e) {
-			this.createErrorResponse(res, e as Error);
-		}
+		res.render("clientTable", {
+			title: "Lista de Clientes",
+			currentHeaderTab: "profile",
+			layout: "defaultLayoutAdmin",
+			currentUrl: "clients",
+		});
 	}
 
-	public async renderClientDetails(req: Request, res: Response): Promise<void> {
-		try {
-			const { id } = req.params;
-			const client = await this.service.getById(id);
-
-			const clientDetailsDTO = ClientDetailsDTO.fromEntity(client);
-
-			res.render("clientDetails", {
-				title: "Detalhes do Cliente",
-				currentHeaderTab: "profile",
-				layout: "detailsLayout",
-				currentUrl: "client",
-				isAdmin: false,
-				client: clientDetailsDTO,
-			});
-		} catch (e) {
-			this.createErrorResponse(res, e as Error);
-		}
+	public async renderClientDetails(_: Request, res: Response): Promise<void> {
+		res.render("clientDetails", {
+			title: "Detalhes do Cliente",
+			currentHeaderTab: "profile",
+			layout: "detailsLayout",
+			currentUrl: "client",
+			isAdmin: false,
+		});
 	}
 
 	public async renderClientDetailsAdmin(
-		req: Request,
+		_: Request,
 		res: Response
 	): Promise<void> {
-		try {
-			const { id } = req.params;
-			const client = await this.service.getById(id);
-
-			const clientDetailsDTO = ClientDetailsDTO.fromEntity(client);
-
-			res.render("clientDetailsAdmin", {
-				title: "Detalhes do Cliente",
-				currentHeaderTab: "profile",
-				layout: "defaultLayoutAdmin",
-				currentUrl: "clients",
-				client: clientDetailsDTO,
-			});
-		} catch (e) {
-			this.createErrorResponse(res, e as Error);
-		}
+		res.render("clientDetailsAdmin", {
+			title: "Detalhes do Cliente",
+			currentHeaderTab: "profile",
+			layout: "defaultLayoutAdmin",
+			currentUrl: "clients",
+		});
 	}
 
 	public renderClientRegistration(_: Request, res: Response): void {
 		res.render("clientRegistration", {
 			title: "Cadastro de Clientes",
 			currentHeaderTab: "registration",
+		});
+	}
+
+	public renderPasswordDetails(req: Request, res: Response) {
+		res.render("passwordDetail", {
+			title: "Alterar Senha",
+			currentHeaderTab: "profile",
+			layout: "detailsLayout",
+			currentUrl: "password",
+			isAdmin: false,
 		});
 	}
 

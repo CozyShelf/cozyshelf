@@ -9,6 +9,7 @@ import bookRouter from "../../books/routes/bookRouter";
 import adminRouter from "../../admin/routes/adminRouter";
 import cartRouter from "../../cart/routes/cartRouter";
 import chatbotRouter from "../../ia/routes/chatbotRouter";
+import defaultAPIRouter from "./defaultAPIRouter";
 
 const defaultRouter = Router();
 const bookController = new BookControllerFactory().make();
@@ -33,6 +34,8 @@ defaultRouter.get("/shopping-cart", async (req: Request, res: Response) => {
 		coupons: [],
 	});
 });
+
+defaultRouter.use("/api", defaultAPIRouter)
 
 defaultRouter.use("/clients", clientRouter);
 defaultRouter.use("/addresses", addressRouter);

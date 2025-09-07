@@ -4,18 +4,19 @@ import ConfigDynamicPaths from "../../generic/helpers/ConfigDynamicPaths";
 import path from "path";
 import { ClientControllerFactory } from "../../client/factories/ClientControllerFactory";
 
+// TODO: Criar routers de admin especificos para cada entidade e alterar admin router (e.g. defaultAPIRouter.ts);
+
 const adminRouter = Router();
 adminRouter.use(
 	ConfigDynamicPaths.configViewsPath([
 		path.join(__dirname, "../views"),
 		path.join(__dirname, "../../order/views"),
-		path.join(__dirname, "../../client/views")
+		path.join(__dirname, "../../client/views"),
 	])
 );
 
 const bookController = new BookControllerFactory().make();
 const clientController = new ClientControllerFactory().make();
-
 
 adminRouter.get("/orders", (_: Request, res: Response) => {
 	res.render("ordersTable", {
@@ -98,6 +99,5 @@ adminRouter.get("/clients", async (req: Request, res: Response) => {
 adminRouter.get("/clients/:id", async (req: Request, res: Response) => {
 	await clientController.renderClientDetailsAdmin(req, res);
 });
-
 
 export default adminRouter;
