@@ -82,8 +82,4 @@ export default class Password extends DomainEntity {
 	private comparePasswords(plainTextPassword: string) {
 		return compareSync(plainTextPassword, this.value);
 	}
-
-	public inactivate() {
-		this.isActive = false;
-	}
 }
