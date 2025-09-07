@@ -1,9 +1,8 @@
-import ICRUDController from "../../generic/controller/ICRUDController";
 import {Request, Response} from "express";
 import {AddressService} from "../service/AddressService";
 import AddressModel from "../model/AddressModel";
 
-export default class AddressController implements ICRUDController<AddressModel> {
+export default class AddressController {
 	private readonly service: AddressService
 
 	constructor(service: AddressService) {
