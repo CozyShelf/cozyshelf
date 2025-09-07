@@ -31,14 +31,6 @@ clientRouter.delete("/:id", async (req: Request, res: Response) => {
 	await clientController.delete(req, res);
 });
 
-clientRouter.get("/admin", async (req: Request, res: Response) => {
-	await clientController.renderClientTable(req, res);
-});
-
-clientRouter.get("/admin/:id", async (req: Request, res: Response) => {
-	await clientController.renderClientDetailsAdmin(req, res);
-});
-
 clientRouter.get("/register", (req: Request, res: Response) => {
 	clientController.renderClientRegistration(req, res);
 });

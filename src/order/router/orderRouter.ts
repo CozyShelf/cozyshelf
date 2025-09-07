@@ -20,25 +20,6 @@ orderRouter.get("/", (req: Request, res: Response) => {
 	});
 });
 
-orderRouter.get("/admin", (req: Request, res: Response) => {
-	res.render("ordersTable", {
-		title: "Pedidos",
-		currentHeaderTab: "profile",
-		layout: "defaultLayoutAdmin",
-		currentUrl: "orders",
-		isAdmin: true
-	});
-});
-
-orderRouter.get("/admin/exchange-orders", (req: Request, res: Response) => {
-	res.render("exchangeOrdersTable", {
-		title: "Pedidos de Troca",
-		currentHeaderTab: "profile",
-		layout: "defaultLayoutAdmin",
-		currentUrl: "exchange-orders",
-	});
-});
-
 orderRouter.get("/:id", async (req: Request, res: Response) => {
 	const books = await bookController.getAll(req, res);
 	res.render("orderDetails", {
@@ -49,19 +30,6 @@ orderRouter.get("/:id", async (req: Request, res: Response) => {
 		books: books,
 		currentUrl: "orders",
 		isAdmin: false
-	});
-});
-
-orderRouter.get("/admin/:id", async (req: Request, res: Response) => {
-	const books = await bookController.getAll(req, res);
-	res.render("orderDetails", {
-		title: "Detalhes do Pedido",
-		currentHeaderTab: "profile",
-		layout: "defaultLayoutAdmin",
-		isNewOrder: false,
-		books: books,
-		currentUrl: "orders",
-		isAdmin: true
 	});
 });
 
