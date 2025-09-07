@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import ICRUDController from "../../generic/controller/ICRUDController";
 import BookService from "../service/BookService";
 import Book from "../domain/Book";
 
-export default class BookController implements ICRUDController<Book> {
+export default class BookController {
 	private readonly service: BookService;
 	private readonly DEFAULT_PAGINATION_PAGE = 1;
 	private readonly DEFAULT_PAGINATION_LIMIT = 6;
