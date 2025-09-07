@@ -12,7 +12,6 @@ export default class UserSeeder {
 	static async execute(dataSource: DataSource): Promise<void> {
 		try {
 			const clientDao = dataSource.getRepository(ClientModel);
-			const countryDao = dataSource.getRepository(CountryModel);
 			const cardFlagDao = dataSource.getRepository(CardFlagModel);
 
 			for (const user of users) {
@@ -37,25 +36,31 @@ export default class UserSeeder {
 
 				const cards = [];
 				for (const cardInfo of user.cards) {
-					let cardFlag = await cardFlagDao.findOneBy(cardInfo.cardFlag);
-					if (cardFlag) {
-						const card = new CreditCardModel(
-							cardInfo.number,
-							cardInfo.nameOnCard,
-							cardInfo.cvv,
-							cardInfo.isPreferred,
-							cardFlag
-						);
-						cards.push(card);
+					const card = new CreditCardModel(
+						cardInfo.number,
+						cardInfo.nameOnCard,
+						cardInfo.cvv,
+						cardInfo.isPreferred,
+						cardInfo.cardFlag.description
+					);
+
+					const flagModel = await cardFlagDao.findOneBy({
+						description: card.flagDescription,
+					});
+
+					if (flagModel) {
+						card.cardFlag = flagModel;
 					}
+
+					cards.push(card);
 				}
 
 				const addresses = [];
 				for (const addr of user.addresses) {
-					let country = await countryDao.findOneBy(addr.country);
-					if (!country) {
-						country = await countryDao.save(countryDao.create(addr.country));
-					}
+					const countryModel = new CountryModel(
+						addr.country.name,
+						addr.country.acronym
+					);
 
 					const address = new AddressModel(
 						addr.zipCode,
@@ -68,7 +73,7 @@ export default class UserSeeder {
 						addr.observation,
 						addr.city,
 						addr.state,
-						country,
+						countryModel,
 						addr.type
 					);
 
