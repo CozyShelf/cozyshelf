@@ -22,6 +22,8 @@ export default class CreditCardModel extends GenericModel {
 	@JoinColumn()
 	cardFlag!: CardFlagModel;
 
+	flagDescription: string;
+
 	@ManyToOne(() => ClientModel, (client: ClientModel) => client.cards)
 	@JoinColumn()
 	client!: ClientModel;
@@ -30,13 +32,15 @@ export default class CreditCardModel extends GenericModel {
 		number: string,
 		nameOnCard: string,
 		cvv: string,
-		isPreferred: boolean
+		isPreferred: boolean,
+		flagDescription: string
 	) {
 		super();
 		this.number = number;
 		this.nameOnCard = nameOnCard;
 		this.cvv = cvv;
 		this.isPreferred = isPreferred;
+		this.flagDescription = flagDescription;
 	}
 
 	public toEntity(): CreditCard {
@@ -59,7 +63,8 @@ export default class CreditCardModel extends GenericModel {
 			card.number,
 			card.nameOnCard,
 			card.cvv,
-			card.isPreferred
+			card.isPreferred,
+			card.cardFlag.description
 		);
 	}
 }
