@@ -29,10 +29,18 @@ export default class TelephoneModel extends GenericModel {
 	}
 
 	public static fromEntity(telephone: Telephone): TelephoneModel {
-		return new TelephoneModel(
-			telephone.ddd,
-			telephone.number,
-			telephone.type
-		);
+		return new TelephoneModel(telephone.ddd, telephone.number, telephone.type);
+	}
+
+	public updateFromEntity(updatedTelephone: Telephone) {
+		if (this.number != updatedTelephone.number) {
+			this.number = updatedTelephone.number;
+		}
+		if (this.ddd != updatedTelephone.ddd) {
+			this.ddd = updatedTelephone.ddd;
+		}
+		if (this.type != updatedTelephone.type) {
+			this.type = updatedTelephone.type;
+		}
 	}
 }

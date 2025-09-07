@@ -7,7 +7,7 @@ const users = [
 	{
 		name: "João Silva",
 		birthDate: new Date("1990-05-15"),
-		cpf: "12345678901",
+		cpf: "123.456.378-21",
 		email: "joao.silva@email.com",
 		password: "Senha123@@",
 		ranking: 5,

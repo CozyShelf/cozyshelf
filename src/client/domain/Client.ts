@@ -10,6 +10,8 @@ import InvalidAddressesProvided from "./exceptions/InvalidAddressesProvided";
 import InvalidCardsProvided from "./exceptions/InvalidCardsProvided";
 import INewClientInputData from "../types/INewClientRequestData";
 import DomainEntity from "../../generic/domain/DomainEntity";
+import IUpdateClientData from "../types/IUpdateClientData";
+import InvalidCPFFormat from "./exceptions/InvalidCPFFormat";
 
 export default class Client extends DomainEntity {
 	_name!: string;
@@ -73,6 +75,11 @@ export default class Client extends DomainEntity {
 	}
 
 	set cpf(value: string) {
+		const cpfRegex: RegExp = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+		if (!cpfRegex.test(value)) {
+			throw new InvalidCPFFormat(value);
+		}
+
 		this._cpf = value;
 	}
 
@@ -202,5 +209,26 @@ export default class Client extends DomainEntity {
 			),
 			requestData.cards.map((cardData) => CreditCard.fromRequestData(cardData))
 		);
+	}
+
+	public updateData(updatedData: IUpdateClientData) {
+		if (updatedData.name) {
+			this.name = updatedData.name;
+		}
+		if (updatedData.birthDate) {
+			this.birthDate = updatedData.birthDate;
+		}
+		if (updatedData.cpf) {
+			this.cpf = updatedData.cpf;
+		}
+		if (updatedData.email) {
+			this.email = updatedData.email;
+		}
+		if (updatedData.gender) {
+			this.gender = updatedData.gender;
+		}
+		if (updatedData.telephone) {
+			this.telephone.updateData(updatedData.telephone);
+		}
 	}
 }

@@ -4,6 +4,7 @@ import Client from "../domain/Client";
 import INewClientInputData from "../types/INewClientRequestData";
 import ClientListDTO from "../dto/ClientListDTO";
 import ClientDetailsDTO from "../dto/ClientDetailsDTO";
+import IUpdateClientData from "../types/IUpdateClientData";
 
 export default class ClientController {
 	public constructor(private readonly service: ClientService) {}
@@ -49,8 +50,10 @@ export default class ClientController {
 	public async update(req: Request, res: Response): Promise<void> {
 		try {
 			const { id } = req.params;
-			const client = Client.fromRequestData(req.body as INewClientInputData);
-			const updatedClient = await this.service.update(id, client);
+			const updatedClient = await this.service.update(
+				id,
+				req.body as IUpdateClientData
+			);
 
 			res.status(200).json({
 				message: `Client ${updatedClient.name} updated successfully`,
@@ -109,7 +112,7 @@ export default class ClientController {
 		});
 	}
 
-	public renderPasswordDetails(req: Request, res: Response) {
+	public renderPasswordDetails(_: Request, res: Response) {
 		res.render("passwordDetail", {
 			title: "Alterar Senha",
 			currentHeaderTab: "profile",

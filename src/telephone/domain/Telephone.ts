@@ -3,6 +3,7 @@ import MandatoryParameter from "../../generic/domain/exceptions/MandatoryParamet
 import ITelephoneData from "../types/ITelephoneData";
 import DomainEntity from "../../generic/domain/DomainEntity";
 import InvalidPhoneNumber from "./exceptions/InvalidPhoneNumber";
+import IUpdateTelephoneData from "../types/IUpdateTelephoneData";
 
 export default class Telephone extends DomainEntity {
 	private _ddd!: string;
@@ -53,5 +54,17 @@ export default class Telephone extends DomainEntity {
 
 	public static fromRequestData(requestData: ITelephoneData) {
 		return new Telephone(requestData.ddd, requestData.number, requestData.type);
+	}
+
+	public updateData(updatedData: IUpdateTelephoneData) {
+		if (updatedData.number) {
+			this.number = updatedData.number;
+		}
+		if (updatedData.ddd) {
+			this.ddd = updatedData.ddd;
+		}
+		if (updatedData.type) {
+			this.type = updatedData.type;
+		}
 	}
 }

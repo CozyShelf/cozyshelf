@@ -99,7 +99,7 @@ export default class ClientModel extends GenericModel {
 	}
 
 	public static fromEntity(client: Client): ClientModel {
-		return new ClientModel(
+		const clientModel = new ClientModel(
 			client.name,
 			client.birthDate,
 			client.cpf,
@@ -111,5 +111,26 @@ export default class ClientModel extends GenericModel {
 			client.addresses.map((address) => AddressModel.fromEntity(address)),
 			client.cards.map((card) => CreditCardModel.fromEntity(card))
 		);
+
+		return clientModel;
+	}
+
+	public updateFromEntity(updatedClient: Client) {
+		if (this.name != updatedClient.name) {
+			this.name = updatedClient.name;
+		}
+		if (this.birthDate != updatedClient.birthDate) {
+			this.birthDate = updatedClient.birthDate;
+		}
+		if (this.cpf != updatedClient.cpf) {
+			this.cpf = updatedClient.cpf;
+		}
+		if (this.email != updatedClient.email) {
+			this.email = updatedClient.email;
+		}
+		if (this.gender != updatedClient.gender) {
+			this.gender = updatedClient.gender;
+		}
+		this.telephone.updateFromEntity(updatedClient.telephone);
 	}
 }

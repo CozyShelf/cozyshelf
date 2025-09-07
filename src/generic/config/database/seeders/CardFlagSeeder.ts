@@ -1,4 +1,3 @@
-
 import { DataSource } from "typeorm";
 import CardFlagModel from "../../../../card/model/CardFlagModel";
 
@@ -12,9 +11,9 @@ export default class CardFlagSeeder {
 		}
 
 		const cardFlags = [
-			{ description: "Visa" },
-			{ description: "Elo" },
-			{ description: "Mastercard" },
+			new CardFlagModel("Visa"),
+			new CardFlagModel("Elo"),
+			new CardFlagModel("Mastercard"),
 		];
 
 		await cardFlagDAO.save(cardFlags);

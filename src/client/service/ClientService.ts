@@ -2,6 +2,7 @@ import CardFlagDAO from "../../card/dao/typeORM/CardFlagDAO";
 import ClientDAO from "../dao/typeORM/ClientDAO";
 import Client from "../domain/Client";
 import ClientModel from "../model/ClientModel";
+import IUpdateClientData from "../types/IUpdateClientData";
 import NoClientsFound from "./exceptions/NoClientsFound";
 
 export class ClientService {
@@ -45,17 +46,22 @@ export class ClientService {
 		return clientModel.toEntity();
 	}
 
-	public async update(id: string, client: Client): Promise<Client> {
-		const existingClient = await this.clientDAO.findById(id);
-		if (!existingClient) {
+	public async update(
+		id: string,
+		updatedData: IUpdateClientData
+	): Promise<Client> {
+		const existingClientModel = await this.clientDAO.findById(id);
+		if (!existingClientModel) {
 			throw new NoClientsFound(id);
 		}
 
-		client.id = id;
-		const clientModel = ClientModel.fromEntity(client);
+		const updatedEntity = existingClientModel.toEntity();
+		updatedEntity.updateData(updatedData);
 
-		const updatedClient = await this.clientDAO.save(clientModel);
-		return updatedClient.toEntity();
+		existingClientModel.updateFromEntity(updatedEntity);
+		const updatedModel = await this.clientDAO.save(existingClientModel);
+
+		return updatedModel.toEntity();
 	}
 
 	public async delete(id: string): Promise<void> {
