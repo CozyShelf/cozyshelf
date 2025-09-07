@@ -13,6 +13,14 @@ export default class ClientDAO implements IDAO<ClientModel> {
 		return await this.repository.save(client);
 	}
 
+	public async findByCPF(cpf: string) {
+		return await this.repository.findOneBy({ cpf });
+	}
+
+	public async findByEmail(email: string) {
+		return await this.repository.findOneBy({ email });
+	}
+
 	public async findAll(): Promise<ClientModel[] | null> {
 		return await this.repository.find({ where: { isActive: true } });
 	}

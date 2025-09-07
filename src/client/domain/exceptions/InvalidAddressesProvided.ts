@@ -3,6 +3,10 @@ import DomainException from "../../../generic/domain/exceptions/DomainException"
 
 export default class InvalidAddressesProvided extends DomainException {
 	constructor(addressType: AddressType) {
-		super(`At least one "${addressType}" address must be provided`);
+		super(
+			`É necessário o cadastro de ao menos um endereço de ${
+				addressType == AddressType.BILLING ? "entrega" : "cobrança"
+			}.`
+		);
 	}
 }

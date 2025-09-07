@@ -11,11 +11,19 @@ export default class ClientController {
 
 	public async create(req: Request, res: Response): Promise<void> {
 		try {
+			if (!req.body || Object.keys(req.body).length === 0) {
+				res.status(400).json({
+					error: true,
+					message: 'Dados do cliente são obrigatórios para o cadastro!'
+				});
+				return;
+			}
+
 			const client = Client.fromRequestData(req.body as INewClientInputData);
 			const createdClient = await this.service.create(client);
 
-			res.status(200).json({
-				message: `Client ${createdClient.name} created successfully`,
+			res.status(201).json({
+				message: `Cliente ${createdClient.name} criado com sucesso! Bem-vindo à CozyShelf!`,
 				clientId: createdClient.id,
 			});
 		} catch (e) {
@@ -29,7 +37,12 @@ export default class ClientController {
 			const clientListDTOs = clients.map((client) =>
 				ClientListDTO.fromEntity(client)
 			);
-			res.status(200).json(clientListDTOs);
+
+			res.status(200).json({
+				message: `${clients.length} cliente(s) encontrado(s)!`,
+				count: clients.length,
+				data: clientListDTOs
+			});
 		} catch (e) {
 			this.createErrorResponse(res, e as Error);
 		}
@@ -39,9 +52,12 @@ export default class ClientController {
 		try {
 			const { id } = req.params;
 			const client = await this.service.getById(id);
-
 			const clientDetailsDTO = ClientDetailsDTO.fromEntity(client);
-			res.status(200).json(clientDetailsDTO);
+
+			res.status(200).json({
+				message: `Dados do cliente carregados com sucesso!`,
+				data: clientDetailsDTO
+			});
 		} catch (e) {
 			this.createErrorResponse(res, e as Error);
 		}
@@ -50,13 +66,22 @@ export default class ClientController {
 	public async update(req: Request, res: Response): Promise<void> {
 		try {
 			const { id } = req.params;
+
+			if (!req.body || Object.keys(req.body).length === 0) {
+				res.status(400).json({
+					error: true,
+					message: 'Dados para atualização são obrigatórios!'
+				});
+				return;
+			}
+
 			const updatedClient = await this.service.update(
 				id,
 				req.body as IUpdateClientData
 			);
 
 			res.status(200).json({
-				message: `Client ${updatedClient.name} updated successfully`,
+				message: `Dados do cliente ${updatedClient.name} atualizados com sucesso!`,
 				clientId: updatedClient.id,
 			});
 		} catch (e) {
@@ -67,8 +92,20 @@ export default class ClientController {
 	public async delete(req: Request, res: Response): Promise<void> {
 		try {
 			const { id } = req.params;
+
+			if (!id || id.trim() === '') {
+				res.status(400).json({
+					error: true,
+					message: 'ID do cliente é obrigatório para exclusão!'
+				});
+				return;
+			}
+
 			await this.service.delete(id);
-			res.status(200).json({ message: "Client deleted successfully" });
+			res.status(200).json({
+				message: `Cliente removido com sucesso!`,
+				clientId: id
+			});
 		} catch (e) {
 			this.createErrorResponse(res, e as Error);
 		}
@@ -123,8 +160,22 @@ export default class ClientController {
 	}
 
 	private createErrorResponse(res: Response, e: Error) {
-		res.status(400).json({
-			message: (e as Error).message,
+		console.error('[ERROR] ❌ Erro na operação:', e.message);
+
+		let statusCode = 400;
+
+		if (e.message.includes('não encontrado') || e.message.includes('Cliente não encontrado')) {
+			statusCode = 404;
+		} else if (e.message.includes('já cadastrado') || e.message.includes('Cliente já cadastrado')) {
+			statusCode = 409;
+		} else if (e.message.includes('obrigatório') || e.message.includes('inválido')) {
+			statusCode = 422;
+		}
+
+		res.status(statusCode).json({
+			error: true,
+			message: e.message,
+			timestamp: new Date().toISOString(),
 		});
 	}
 }

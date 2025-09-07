@@ -3,6 +3,7 @@ import ClientDAO from "../dao/typeORM/ClientDAO";
 import Client from "../domain/Client";
 import ClientModel from "../model/ClientModel";
 import IUpdateClientData from "../types/IUpdateClientData";
+import ClientAlreadyExists from "./exceptions/ClientAlreadyExists";
 import NoClientsFound from "./exceptions/NoClientsFound";
 
 export class ClientService {
@@ -12,8 +13,12 @@ export class ClientService {
 	) {}
 
 	public async create(client: Client): Promise<Client> {
-		const clientModel = ClientModel.fromEntity(client);
+		const clientAlreadyExists = await this.verifyIfClientAlreadyExists(client);
+		if (clientAlreadyExists) {
+			throw new ClientAlreadyExists();
+		}
 
+		const clientModel = ClientModel.fromEntity(client);
 		for (const cardModel of clientModel.cards) {
 			const flagModel = await this.cardFlagDAO.getFlagByDescription(
 				cardModel.flagDescription
@@ -26,6 +31,13 @@ export class ClientService {
 
 		const savedClient = await this.clientDAO.save(clientModel);
 		return savedClient.toEntity();
+	}
+
+	private async verifyIfClientAlreadyExists(client: Client) {
+		const alreadyExistsWithEmail = await this.clientDAO.findByEmail(client.email);
+		const alreadyExistsWithCPF = await this.clientDAO.findByCPF(client.cpf);
+
+		return !!alreadyExistsWithEmail || !!alreadyExistsWithCPF;
 	}
 
 	public async getAll(): Promise<Client[]> {
