@@ -32,13 +32,16 @@ export default class Password extends DomainEntity {
 			throw new InvalidPasswordConfirmation();
 		}
 
-		const encryptedPassword = Password.encrytPassword(requestData.value);
-
+		const encryptedPassword = Password.encrytPassword(password);
 		return new Password(encryptedPassword);
 	}
 
-	private static encrytPassword(notEncryptedPassword: string) {
+	public static encrytPassword(notEncryptedPassword: string) {
 		const salt = genSaltSync(10);
 		return hashSync(notEncryptedPassword, salt);
+	}
+
+	public static isEncrypted(value: string): boolean {
+		return /^\$2[abxy]\$\d{2}\$.{53}$/.test(value);
 	}
 }

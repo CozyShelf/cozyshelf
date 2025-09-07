@@ -36,17 +36,6 @@ export default class CardDetailsDTO {
 		);
 	}
 
-	public static fromModel(cardModel: CreditCardModel): CardDetailsDTO {
-		return new CardDetailsDTO(
-			cardModel.id,
-			cardModel.number,
-			cardModel.nameOnCard,
-			cardModel.cvv,
-			cardModel.isPreferred,
-			cardModel.flagDescription
-		);
-	}
-
 	public get maskedNumber(): string {
 		if (this.number.length < 4) return this.number;
 		const lastFour = this.number.slice(-4);

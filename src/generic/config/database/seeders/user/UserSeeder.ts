@@ -3,6 +3,7 @@ import ClientModel from "../../../../../client/model/ClientModel";
 import AddressModel from "../../../../../address/model/AddressModel";
 import CountryModel from "../../../../../address/model/CountryModel";
 import PasswordModel from "../../../../../password/model/PasswordModel";
+import Password from "../../../../../password/domain/Password";
 import TelephoneModel from "../../../../../telephone/model/TelephoneModel";
 import CreditCardModel from "../../../../../card/model/CreditCardModel";
 import CardFlagModel from "../../../../../card/model/CardFlagModel";
@@ -26,7 +27,9 @@ export default class UserSeeder {
 					continue;
 				}
 
-				const password = new PasswordModel(user.password);
+				const password = new PasswordModel(
+					Password.encrytPassword(user.password)
+				);
 
 				const telephone = new TelephoneModel(
 					user.telephone.ddd,

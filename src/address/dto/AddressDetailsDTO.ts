@@ -65,24 +65,6 @@ export default class AddressDetailsDTO {
 		);
 	}
 
-	public static fromModel(addressModel: AddressModel): AddressDetailsDTO {
-		return new AddressDetailsDTO(
-			addressModel.id,
-			addressModel.shortPhrase,
-			addressModel.zipCode,
-			addressModel.streetType,
-			addressModel.streetName,
-			addressModel.number,
-			addressModel.residenceType || "",
-			addressModel.neighborhood,
-			addressModel.city,
-			addressModel.state,
-			addressModel.country.name,
-			addressModel.type,
-			addressModel.observation || ""
-		);
-	}
-
 	public get formattedZipCode(): string {
 		return this.zipCode.replace(/(\d{5})(\d{3})/, "$1-$2");
 	}

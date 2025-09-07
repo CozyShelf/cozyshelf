@@ -1,5 +1,4 @@
 import Client from "../domain/Client";
-import ClientModel from "../model/ClientModel";
 import Gender from "../domain/enums/Gender";
 import AddressDetailsDTO from "../../address/dto/AddressDetailsDTO";
 import CardDetailsDTO from "../../card/dto/CardDetailsDTO";
@@ -56,24 +55,6 @@ export default class ClientDetailsDTO {
 			client.telephone.type,
 			client.addresses.map((address) => AddressDetailsDTO.fromEntity(address)),
 			client.cards.map((card) => CardDetailsDTO.fromEntity(card))
-		);
-	}
-
-	public static fromModel(clientModel: ClientModel): ClientDetailsDTO {
-		return new ClientDetailsDTO(
-			clientModel.id,
-			clientModel.name,
-			clientModel.email,
-			clientModel.cpf,
-			clientModel.birthDate,
-			clientModel.gender,
-			clientModel.ranking,
-			clientModel.telephone.number,
-			clientModel.telephone.type,
-			clientModel.addresses.map((address) =>
-				AddressDetailsDTO.fromModel(address)
-			),
-			clientModel.cards.map((card) => CardDetailsDTO.fromModel(card))
 		);
 	}
 
