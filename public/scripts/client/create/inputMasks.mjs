@@ -108,8 +108,6 @@ export function getCleanValue(input) {
         case 'card-number':
         case 'address-zip-code':
             return value.replace(/\D/g, '');
-        case 'card-expiration':
-            return value; // Mantém o formato MM/AAAA
         default:
             return value;
     }

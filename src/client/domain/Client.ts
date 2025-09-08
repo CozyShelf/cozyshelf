@@ -200,7 +200,7 @@ export default class Client extends DomainEntity {
 
 		this._cards = cards;
 	}
-
+	
 	public verifyPreferredCards(newCard: CreditCard): void {
 		if (newCard.isPreferred) {
 			const hasPreferred = this._cards.some((card) => card.isPreferred);

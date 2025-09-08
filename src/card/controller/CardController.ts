@@ -23,7 +23,7 @@ export default class CardController {
 
 			const card = CreditCard.fromRequestData(body);
 			const createdCard = await this.service.create(clientId, card);
-
+			
 			res.status(201).json({
 				message: `Cartão ${createdCard.cardFlag.description} criado com sucesso para o cliente de id: ${clientId}!`,
 				cardId: createdCard.id,
@@ -123,33 +123,45 @@ export default class CardController {
 		}
 	}
 
-	public renderCardsTable(_: Request, res: Response) {
+	public async renderCardsTable(req: Request, res: Response) {
+		const clientId = req.params.id;
+		const cardsEntity = await this.service.getByClientId(clientId);
+		const cards = cardsEntity.map((card) => CardListDTO.fromEntity(card));
+
 		res.render("cardTable", {
 			title: "Meus Cartões",
 			currentHeaderTab: "profile",
 			layout: "detailsLayout",
 			currentUrl: "card",
 			isAdmin: false,
+			cards,
 		});
 	}
 
-	public renderCardDetails(_: Request, res: Response) {
+	public async renderCardDetails(req: Request, res: Response) {
+		const cardId = req.params.id;
+
+		const cardEntity = await this.service.getById(cardId);
+
 		res.render("cardDetails", {
 			title: "Detalhes do Cartão",
 			currentHeaderTab: "profile",
 			layout: "detailsLayout",
 			currentUrl: "card",
 			isAdmin: false,
+			card: CardDetailsDTO.fromEntity(cardEntity),
 		});
 	}
 
 	public renderCreateCardForm(_: Request, res: Response) {
+		console.log("Rendering create card form");
 		res.render("cardDetails", {
 			title: "Novo Cartão",
 			currentHeaderTab: "profile",
 			layout: "detailsLayout",
 			currentUrl: "card",
 			isAdmin: false,
+			card: null,
 		});
 	}
 

@@ -1,40 +1,51 @@
 <div class="flex flex-col w-full gap-10 mt-9 mb-15 px-32">
-	<div class="flex justify-between items-center">
-		<h1 class="font-semibold text-[20px]">Cartões de Crédito (1)</h1>
-		<a href="/cards/new"
-			class="flex items-center gap-2 px-4 py-1.5 bg-brown text-white rounded hover:bg-dark-brown text-sm">
-			<span class="material-symbols-outlined text-base">add</span>
-			<span class="font-semibold">Adicionar</span>
-		</a>
-	</div>
-	<table class="min-w-full border-none rounded-lg overflow-hidden">
-		<thead class="bg-dark-brown text-white text-sm uppercase">
-			<tr>
-				<th class="px-6 py-3 text-left font-semibold">Bandeira</th>
-				<th class="px-6 py-3 text-left font-semibold">Número</th>
-				<th class="px-6 py-3 text-left font-semibold">Preferencial</th>
-				<th class="px-6 py-3 text-left font-semibold">Ações</th>
-			</tr>
-		</thead>
-		<tbody class="divide-y divide-light-brown text-sm text-gray-2 bg-lighter-brown">
-			<tr>
-				<td class="px-6 py-3 font-medium text-gray-2">Visa</td>
-				<td class="px-6 py-3">0025 **** **** 06</td>
-				<td class="px-6 py-3">
-					<span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
-						Preferencial
-					</span>
-				</td>
-				<td class="px-6 py-3 flex gap-2">
-					<a href="/cards/id" class="hover:text-gray flex justify-center items-center">
-						<span class="material-symbols-outlined text-base">visibility</span>
-					</a>
-					<a href="/cards/delete/id" class="hover:text-gray flex justify-center items-center delete-btn">
-						<span class="material-symbols-outlined text-base">delete</span>
-					</a>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+    <div class="flex justify-between items-center">
+        <h1 class="font-semibold text-[20px]">Cartões de Crédito (<%= cards.length %>)</h1>
+        <a href="/cards/new"
+            class="flex items-center gap-2 px-4 py-1.5 bg-brown text-white rounded hover:bg-dark-brown text-sm">
+            <span class="material-symbols-outlined text-base">add</span>
+            <span class="font-semibold">Adicionar</span>
+        </a>
+    </div>
+    <table class="min-w-full border-none rounded-lg overflow-hidden">
+        <thead class="bg-dark-brown text-white text-sm uppercase">
+            <tr>
+                <th class="px-6 py-3 text-left font-semibold">Bandeira</th>
+                <th class="px-6 py-3 text-left font-semibold">Número</th>
+                <th class="px-6 py-3 text-left font-semibold">Preferencial</th>
+                <th class="px-6 py-3 text-left font-semibold">Ações</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-light-brown text-sm text-gray-2 bg-lighter-brown">
+            <% cards.forEach(card => { %>
+            <tr>
+                <td class="px-6 py-3 font-medium text-gray-2"><%= card.flagDescription %></td>
+                <td class="px-6 py-3"><%= card.maskedNumber %></td>
+                <td class="px-6 py-3">
+                    <% if (card.isPreferred) { %>
+                        <span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
+                            Sim
+                        </span>
+                    <% } %>
+                    <% if (!card.isPreferred) { %>
+                        <span class="bg-red-600 text-white px-2 py-0.5 rounded-full text-xs">
+                            Não
+                        </span>
+                    <% } %>
+                </td>
+                <td class="px-6 py-3 flex gap-2">
+                    <a href="/cards/<%= card.id %>" class="hover:text-gray flex justify-center items-center">
+                        <span class="material-symbols-outlined text-base">visibility</span>
+                    </a>
+                    <a href="/api/cards/<%= card.id %>" 
+                        class="hover:text-gray flex justify-center items-center delete-btn"
+                        data-preferred="<%= card.isPreferred %>">
+                        <span class="material-symbols-outlined text-base">delete</span>
+                    </a>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
 </div>
-<script src="/scripts/deleteSubmit.mjs"></script>
+<script src="/scripts/card/inactiveCard.mjs" type="module"></script>

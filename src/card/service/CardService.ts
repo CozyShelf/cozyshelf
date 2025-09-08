@@ -13,6 +13,7 @@ import InexistentCardFlag from "./exceptions/InexistentCardFlag";
 import CardFlag from "../domain/CardFlag";
 import NoCardFlagsFound from "./exceptions/NoCardFlagsFound";
 import CardAlreadyExists from "./exceptions/CardAlreadyExists";
+import CannotRemoveLastPreferredCard from "../../client/domain/exceptions/CannotRemoveLastPreferredCard";
 
 export class CardService {
 	constructor(
@@ -22,12 +23,14 @@ export class CardService {
 	) {}
 
 	async create(clientId: string, card: CreditCard): Promise<CreditCard> {
+
 		const existingClient = await this.validateClientExists(clientId);
 		await this.validateCardNumberIsUnique(card.number);
 		const cardFlag = await this.validateCardFlag(card.cardFlag.description);
 
-		const clientEntity = existingClient.toEntity();
-		clientEntity.verifyPreferredCards(card);
+		if (card.isPreferred) {
+        	await this.unsetOtherPreferredCards(clientId);
+    	}
 
 		const newCardModel = this.createCardModel(card, existingClient, cardFlag);
 		const savedCardModel = await this.cardDAO.save(newCardModel);
@@ -43,6 +46,16 @@ export class CardService {
 		return existingClient;
 	}
 
+	private async unsetOtherPreferredCards(clientId: string): Promise<void> {
+		const cards = await this.cardDAO.findByClientId(clientId);
+		for (const card of cards) {
+			if (card.isPreferred) {
+				card.isPreferred = false;
+				await this.cardDAO.save(card);
+			}
+		}
+	}
+	
 	private async validateCardNumberIsUnique(cardNumber: string): Promise<void> {
 		const existingCard = await this.cardDAO.findByCardNumber(cardNumber);
 		if (existingCard) {
@@ -120,10 +133,18 @@ export class CardService {
 
 		const updatedCardEntity = existingCard.toEntity();
 		updatedCardEntity.updateData(updateData);
+		console.log("Updated Card Entity:", updatedCardEntity);
 
 		if (updateData.isPreferred !== undefined) {
-			const clientEntity = existingCard.client.toEntity();
-			clientEntity.verifyCardUpdate(id, updatedCardEntity);
+			console.log("Updated Card Entity:", updatedCardEntity);
+
+			if (updateData.isPreferred === true) {
+				await this.unsetOtherPreferredCards(existingCard.client.id);
+			} 
+
+			if(existingCard.isPreferred && updateData.isPreferred === false) {
+				throw new CannotRemoveLastPreferredCard();
+			}
 		}
 
 		if (updateData.number && updateData.number !== existingCard.number) {

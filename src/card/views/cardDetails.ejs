@@ -8,7 +8,7 @@
                     <%- include('buttons/toggleButton.ejs', { 
                         toggleName: "card-is-preferred",
                         toggleMessage: "Marcar como preferencial",
-                        isChecked: card.isPreferred,
+                        isChecked: card?.isPreferred,
                     })%>
                 </div>
 
@@ -20,7 +20,7 @@
                                    class="border rounded-[5px] border-gray h-10 p-2.5" 
                                    type="text"
                                    name="card-number" 
-                                   value="<%= card.number ? card.formattedNumber : '' %>"
+                                   value="<%= card?.formattedNumber ? card.formattedNumber : '' %>"
                                    required maxlength="19" minlength="19">
                         </label>
                         <label class="flex flex-col text-[12px] gap-3 w-full">
@@ -29,17 +29,8 @@
                                    class="border rounded-[5px] border-gray h-10 p-2.5" 
                                    type="text" 
                                    name="card-cvv"
-                                   value="<%= card.cvv ? card.cvv : '' %>"
+                                   value="<%= card?.cvv ? card.cvv : '' %>"
                                    required maxlength="3">
-                        </label>
-                        <label class="flex flex-col text-[12px] gap-3 w-full">
-                            Validade *
-                            <input placeholder="MM/AA" 
-                                   class="border rounded-[5px] border-gray h-10 p-2.5" 
-                                   type="text" 
-                                   name="card-expiration"
-                                   value="<%= card.expiration ? card.formattedExpiration : '' %>"
-                                   required maxlength="5" minlength="5">
                         </label>
                     </div>
                     <div class="flex flex-row gap-10">
@@ -49,16 +40,16 @@
                                    class="border rounded-[5px] border-gray h-10 p-2.5" 
                                    type="text"
                                    name="card-impress-name" 
-                                   value="<%= card.nameOnCard ? card.nameOnCard : '' %>"
+                                   value="<%= card?.nameOnCard ? card.nameOnCard : '' %>"
                                    required maxlength="50">
                         </label>
                         <label class="flex flex-col text-[12px] gap-3 w-full">
                             Bandeira *
                             <select name="card-flag" class="border rounded-[5px] border-gray h-10 p-2.5" required>
                                 <option value="">Selecione...</option>
-                                <option value="Visa" <%= card && card.flagDescription === 'Visa' ? 'selected' : '' %>>Visa</option>
-                                <option value="Mastercard" <%= card && card.flagDescription === 'Mastercard' ? 'selected' : '' %>>Mastercard</option>
-                                <option value="Elo" <%= card && card.flagDescription === 'Elo' ? 'selected' : '' %>>Elo</option>
+                                <option value="Visa" <%= card?.flagDescription === 'Visa' ? 'selected' : '' %>>Visa</option>
+                                <option value="Mastercard" <%= card?.flagDescription === 'Mastercard' ? 'selected' : '' %>>Mastercard</option>
+                                <option value="Elo" <%= card?.flagDescription === 'Elo' ? 'selected' : '' %>>Elo</option>
                             </select>
                         </label>
                     </div>
@@ -67,13 +58,16 @@
         </div>
         <div class="flex flex-row justify-between items-center mt-2">
             <% if (!isAdmin) { %>
-                <a href="/cards" class="font-semibold text-sm bg-brown text-white rounded hover:bg-dark-brown w-[150px] h-10 flex items-center justify-center">
+                <a href="/cards/client/f4a4ecf2-e31e-41b2-8c9f-a36898e23d81" class="font-semibold text-sm bg-brown text-white rounded hover:bg-dark-brown w-[150px] h-10 flex items-center justify-center">
                     Voltar
                 </a>
             <% } %>
             <div class="flex flex-1 justify-end">
-                <button type="submit" class="font-medium text-sm text-white bg-light-green w-[150px] h-10 rounded-[5px] cursor-pointer hover:bg-dark-green flex items-center justify-center">
-                    Salvar
+                <button 
+                    type="submit" 
+                    id="<%= card ? 'updateCard' : 'newCard' %>" 
+                    class="font-medium text-sm text-white bg-light-green w-[150px] h-10 rounded-[5px] cursor-pointer hover:bg-dark-green flex items-center justify-center">
+                    <%= card ? 'Atualizar' : 'Salvar' %>
                 </button>
             </div>
         </div>

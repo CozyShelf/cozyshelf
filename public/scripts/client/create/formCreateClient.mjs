@@ -103,13 +103,11 @@ function buildRequestBody(form) {
         const isPreferred = isPreferredCheckbox ? isPreferredCheckbox.checked : false;
 
         const cardNumberInput = cardDiv.querySelector("input[name='card-number']");
-        const expirationInput = cardDiv.querySelector("input[name='card-expiration']");
         
         const card = {
             number: getCleanValue(cardNumberInput),
             nameOnCard: cardData.get("card-impress-name"),
             cvv: cardData.get("card-cvv"),
-            expiryDate: formatExpirationDate(expirationInput.value),
             isPreferred: isPreferred,
             cardFlag: {
                 description: cardData.get("card-flag")
@@ -126,20 +124,6 @@ function buildRequestBody(form) {
     };
 }
 
-function formatExpirationDate(dateString) {
-    if (!dateString) return '';
-    
-    // Se estiver no formato MM/AAAA, converte para MM/AA
-    if (dateString.includes('/')) {
-        const [month, year] = dateString.split('/');
-        if (year.length === 4) {
-            return `${month}/${year.slice(-2)}`;
-        }
-        return dateString;
-    }
-    
-    return dateString;
-}
 
 async function submitClientRegistration(requestBody) {
     try {
