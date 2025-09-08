@@ -1,5 +1,6 @@
 import DomainEntity from "../../generic/domain/DomainEntity";
 import ICountryData from "../types/ICountryData";
+import IUpdateCountryData from "../types/INewCountryData";
 
 export default class Country extends DomainEntity {
 	_name!: string;
@@ -29,5 +30,14 @@ export default class Country extends DomainEntity {
 
 	public static fromRequestData(requestData: ICountryData) {
 		return new Country(requestData.name, requestData.acronym);
+	}
+
+	public updateData(updatedCountryData: IUpdateCountryData) {
+		if (updatedCountryData.name) {
+			this.name = updatedCountryData.name;
+		}
+		if (updatedCountryData.acronym) {
+			this.acronym = updatedCountryData.acronym;
+		}
 	}
 }

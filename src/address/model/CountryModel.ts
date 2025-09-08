@@ -29,4 +29,13 @@ export default class CountryModel extends GenericModel {
 	public static fromEntity(country: Country): CountryModel {
 		return new CountryModel(country.name, country.acronym);
 	}
+
+	public updateFromEntity(updatedCountry: Country) {
+		if (updatedCountry.name != this.name) {
+			this.name = updatedCountry.name;
+		}
+		if (updatedCountry.acronym != this.acronym) {
+			this.acronym = updatedCountry.acronym;
+		}
+	}
 }

@@ -11,18 +11,12 @@ clientRouter.use(
 
 const clientController: ClientController = new ClientControllerFactory().make();
 
-clientRouter.get("/register", (req: Request, res: Response) => {
+clientRouter.get("/register/", (req: Request, res: Response) => {
 	clientController.renderClientRegistration(req, res);
 });
 
-clientRouter.get("/:id/password", (_: Request, res: Response) => {
-	res.render("passwordDetail", {
-		title: "Alterar Senha",
-		currentHeaderTab: "profile",
-		layout: "detailsLayout",
-		currentUrl: "password",
-		isAdmin: false,
-	});
+clientRouter.get("/:id/password", (req: Request, res: Response) => {
+	clientController.renderPasswordDetails(req, res);
 });
 
 clientRouter.get("/:id/", async (req: Request, res: Response) => {

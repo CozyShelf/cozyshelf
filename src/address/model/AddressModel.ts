@@ -115,4 +115,38 @@ export default class AddressModel extends GenericModel {
 			address.type
 		);
 	}
+
+	public updateFromEntity(updatedAddress: Address) {
+		if (updatedAddress.shortPhrase != this.shortPhrase) {
+			this.shortPhrase = updatedAddress.shortPhrase;
+		}
+		if (updatedAddress.zipCode != this.zipCode) {
+			this.zipCode = updatedAddress.zipCode;
+		}
+		if (updatedAddress.streetType != this.streetType) {
+			this.streetType = updatedAddress.streetType;
+		}
+		if (updatedAddress.streetName != this.streetName) {
+			this.streetName = updatedAddress.streetName;
+		}
+		if (updatedAddress.number != this.number) {
+			this.number = updatedAddress.number;
+		}
+		if (updatedAddress.residenceType != this.residenceType) {
+			this.residenceType = updatedAddress.residenceType;
+		}
+		if (updatedAddress.neighborhood != this.neighborhood) {
+			this.neighborhood = updatedAddress.neighborhood;
+		}
+		if (updatedAddress.city != this.city) {
+			this.city = updatedAddress.city;
+		}
+		if (updatedAddress.state != this.state) {
+			this.state = updatedAddress.state;
+		}
+		if (updatedAddress.observation != this.observation) {
+			this.observation = updatedAddress.observation;
+		}
+		this.country.updateFromEntity(updatedAddress.country);
+	}
 }

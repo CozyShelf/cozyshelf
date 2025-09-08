@@ -26,7 +26,27 @@ export default class ClientDAO implements IDAO<ClientModel> {
 	}
 
 	public async findById(id: string): Promise<ClientModel | null> {
-		return await this.repository.findOne({ where: { id, isActive: true } });
+		return await this.repository
+			.createQueryBuilder("client")
+			.leftJoinAndSelect(
+				"client.addresses",
+				"address",
+				"address.isActive = :addressActive",
+				{ addressActive: true }
+			)
+			.leftJoinAndSelect(
+				"client.cards",
+				"card",
+				"card.isActive = :cardActive",
+				{ cardActive: true }
+			)
+			.leftJoinAndSelect("client.password", "password")
+			.leftJoinAndSelect("client.telephone", "telephone")
+			.leftJoinAndSelect("address.country", "country")
+			.leftJoinAndSelect("card.cardFlag", "cardFlag")
+			.where("client.id = :id", { id })
+			.andWhere("client.isActive = :clientActive", { clientActive: true })
+			.getOne();
 	}
 
 	public async delete(id: string): Promise<void> {

@@ -4,6 +4,7 @@ import InvalidZipCode from "./exceptions/InvalidZipCode";
 import MandatoryParameter from "../../generic/domain/exceptions/MandatoryParameter";
 import IAddressData from "../types/IAddressData";
 import DomainEntity from "../../generic/domain/DomainEntity";
+import IUpdateAddressData from "../types/IUpdateAddressData";
 
 export default class Address extends DomainEntity {
 	_shortPhrase!: string;
@@ -198,5 +199,44 @@ export default class Address extends DomainEntity {
 			Country.fromRequestData(requestData.country),
 			requestData.type
 		);
+	}
+
+	public updateData(updatedAddresData: IUpdateAddressData) {
+		if (updatedAddresData.shortPhrase) {
+			this.shortPhrase = updatedAddresData.shortPhrase;
+		}
+		if (updatedAddresData.zipCode) {
+			this.zipCode = updatedAddresData.zipCode;
+		}
+		if (updatedAddresData.streetType) {
+			this.streetType = updatedAddresData.streetType;
+		}
+		if (updatedAddresData.streetName) {
+			this.streetName = updatedAddresData.streetName;
+		}
+		if (updatedAddresData.number) {
+			this.number = updatedAddresData.number;
+		}
+		if (updatedAddresData.residenceType) {
+			this.residenceType = updatedAddresData.residenceType;
+		}
+		if (updatedAddresData.neighborhood) {
+			this.neighborhood = updatedAddresData.neighborhood;
+		}
+		if (updatedAddresData.city) {
+			this.city = updatedAddresData.city;
+		}
+		if (updatedAddresData.state) {
+			this.state = updatedAddresData.state;
+		}
+		if (updatedAddresData.type) {
+			this.type = updatedAddresData.type;
+		}
+		if (updatedAddresData.observation) {
+			this.observation = updatedAddresData.observation;
+		}
+		if (updatedAddresData.country) {
+			this.country.updateData(updatedAddresData.country);
+		}
 	}
 }
