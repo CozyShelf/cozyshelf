@@ -1,4 +1,4 @@
-import { setupClientDetailsForm } from './formDetailsClient.mjs';
+import { setupClientDetailsForm } from './formUpdateDetailsClient.mjs';
 import { setupInputMasks } from '../create/inputMasks.mjs';
 
 document.addEventListener('DOMContentLoaded', () => {
