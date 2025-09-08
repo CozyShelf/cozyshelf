@@ -5,6 +5,7 @@ import TelephoneModel from "../../../../../telephone/model/TelephoneModel";
 
 const users = [
 	{
+		id: "f4a4ecf2-e31e-41b2-8c9f-a36898e23d81",
 		name: "João Silva",
 		birthDate: new Date("1990-05-15"),
 		cpf: "123.456.378-21",
@@ -13,8 +14,8 @@ const users = [
 		ranking: 5,
 		gender: Gender.MALE,
 		telephone: {
-			ddd: "55",
-			number: "11999999999",
+			ddd: "11",
+			number: "988888888",
 			type: TelephoneType.MOBILE,
 		} as unknown as TelephoneModel,
 		addresses: [

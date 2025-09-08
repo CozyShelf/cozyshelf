@@ -5,36 +5,60 @@
         <div class="flex flex-col gap-10" id="cards">
             <div class="flex flex-col gap-3 justify-start" id="card">
                 <div class="flex flex-row gap-10">
-                    <%- include('buttons/toggleButton.ejs', { toggleName: "card-is-preferred" ,
-                        toggleMessage: "Marcar como preferencial" })%>
+                    <%- include('buttons/toggleButton.ejs', { 
+                        toggleName: "card-is-preferred",
+                        toggleMessage: "Marcar como preferencial",
+                        isChecked: card.isPreferred,
+                    })%>
                 </div>
 
                 <div class="flex flex-col gap-5">
                     <div class="flex flex-row gap-10">
                         <label class="flex flex-col text-[12px] gap-3 w-full">
                             Número do Cartão *
-                            <input placeholder="Ex: XXXX XXXX XXXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-                                name="card-number" required>
+                            <input placeholder="Ex: XXXX XXXX XXXX" 
+                                   class="border rounded-[5px] border-gray h-10 p-2.5" 
+                                   type="text"
+                                   name="card-number" 
+                                   value="<%= card.number ? card.formattedNumber : '' %>"
+                                   required maxlength="19" minlength="19">
                         </label>
                         <label class="flex flex-col text-[12px] gap-3 w-full">
                             CVV *
-                            <input placeholder="XXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text" name="card-cvv"
-                                required>
+                            <input placeholder="XXX" 
+                                   class="border rounded-[5px] border-gray h-10 p-2.5" 
+                                   type="text" 
+                                   name="card-cvv"
+                                   value="<%= card.cvv ? card.cvv : '' %>"
+                                   required maxlength="3">
+                        </label>
+                        <label class="flex flex-col text-[12px] gap-3 w-full">
+                            Validade *
+                            <input placeholder="MM/AA" 
+                                   class="border rounded-[5px] border-gray h-10 p-2.5" 
+                                   type="text" 
+                                   name="card-expiration"
+                                   value="<%= card.expiration ? card.formattedExpiration : '' %>"
+                                   required maxlength="5" minlength="5">
                         </label>
                     </div>
                     <div class="flex flex-row gap-10">
                         <label class="flex flex-col text-[12px] gap-3 w-full">
                             Nome impresso no cartão *
-                            <input placeholder="Ex: JOAO S D SILVA" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-                                name="card-impress-name" required>
+                            <input placeholder="Ex: JOAO S D SILVA" 
+                                   class="border rounded-[5px] border-gray h-10 p-2.5" 
+                                   type="text"
+                                   name="card-impress-name" 
+                                   value="<%= card.nameOnCard ? card.nameOnCard : '' %>"
+                                   required maxlength="50">
                         </label>
                         <label class="flex flex-col text-[12px] gap-3 w-full">
                             Bandeira *
                             <select name="card-flag" class="border rounded-[5px] border-gray h-10 p-2.5" required>
                                 <option value="">Selecione...</option>
-                                <option value="Visa">Visa</option>
-                                <option value="Mastercard">Mastercard</option>
-                                <option value="Elo">Elo</option>
+                                <option value="Visa" <%= card && card.flagDescription === 'Visa' ? 'selected' : '' %>>Visa</option>
+                                <option value="Mastercard" <%= card && card.flagDescription === 'Mastercard' ? 'selected' : '' %>>Mastercard</option>
+                                <option value="Elo" <%= card && card.flagDescription === 'Elo' ? 'selected' : '' %>>Elo</option>
                             </select>
                         </label>
                     </div>
@@ -47,7 +71,6 @@
                     Voltar
                 </a>
             <% } %>
-            </a>
             <div class="flex flex-1 justify-end">
                 <button type="submit" class="font-medium text-sm text-white bg-light-green w-[150px] h-10 rounded-[5px] cursor-pointer hover:bg-dark-green flex items-center justify-center">
                     Salvar
@@ -56,4 +79,4 @@
         </div>
     </div>
 </form>
-<script src="/scripts/handleSubmit.mjs"></script>
+<script type="module" src="/scripts/card/index.mjs"></script>

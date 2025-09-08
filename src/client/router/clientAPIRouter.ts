@@ -6,7 +6,6 @@ const clientAPIRouter = Router();
 const clientController: ClientController = new ClientControllerFactory().make();
 
 clientAPIRouter.post("/", async (req: Request, res: Response) => {
-	console.log("Received POST /clients/ request with body:", req.body);
 	await clientController.create(req, res);
 });
 

@@ -13,6 +13,7 @@ export default class ClientDetailsDTO {
 	public readonly ranking: number;
 	public readonly telephoneNumber: string;
 	public readonly telephoneType: string;
+	public readonly telephoneDdd: string;
 	public readonly addresses: AddressDetailsDTO[];
 	public readonly cards: CardDetailsDTO[];
 
@@ -26,6 +27,7 @@ export default class ClientDetailsDTO {
 		ranking: number,
 		telephoneNumber: string,
 		telephoneType: string,
+		telephoneDdd: string,
 		addresses: AddressDetailsDTO[],
 		cards: CardDetailsDTO[]
 	) {
@@ -38,6 +40,7 @@ export default class ClientDetailsDTO {
 		this.ranking = ranking;
 		this.telephoneNumber = telephoneNumber;
 		this.telephoneType = telephoneType;
+		this.telephoneDdd = telephoneDdd;
 		this.addresses = addresses;
 		this.cards = cards;
 	}
@@ -53,6 +56,7 @@ export default class ClientDetailsDTO {
 			client.ranking,
 			client.telephone.number,
 			client.telephone.type,
+			client.telephone.ddd,
 			client.addresses.map((address) => AddressDetailsDTO.fromEntity(address)),
 			client.cards.map((card) => CardDetailsDTO.fromEntity(card))
 		);
@@ -66,45 +70,20 @@ export default class ClientDetailsDTO {
 		return this.birthDate.toLocaleDateString("pt-BR");
 	}
 
-	public get htmlBirthDate(): string {
-		return this.birthDate.toISOString().split("T")[0];
-	}
-
-	public get genderDisplay(): string {
-		switch (this.gender) {
-			case Gender.MALE:
-				return "Masculino";
-			case Gender.FEMALE:
-				return "Feminino";
-			case Gender.OTHER:
-				return "Outros";
-			default:
-				return "Não informado";
-		}
-	}
-
 	public get formattedTelephone(): string {
 		const cleaned = this.telephoneNumber.replace(/\D/g, "");
-		if (cleaned.length === 11) {
-			return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(
-				7
-			)}`;
+		if (cleaned.length === 9) {
+			return `(${this.telephoneDdd}) ${cleaned.slice(0, 5)}-${cleaned.slice(5)}`;
 		}
-		if (cleaned.length === 10) {
-			return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(
-				6
-			)}`;
+		if (cleaned.length === 8) {
+			return `(${this.telephoneDdd}) ${cleaned.slice(0, 4)}-${cleaned.slice(4)}`;
 		}
-		return this.telephoneNumber;
-	}
-
-	public get telephoneTypeDisplay(): string {
-		return this.telephoneType === "MOBILE" ? "Móvel" : "Fixo";
+		return `(${this.telephoneDdd}) ${this.telephoneNumber}`;
 	}
 
 	public get primaryAddress(): AddressDetailsDTO | undefined {
 		return this.addresses.find(
-			(addr) => addr.type === "DELIVERY_AND_BILLING" || addr.type === "DELIVERY"
+			(addr) => addr.type === "DELIVERY_AND_BILLING" || addr.type === "DELIVERY" || addr.type === "BILLING"
 		);
 	}
 

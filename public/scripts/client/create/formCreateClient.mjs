@@ -36,7 +36,7 @@ function buildRequestBody(form) {
     const clientData = {
         name: formData.get("client-name"),
         birthDate: formData.get("client-birth-date"),
-        cpf: getCleanValue(form.querySelector("input[name='client-cpf']")),
+        cpf: formData.get("client-cpf"),
         email: formData.get("client-email"),
         password: {
             value: formData.get("client-password"),
@@ -72,7 +72,7 @@ function buildRequestBody(form) {
             streetType: addressData.get("address-street-type"),
             neighborhood: addressData.get("address-neighborhood"),
             shortPhrase: addressData.get("address-short-phrase"),
-            observation: "",
+            observation: addressData.get("address-observation"),
             city: addressData.get("address-city"),
             state: addressData.get("address-state"),
             country: {
@@ -170,7 +170,7 @@ async function submitClientRegistration(requestBody) {
                 confirmButtonText: 'OK'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = '/client/login';
+                    window.location.href = '/';
                 }
             });
         } else {

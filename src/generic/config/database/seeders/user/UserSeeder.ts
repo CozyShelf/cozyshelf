@@ -95,7 +95,9 @@ export default class UserSeeder {
 					addresses,
 					cards
 				);
-
+			
+				client.id = user.id;
+				
 				await clientDao.save(client);
 			}
 		} catch (error) {

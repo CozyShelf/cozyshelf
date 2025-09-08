@@ -126,34 +126,50 @@ export default class ClientController {
 	}
 
 	public async renderClientTable(_: Request, res: Response): Promise<void> {
+		const clients = await this.service.getAll();
 		res.render("clientTable", {
 			title: "Lista de Clientes",
 			currentHeaderTab: "profile",
 			layout: "defaultLayoutAdmin",
 			currentUrl: "clients",
+			clients,
 		});
 	}
 
-	public async renderClientDetails(_: Request, res: Response): Promise<void> {
+	public async renderClientDetails(req: Request, res: Response): Promise<void> {
+		const userEntity = await this.service.getById(req.params.id);
+		const user = ClientDetailsDTO.fromEntity(userEntity);
+		
 		res.render("clientDetails", {
 			title: "Detalhes do Cliente",
 			currentHeaderTab: "profile",
 			layout: "detailsLayout",
 			currentUrl: "client",
 			isAdmin: false,
+			user,
 		});
 	}
 
 	public async renderClientDetailsAdmin(
-		_: Request,
+		req: Request,
 		res: Response
 	): Promise<void> {
-		res.render("clientDetailsAdmin", {
-			title: "Detalhes do Cliente",
-			currentHeaderTab: "profile",
-			layout: "defaultLayoutAdmin",
-			currentUrl: "clients",
-		});
+		const { id } = req.params;
+		try{
+			const client = await this.service.getById(id);
+			const clientDetailsDTO = ClientDetailsDTO.fromEntity(client);
+
+			res.render("clientDetailsAdmin", {
+				title: "Detalhes do Cliente",
+				currentHeaderTab: "profile",
+				layout: "defaultLayoutAdmin",
+				currentUrl: "clients",
+				user: clientDetailsDTO,
+            	states: brazilStates, 
+			});
+		}catch(e){
+			this.createErrorResponse(res, e as Error);
+		}
 	}
 
 	public renderClientRegistration(_: Request, res: Response): void {
