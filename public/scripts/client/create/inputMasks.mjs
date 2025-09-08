@@ -7,6 +7,7 @@ export function setupInputMasks() {
     setupCpfMask();
     setupCardInputMasks();
     setupBirthDateValidation();
+    setupPreferredToggle();
 }
 
 /* ========================================================== */
@@ -111,6 +112,20 @@ export function getCleanValue(input) {
         default:
             return value;
     }
+}
+
+export function setupPreferredToggle() {
+    document.addEventListener('change', function (event) {
+        // Verifica se o toggle é do tipo preferencial de cartão
+        if (event.target.name === 'card-is-preferred') {
+            // Desmarca todos os outros toggles
+            document.querySelectorAll('input[name="card-is-preferred"]').forEach(input => {
+                if (input !== event.target) {
+                    input.checked = false;
+                }
+            });
+        }
+    });
 }
 
 // Função para extrair DDD e número do telefone
