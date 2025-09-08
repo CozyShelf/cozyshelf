@@ -18,7 +18,10 @@ export class AddressDAO implements IDAO<AddressModel> {
 	}
 
 	public async findById(id: string): Promise<AddressModel | null> {
-		return await this.repository.findOne({ where: { id, isActive: true } });
+		return await this.repository.findOne({ 
+			where: { id, isActive: true },
+			relations: ["client", "country"],
+		});
 	}
 
 	public async findByClientId(clientId: string): Promise<AddressModel[]> {

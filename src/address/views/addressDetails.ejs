@@ -1,4 +1,16 @@
-<form class="flex flex-col w-full gap-10 mt-9 mb-15 px-32" id="address-form">
+<style>
+	.auto-filled {
+		background-color: #f0fdf4 !important;
+		border-color: #10b981 !important;
+		transition: all 0.3s ease;
+	}
+
+	input[name="address-zip-code"]:focus {
+		outline: none;
+		box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+	}
+</style>
+<form class="flex flex-col w-full gap-5 mt-7 mb-15 px-32" id="address-form">
     <div class="flex flex-col gap-5"></div>
           <h1 class="font-semibold text-[20px]"><%= title %></h1>
           <div class="flex flex-col gap-10" id="addresses">
@@ -7,12 +19,12 @@
                           <label class="flex flex-col text-[12px] gap-3 w-full">
                                 Frase Curta *
                                 <input placeholder="Ex: Minha Casa" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-                                     name="address-short-phrase" value="<%= address?.shortPhrase || '' %>" required>
+                                     name="address-short-phrase" value="<%= address?.shortPhrase || '' %>" required maxlength="50">
                           </label>
                           <label class="flex flex-col text-[12px] gap-3 w-full">
                                 CEP *
                                 <input placeholder="XXXXX-XXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-                                     name="address-cep" value="<%= address?.formattedZipCode || '' %>" required>
+                                     name="address-zip-code" value="<%= address?.formattedZipCode || '' %>" required maxlength="9">
                           </label>
                           <label class="flex flex-col text-[12px] gap-3 w-full">
                                 Estado *
@@ -26,7 +38,7 @@
                           <label class="flex flex-col text-[12px] gap-3 w-full">
                                 Cidade *
                                 <input placeholder="Ex: Guararema, Biritiba" class="border rounded-[5px] border-gray h-10 p-2.5"
-                                     type="text" name="address-city" value="<%= address?.city || '' %>" required>
+                                     type="text" name="address-city" value="<%= address?.city || '' %>" required maxlength="50">
                           </label>
                      </div>
 
@@ -44,11 +56,11 @@
                           <label class="flex flex-col text-[12px] gap-3 w-full">
                                 Logradouro *
                                 <input placeholder="Ex: Rua Almirante Barbosa" class="border rounded-[5px] border-gray h-10 p-2.5"
-                                     type="text" name="address-street-name" value="<%= address?.streetName || '' %>" required>
+                                     type="text" name="address-street-name" value="<%= address?.streetName || '' %>" required maxlength="100">
                           </label>
                           <label class="flex flex-col text-[12px] gap-3 w-full">
                                 Número *
-                                <input class="border rounded-[5px] border-gray h-10 p-2.5" type="text" name="address-number" 
+                                <input placeholder="Ex: 123" class="border rounded-[5px] border-gray h-10 p-2.5" type="text" name="address-number" 
                                      value="<%= address?.number || '' %>" maxlength="4" required>
                           </label>
                      </div>
@@ -57,7 +69,7 @@
                           <label class="flex flex-col text-[12px] gap-3 w-full">
                                 Bairro *
                                 <input placeholder="Ex: Centro" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-                                     name="address-neighborhood" value="<%= address?.neighborhood || '' %>" required>
+                                     name="address-neighborhood" value="<%= address?.neighborhood || '' %>" required maxlength="50">
                           </label>
                           <label class="flex flex-col text-[12px] gap-3 w-full">
                                 Complemento *
@@ -73,15 +85,15 @@
                                     <option value="">Selecione...</option>
                                     <option value="DELIVERY" <%= address?.type === 'DELIVERY' ? 'selected' : '' %>>Entrega</option>
                                     <option value="BILLING" <%= address?.type === 'BILLING' ? 'selected' : '' %>>Cobrança</option>
-                                    <option value="DELIVERY_AND_BILLING" <%= address?.type === 'DELIVERY_AND_BILLING' ? 'selected' : '' %>>Entrega e Cobrança
+                                    <option value="DELIVERY_AND_BILLING" <%= address?.type === 'DELIVERY_AND_BILLING' ? 'selected' : '' %>>Entrega e Cobrança </option>
                                 </select>
                           </label>
                      </div>
                      <div class="flex flex-row gap-10">
                           <label class="flex flex-col text-[12px] gap-3 w-full">
                             Observações
-                            <input placeholder="Ex: Apartamento 101, interfone 123" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-                                 name="address-observation" value="<%= address?.observation || '' %>">
+                            <input placeholder="Ex: Casa com portão laranja" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+                                 name="address-observation" value="<%= address?.observation || '' %>" maxlength="100">
                           </label>  
                      </div>
                 </div>
@@ -89,16 +101,16 @@
 
           <div class="flex flex-row justify-between items-center mt-2">
                 <% if (!isAdmin) { %>
-                     <a href="/addresses" class="font-semibold text-sm bg-brown text-white rounded hover:bg-dark-brown w-[150px] h-10 flex items-center justify-center">
+                     <a href="/addresses/client/f4a4ecf2-e31e-41b2-8c9f-a36898e23d81" class="font-semibold text-sm bg-brown text-white rounded hover:bg-dark-brown w-[150px] h-10 flex items-center justify-center">
                      Voltar
                      </a>
                 <% } %>
                 <div class="flex flex-1 justify-end">
-                     <button type="submit" class="font-medium text-sm text-white bg-light-green w-[150px] h-10 rounded-[5px] cursor-pointer hover:bg-dark-green flex items-center justify-center">
-                          <%= address ? 'Atualizar' : 'Salvar' %>
+                     <button type="submit" id="<%= address ? 'updateAddress' : 'newAddress' %>" class="font-medium text-sm text-white bg-light-green w-[150px] h-10 rounded-[5px] cursor-pointer hover:bg-dark-green flex items-center justify-center">
+                           <%= address ? 'Atualizar' : 'Salvar' %>
                      </button>
                 </div>
           </div>
      </div>
 </form>
-<script src="/scripts/handleSubmit.mjs"></script>
+<script type="module" src="/scripts/address/index.mjs"></script>

@@ -1,6 +1,6 @@
 <div class="flex flex-col w-full gap-10 mt-9 mb-15 px-32">
 	<div class="flex justify-between items-center">
-		<h1 class="font-semibold text-[20px]">Endereços (1)</h1>
+		<h1 class="font-semibold text-[20px]">Endereços (<%= addresses.length %>)</h1>
 		<a href="/addresses/register"
 			class="flex items-center gap-2 px-4 py-1.5 bg-brown text-white rounded hover:bg-dark-brown text-sm">
 			<span class="material-symbols-outlined text-base">add</span>
@@ -17,24 +17,36 @@
 			</tr>
 		</thead>
 		<tbody class="divide-y divide-light-brown text-sm text-gray-2 bg-lighter-brown">
+			<% addresses.forEach(address => { %>
 			<tr>
-				<td class="px-6 py-3 font-medium text-gray-2">Minha Casa</td>
-				<td class="px-6 py-3">Rua das Flores, 123</td>
-				<td class="px-6 py-3">
-					<span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
-						Entrega e Cobrança
-					</span>
+				<td class="px-6 py-3 font-medium text-gray-2"><%= address.shortPhrase %></td>
+				<td class="px-6 py-3"><%= address.fullAddress %></td>
+				<td class="px-6 py-3 ">
+					<% if (address.type === 'DELIVERY_AND_BILLING') { %>
+						<span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-[12px] whitespace-nowrap">
+							Entrega e Cobrança
+						</span>
+					<% } else if (address.type === 'BILLING') { %>
+						<span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
+							Cobrança
+						</span>
+					<% } else if (address.type === 'DELIVERY') { %>
+						<span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
+							Entrega
+						</span>
+					<% } %>
 				</td>
 				<td class="px-6 py-3 flex gap-2">
-					<a href="/addresses/id" class="hover:text-gray flex justify-center items-center">
+					<a href="/addresses/<%= address.id %>" class="hover:text-gray flex justify-center items-center">
 						<span class="material-symbols-outlined text-base">visibility</span>
 					</a>
-					<a href="/addresses/delete/id" class="hover:text-gray flex justify-center items-center delete-btn">
+					<a href="/<%= address.id %>" class="hover:text-gray flex justify-center items-center delete-btn">
 						<span class="material-symbols-outlined text-base">delete</span>
 					</a>
 				</td>
 			</tr>
+			<% }) %>
 		</tbody>
 	</table>
 </div>
-<script src="/scripts/deleteSubmit.mjs"></script>
+<script type="module" src="/scripts/address/inactiveAddress.mjs"></script>

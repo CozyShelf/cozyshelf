@@ -5,6 +5,7 @@ import INewAddressData from "../types/INewAddressData";
 import AddressListDTO from "../dto/AddressListDTO";
 import AddressDetailsDTO from "../dto/AddressDetailsDTO";
 import IUpdateAddressData from "../types/IUpdateAddressData";
+import { brazilStates } from "../../generic/config/database/seeders/address/states";
 
 export default class AddressController {
 	private readonly service: AddressService;
@@ -88,6 +89,7 @@ export default class AddressController {
 	public async delete(req: Request, res: Response): Promise<void> {
 		try {
 			const { id } = req.params;
+			console.log("Deleting address with id:", id);
 
 			if (!id || id.trim() === "") {
 				res.status(400).json({
@@ -107,31 +109,54 @@ export default class AddressController {
 		}
 	}
 
-	public renderAddressesTable(_: Request, res: Response) {
+	public async renderAddressesTable(req: Request, res: Response) {
+		const clientId = req.params.id;
+		const addressList = await this.service.getByClientId(clientId);
+		const addresses = addressList.map((address) =>
+			AddressListDTO.fromEntity(address)
+		);
+
 		res.render("addressTable", {
 			title: "Meus Endereços",
 			currentHeaderTab: "profile",
 			layout: "detailsLayout",
 			currentUrl: "address",
 			isAdmin: false,
+			addresses,
 		});
+	
 	}
 
-	public renderAddressDetails(_: Request, res: Response) {
-		res.render("addressTable", {
-			title: "Meus Endereços",
-			currentHeaderTab: "profile",
-			layout: "detailsLayout",
-			currentUrl: "address",
-			isAdmin: false,
-		});
+	public async renderAddressDetails(req: Request, res: Response) {
+		const addressId =  req.params.id;
+
+		try {
+			const addressEntity =  await this.service.getById(addressId);
+			const address = AddressDetailsDTO.fromEntity(addressEntity);
+
+			res.render("addressDetails", {
+				title: "Editar Endereço",
+				currentHeaderTab: "profile",
+				layout: "detailsLayout",
+				currentUrl: "address",
+				isAdmin: false,
+				address,
+				states: brazilStates,
+			});
+		} catch (e) {
+			this.createErrorResponse(res, e as Error);
+		}
 	}
 
-	public renderCreateAddressTable(_: Request, res: Response) {
+	public renderCreateAddress(_: Request, res: Response) {
 		res.render("addressDetails", {
 			title: "Novo Endereço",
+			layout : "detailsLayout",
+			currentUrl: "address",
 			currentHeaderTab: "profile",
 			isAdmin: false,
+			address: null,
+			states: brazilStates,
 		});
 	}
 

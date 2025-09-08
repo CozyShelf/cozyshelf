@@ -12,12 +12,12 @@ addressRouter.use(
 const addressController: AddressController =
 	new AddressControllerFactory().make();
 
-addressRouter.get("/", (req: Request, res: Response) => {
+addressRouter.get("/client/:id", (req: Request, res: Response) => {
 	addressController.renderAddressesTable(req, res);
 });
 
 addressRouter.get("/register", (req: Request, res: Response) => {
-	addressController.renderCreateAddressTable(req, res);
+	addressController.renderCreateAddress(req, res);
 });
 
 addressRouter.get("/:id", (req: Request, res: Response) => {
