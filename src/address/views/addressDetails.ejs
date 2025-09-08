@@ -15,6 +15,8 @@
           <h1 class="font-semibold text-[20px]"><%= title %></h1>
           <div class="flex flex-col gap-10" id="addresses">
                 <div class="flex flex-col gap-2.5 justify-start" id="address">
+										<input type="text" value=<%= address.id %> id="addressId" hidden>
+
                      <div class="flex flex-row gap-10">
                           <label class="flex flex-col text-[12px] gap-3 w-full">
                                 Frase Curta *
@@ -60,7 +62,7 @@
                           </label>
                           <label class="flex flex-col text-[12px] gap-3 w-full">
                                 Número *
-                                <input placeholder="Ex: 123" class="border rounded-[5px] border-gray h-10 p-2.5" type="text" name="address-number" 
+                                <input placeholder="Ex: 123" class="border rounded-[5px] border-gray h-10 p-2.5" type="text" name="address-number"
                                      value="<%= address?.number || '' %>" maxlength="4" required>
                           </label>
                      </div>
@@ -94,7 +96,7 @@
                             Observações
                             <input placeholder="Ex: Casa com portão laranja" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
                                  name="address-observation" value="<%= address?.observation || '' %>" maxlength="100">
-                          </label>  
+                          </label>
                      </div>
                 </div>
           </div>

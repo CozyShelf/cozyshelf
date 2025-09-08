@@ -1,21 +1,21 @@
 export function setupAddressForm() {
     const form = document.getElementById("address-form");
-    
+
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
-        
+
         if (!validateForm(form)) {
             return;
         }
-    
+
         try {
             const submitButton = form.querySelector('button[type="submit"]');
             const isUpdate = submitButton.id === 'updateAddress';
-            
+
             if (isUpdate) {
                 const requestBody = buildUpdateRequestBody(form);
                 console.log("Update Request Body:", requestBody);
-                
+
                 const addressId = getAddressId();
                 await submitAddressUpdate(addressId, requestBody);
             } else {
@@ -36,7 +36,7 @@ export function setupAddressForm() {
 
 function buildRequestBody(form) {
     const formData = new FormData(form);
-    
+
     // Dados do endereço para criação
     const addressData = {
         clientId: "f4a4ecf2-e31e-41b2-8c9f-a36898e23d81", // ID fixo conforme solicitado
@@ -62,44 +62,44 @@ function buildRequestBody(form) {
 
 function buildUpdateRequestBody(form) {
     const formData = new FormData(form);
-    
+
     // Dados do endereço para atualização (conforme IUpdateAddressData)
     const updateData = {};
-    
+
     // Apenas adicionar campos que não estão vazios (campos opcionais para update)
     const zipCode = formData.get("address-zip-code");
     if (zipCode) updateData.zipCode = zipCode;
-    
+
     const number = formData.get("address-number");
     if (number) updateData.number = number;
-    
+
     const residenceType = formData.get("address-residence-type");
     if (residenceType) updateData.residenceType = residenceType;
-    
+
     const streetName = formData.get("address-street-name");
     if (streetName) updateData.streetName = streetName;
-    
+
     const streetType = formData.get("address-street-type");
     if (streetType) updateData.streetType = streetType;
-    
+
     const neighborhood = formData.get("address-neighborhood");
     if (neighborhood) updateData.neighborhood = neighborhood;
-    
+
     const shortPhrase = formData.get("address-short-phrase");
     if (shortPhrase) updateData.shortPhrase = shortPhrase;
-    
+
     const observation = formData.get("address-observation");
     if (observation) updateData.observation = observation;
-    
+
     const city = formData.get("address-city");
     if (city) updateData.city = city;
-    
+
     const state = formData.get("address-state");
     if (state) updateData.state = state;
-    
+
     const type = formData.get("address-type");
     if (type) updateData.type = type;
-    
+
     // País sempre Brasil para updates
     updateData.country = {
         name: "Brasil",
@@ -110,35 +110,9 @@ function buildUpdateRequestBody(form) {
 }
 
 function getAddressId() {
-    // Opção 1: Pegar de uma variável global (se disponível)
-    if (window.addressId) {
-        return window.addressId;
-    }
-    
-    // Opção 2: Pegar de um data attribute no form
-    const form = document.getElementById("address-form");
-    const addressId = form.dataset.addressId;
-    if (addressId) {
-        return addressId;
-    }
-    
-    // Opção 3: Pegar da URL (se estiver no formato /addresses/:id ou similar)
-    const pathParts = window.location.pathname.split('/');
-    const addressesIndex = pathParts.indexOf('addresses');
-    if (addressesIndex !== -1 && pathParts[addressesIndex + 1]) {
-        return pathParts[addressesIndex + 1];
-    }
-    
-    // Opção 4: Procurar por 'edit', 'update' ou 'details' na URL
-    for (let i = 0; i < pathParts.length; i++) {
-        if (pathParts[i] === 'edit' || pathParts[i] === 'update' || pathParts[i] === 'details') {
-            if (pathParts[i - 1]) {
-                return pathParts[i - 1];
-            }
-        }
-    }
-    
-    throw new Error('ID do endereço não encontrado');
+	const addressId = document.getElementById("addressId");
+	if (!addressId) { throw new Error('ID do endereço não encontrado') }
+	return addressId.value;
 }
 
 async function submitAddressCreation(requestBody) {
@@ -180,9 +154,9 @@ async function submitAddressCreation(requestBody) {
 
     } catch (error) {
         console.error('Erro na requisição:', error);
-        
+
         let errorMessage = 'Ocorreu um erro inesperado. Tente novamente.';
-        
+
         if (error.message.includes('Failed to fetch')) {
             errorMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
         } else if (error.message) {
@@ -237,9 +211,9 @@ async function submitAddressUpdate(addressId, requestBody) {
 
     } catch (error) {
         console.error('Erro na requisição:', error);
-        
+
         let errorMessage = 'Ocorreu um erro inesperado. Tente novamente.';
-        
+
         if (error.message.includes('Failed to fetch')) {
             errorMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
         } else if (error.message) {
@@ -257,7 +231,7 @@ async function submitAddressUpdate(addressId, requestBody) {
 
 function validateForm(form) {
    const zipCode = form.querySelector("input[name='address-zip-code']").value;
-    
+
     // Validar CEP (formato XXXXX-XXX) - apenas se preenchido
     if (zipCode) {
         const zipCodeRegex = /^\d{5}-\d{3}$/;
