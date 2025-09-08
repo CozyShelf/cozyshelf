@@ -1,5 +1,6 @@
 import CountryDAO from "../../address/dao/typeORM/CountryDAO";
 import CardFlagDAO from "../../card/dao/typeORM/CardFlagDAO";
+import InexistentCardFlag from "../../card/service/exceptions/InexistentCardFlag";
 import ClientDAO from "../dao/typeORM/ClientDAO";
 import Client from "../domain/Client";
 import ClientModel from "../model/ClientModel";
@@ -27,9 +28,11 @@ export class ClientService {
 				cardModel.flagDescription
 			);
 
-			if (flagModel) {
-				cardModel.cardFlag = flagModel;
+			if (!flagModel) {
+				throw new InexistentCardFlag(cardModel.flagDescription);
 			}
+
+			cardModel.cardFlag = flagModel;
 		}
 
 		for (const address of clientModel.addresses) {

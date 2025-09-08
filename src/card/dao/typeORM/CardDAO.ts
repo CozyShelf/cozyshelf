@@ -16,14 +16,52 @@ export class CardDAO implements IDAO<CreditCardModel> {
 	}
 
 	public async findAll(): Promise<CreditCardModel[] | null> {
-		return await this.repository.find();
+		return await this.repository.find({
+			where: { isActive: true },
+			relations: ["cardFlag", "client"],
+		});
 	}
 
 	public async findById(id: string): Promise<CreditCardModel | null> {
-		return await this.repository.findOne({ where: { id } });
+		return await this.repository.findOne({
+			where: { id, isActive: true },
+			relations: ["cardFlag", "client"],
+		});
+	}
+
+	public async findByIdWithClient(id: string): Promise<CreditCardModel | null> {
+		return await this.repository
+			.createQueryBuilder("card")
+			.leftJoinAndSelect("card.cardFlag", "cardFlag")
+			.leftJoinAndSelect("card.client", "client")
+			.leftJoinAndSelect(
+				"client.cards",
+				"clientCards",
+				"clientCards.isActive = :cardActive"
+			)
+			.where("card.id = :id", { id })
+			.andWhere("card.isActive = :isActive", { isActive: true })
+			.setParameters({ cardActive: true })
+			.getOne();
+	}
+
+	public async findByClientId(clientId: string): Promise<CreditCardModel[]> {
+		return await this.repository.find({
+			where: {
+				client: { id: clientId },
+				isActive: true,
+			},
+			relations: ["cardFlag", "client"],
+		});
+	}
+
+	public async findByCardNumber(
+		number: string
+	): Promise<CreditCardModel | null> {
+		return await this.repository.findOneBy({ number });
 	}
 
 	public async delete(id: string): Promise<void> {
-		await this.repository.delete(id);
+		await this.repository.update(id, { isActive: false });
 	}
 }

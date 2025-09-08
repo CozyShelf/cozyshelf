@@ -1,6 +1,7 @@
 import CardFlag from "./CardFlag";
 import MandatoryParameter from "../../generic/domain/exceptions/MandatoryParameter";
 import ICardData from "../types/ICardData";
+import IUpdateCardData from "../types/IUpdateCardData";
 import DomainEntity from "../../generic/domain/DomainEntity";
 
 export default class CreditCard extends DomainEntity {
@@ -85,5 +86,23 @@ export default class CreditCard extends DomainEntity {
 			requestData.isPreferred,
 			CardFlag.fromRequestData(requestData.cardFlag)
 		);
+	}
+
+	public updateData(updatedCardData: IUpdateCardData) {
+		if (updatedCardData.number) {
+			this.number = updatedCardData.number;
+		}
+		if (updatedCardData.nameOnCard) {
+			this.nameOnCard = updatedCardData.nameOnCard;
+		}
+		if (updatedCardData.cvv) {
+			this.cvv = updatedCardData.cvv;
+		}
+		if (updatedCardData.isPreferred !== undefined) {
+			this.isPreferred = updatedCardData.isPreferred;
+		}
+		if (updatedCardData.cardFlag) {
+			this.cardFlag.updateData(updatedCardData.cardFlag);
+		}
 	}
 }

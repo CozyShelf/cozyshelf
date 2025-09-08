@@ -20,4 +20,10 @@ export default class CardFlag extends DomainEntity {
 	public static fromRequestData(requestData: ICardFlagData) {
 		return new CardFlag(requestData.description);
 	}
+
+	public updateData(updatedCardFlagData: ICardFlagData) {
+		if (updatedCardFlagData.description) {
+			this.description = updatedCardFlagData.description;
+		}
+	}
 }

@@ -67,4 +67,23 @@ export default class CreditCardModel extends GenericModel {
 			card.cardFlag.description
 		);
 	}
+
+	public updateFromEntity(updatedCard: CreditCard) {
+		if (updatedCard.number != this.number) {
+			this.number = updatedCard.number;
+		}
+		if (updatedCard.nameOnCard != this.nameOnCard) {
+			this.nameOnCard = updatedCard.nameOnCard;
+		}
+		if (updatedCard.cvv != this.cvv) {
+			this.cvv = updatedCard.cvv;
+		}
+		if (updatedCard.isPreferred != this.isPreferred) {
+			this.isPreferred = updatedCard.isPreferred;
+		}
+		if (updatedCard.cardFlag.description != this.flagDescription) {
+			this.flagDescription = updatedCard.cardFlag.description;
+		}
+		this.cardFlag.updateFromEntity(updatedCard.cardFlag);
+	}
 }

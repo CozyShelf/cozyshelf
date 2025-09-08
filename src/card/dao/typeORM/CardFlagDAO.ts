@@ -13,4 +13,8 @@ export default class CardFlagDAO {
 	): Promise<CardFlagModel | null> {
 		return await this.repository.findOneBy({ description });
 	}
+
+	public async getAll(): Promise<CardFlagModel[]> {
+		return await this.repository.find();
+	}
 }

@@ -21,4 +21,10 @@ export default class CardFlagModel extends GenericModel {
 	public static fromEntity(cardFlag: CardFlag): CardFlagModel {
 		return new CardFlagModel(cardFlag.description);
 	}
+
+	public updateFromEntity(updatedCardFlag: CardFlag) {
+		if (updatedCardFlag.description != this.description) {
+			this.description = updatedCardFlag.description;
+		}
+	}
 }

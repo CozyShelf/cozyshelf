@@ -12,6 +12,8 @@ import INewClientInputData from "../types/INewClientRequestData";
 import DomainEntity from "../../generic/domain/DomainEntity";
 import IUpdateClientData from "../types/IUpdateClientData";
 import InvalidCPFFormat from "./exceptions/InvalidCPFFormat";
+import InvalidPreferredCardsProvided from "./exceptions/InvalidPreferredCardsProvided";
+import CannotRemoveLastPreferredCard from "./exceptions/CannotRemoveLastPreferredCard";
 
 export default class Client extends DomainEntity {
 	_name!: string;
@@ -192,7 +194,41 @@ export default class Client extends DomainEntity {
 			throw new InvalidCardsProvided();
 		}
 
+		if (preferred > 1) {
+			throw new InvalidPreferredCardsProvided();
+		}
+
 		this._cards = cards;
+	}
+
+	public verifyPreferredCards(newCard: CreditCard): void {
+		if (newCard.isPreferred) {
+			const hasPreferred = this._cards.some((card) => card.isPreferred);
+			if (hasPreferred) {
+				throw new InvalidPreferredCardsProvided();
+			}
+		}
+	}
+
+	public verifyCardUpdate(cardId: string, updatedCard: CreditCard): void {
+		const simulatedCards = this._cards.map((card) => {
+			if (card.id === cardId) {
+				return updatedCard;
+			}
+			return card;
+		});
+
+		const hasPreferred = simulatedCards.some((card) => card.isPreferred);
+		if (!hasPreferred) {
+			throw new CannotRemoveLastPreferredCard();
+		}
+
+		const preferredCount = simulatedCards.filter(
+			(card) => card.isPreferred
+		).length;
+		if (preferredCount > 1) {
+			throw new InvalidPreferredCardsProvided();
+		}
 	}
 
 	public static fromRequestData(requestData: INewClientInputData) {
