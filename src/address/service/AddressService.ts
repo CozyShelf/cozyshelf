@@ -1,16 +1,16 @@
 import ClientDAO from "../../client/dao/typeORM/ClientDAO";
+import InvalidAddressesProvided from "../../client/domain/exceptions/InvalidAddressesProvided";
 import NoClientsFound from "../../client/service/exceptions/NoClientsFound";
 import { AddressDAO } from "../dao/typeORM/AddressDAO";
 import CountryDAO from "../dao/typeORM/CountryDAO";
 import Address from "../domain/Address";
+import AddressType from "../domain/enums/AddressType";
 import AddressModel from "../model/AddressModel";
 import CountryModel from "../model/CountryModel";
+import IUpdateAddressData from "../types/IUpdateAddressData";
+import { AddressCantBeRemoved } from "./exceptions/AddressCantBeRemoved";
 import AddressNotFound from "./exceptions/AddressNotFound";
 import NoAddressesFound from "./exceptions/NoAddressesFound";
-import IUpdateAddressData from "../types/IUpdateAddressData";
-import AddressType from "../domain/enums/AddressType";
-import InvalidAddressesProvided from "../../client/domain/exceptions/InvalidAddressesProvided";
-import { AddressCantBeRemoved } from "./exceptions/AddressCantBeRemoved";
 
 export class AddressService {
 	constructor(
@@ -85,7 +85,7 @@ export class AddressService {
 
 	async delete(id: string): Promise<void> {
 		const existingAddress = await this.addressDAO.findById(id);
-		
+
 		if (!existingAddress) {
 			throw new AddressNotFound(id);
 		}
@@ -97,20 +97,20 @@ export class AddressService {
 		}
 
 		const hasDeliveryAddress = clientAddresses.some(
-			addr => addr.id !== id && 
+			addr => addr.id !== id &&
 			(addr.type === AddressType.DELIVERY || addr.type === AddressType.DELIVERY_AND_BILLING));
 		const hasBillingAddress = clientAddresses.some(
-			addr => addr.id !== id && 
+			addr => addr.id !== id &&
 			(addr.type === AddressType.BILLING || addr.type === AddressType.DELIVERY_AND_BILLING));
 
 		if (!hasDeliveryAddress) {
 			throw new InvalidAddressesProvided(AddressType.DELIVERY);
 		}
-	
+
 		if (!hasBillingAddress) {
 			throw new InvalidAddressesProvided(AddressType.BILLING);
 		}
-	
+
 		await this.addressDAO.delete(id);
 	}
 

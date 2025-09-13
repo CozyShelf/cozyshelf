@@ -5,11 +5,9 @@ import { CardDAO } from "../dao/typeORM/CardDAO";
 import CreditCard from "../domain/CreditCard";
 import CreditCardModel from "../model/CreditCardModel";
 import CardFlagModel from "../model/CardFlagModel";
-import CardNotFound from "./exceptions/CardNotFound";
 import NoCardsFound from "./exceptions/NoCardsFound";
 import IUpdateCardData from "../types/IUpdateCardData";
 import CardFlagDAO from "../dao/typeORM/CardFlagDAO";
-import InexistentCardFlag from "./exceptions/InexistentCardFlag";
 import CardFlag from "../domain/CardFlag";
 import NoCardFlagsFound from "./exceptions/NoCardFlagsFound";
 import CardAlreadyExists from "./exceptions/CardAlreadyExists";
@@ -26,11 +24,11 @@ export class CardService {
 
 		const existingClient = await this.validateClientExists(clientId);
 		await this.validateCardNumberIsUnique(card.number);
-		const cardFlag = await this.validateCardFlag(card.cardFlag.description);
+		const cardFlag = await this.getExistentCardFlag(card.cardFlag.description);
 
 		if (card.isPreferred) {
-        	await this.unsetOtherPreferredCards(clientId);
-    	}
+			await this.unsetOtherPreferredCards(clientId);
+		}
 
 		const newCardModel = this.createCardModel(card, existingClient, cardFlag);
 		const savedCardModel = await this.cardDAO.save(newCardModel);
@@ -55,7 +53,7 @@ export class CardService {
 			}
 		}
 	}
-	
+
 	private async validateCardNumberIsUnique(cardNumber: string): Promise<void> {
 		const existingCard = await this.cardDAO.findByCardNumber(cardNumber);
 		if (existingCard) {
@@ -63,14 +61,14 @@ export class CardService {
 		}
 	}
 
-	private async validateCardFlag(
+	public async getExistentCardFlag(
 		flagDescription: string
 	): Promise<CardFlagModel> {
 		const flagModel = await this.cardFlagDAO.getFlagByDescription(
 			flagDescription
 		);
 		if (!flagModel) {
-			throw new InexistentCardFlag(flagDescription);
+			throw new NoCardFlagsFound(flagDescription);
 		}
 		return flagModel;
 	}
@@ -89,7 +87,7 @@ export class CardService {
 	async getById(id: string): Promise<CreditCard> {
 		const cardModel = await this.cardDAO.findById(id);
 		if (!cardModel) {
-			throw new CardNotFound(id);
+			throw new NoCardsFound(id);
 		}
 		return cardModel.toEntity();
 	}
@@ -128,7 +126,7 @@ export class CardService {
 	async update(id: string, updateData: IUpdateCardData): Promise<CreditCard> {
 		const existingCard = await this.cardDAO.findByIdWithClient(id);
 		if (!existingCard) {
-			throw new CardNotFound(id);
+			throw new NoCardsFound(id);
 		}
 
 		const updatedCardEntity = existingCard.toEntity();
@@ -140,7 +138,7 @@ export class CardService {
 
 			if (updateData.isPreferred === true) {
 				await this.unsetOtherPreferredCards(existingCard.client.id);
-			} 
+			}
 
 			if(existingCard.isPreferred && updateData.isPreferred === false) {
 				throw new CannotRemoveLastPreferredCard();
@@ -154,7 +152,7 @@ export class CardService {
 		existingCard.updateFromEntity(updatedCardEntity);
 
 		if (updateData.cardFlag?.description) {
-			existingCard.cardFlag = await this.validateCardFlag(
+			existingCard.cardFlag = await this.getExistentCardFlag(
 				updateData.cardFlag.description
 			);
 		}
@@ -166,7 +164,7 @@ export class CardService {
 	async delete(id: string): Promise<void> {
 		const existingCard = await this.cardDAO.findById(id);
 		if (!existingCard) {
-			throw new CardNotFound(id);
+			throw new NoCardsFound(id);
 		}
 		await this.cardDAO.delete(id);
 	}
