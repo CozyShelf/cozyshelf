@@ -79,6 +79,8 @@ export default class CreditCard extends DomainEntity {
 	}
 
 	public static fromRequestData(requestData: ICardData) {
+		CreditCard.validateNonPrimitiveFields(requestData);
+
 		return new CreditCard(
 			requestData.number,
 			requestData.nameOnCard,
@@ -86,6 +88,12 @@ export default class CreditCard extends DomainEntity {
 			requestData.isPreferred,
 			CardFlag.fromRequestData(requestData.cardFlag)
 		);
+	}
+
+	private static validateNonPrimitiveFields(requestData: ICardData) {
+		if (!requestData.cardFlag) {
+			throw new MandatoryParameter("cardFlag");
+		}
 	}
 
 	public updateData(updatedCardData: IUpdateCardData) {
@@ -104,5 +112,9 @@ export default class CreditCard extends DomainEntity {
 		if (updatedCardData.cardFlag) {
 			this.cardFlag.updateData(updatedCardData.cardFlag);
 		}
+	}
+
+	public inactivate() {
+		this.isActive = false;
 	}
 }

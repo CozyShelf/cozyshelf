@@ -1,5 +1,10 @@
 export default abstract class DomainEntity {
 	_id!: string;
+	_isActive: boolean;
+
+	public constructor() {
+		this._isActive = true;
+	}
 
 	get id(): string {
 		return this._id;
@@ -7,5 +12,13 @@ export default abstract class DomainEntity {
 
 	set id(value: string) {
 		this._id = value;
+	}
+
+	get isActive(): boolean {
+		return this._isActive;
+	}
+
+	set isActive(value: boolean) {
+		this._isActive = value;
 	}
 }

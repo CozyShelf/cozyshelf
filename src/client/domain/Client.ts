@@ -200,7 +200,7 @@ export default class Client extends DomainEntity {
 
 		this._cards = cards;
 	}
-	
+
 	public verifyPreferredCards(newCard: CreditCard): void {
 		if (newCard.isPreferred) {
 			const hasPreferred = this._cards.some((card) => card.isPreferred);
@@ -232,6 +232,8 @@ export default class Client extends DomainEntity {
 	}
 
 	public static fromRequestData(requestData: INewClientInputData) {
+		Client.validateNonPrimitiveFields(requestData);
+
 		return new Client(
 			requestData.clientData.name,
 			requestData.clientData.birthDate,
@@ -245,6 +247,24 @@ export default class Client extends DomainEntity {
 			),
 			requestData.cards.map((cardData) => CreditCard.fromRequestData(cardData))
 		);
+	}
+
+	private static validateNonPrimitiveFields(requestData: INewClientInputData) {
+		if (!requestData.addresses) {
+			throw new MandatoryParameter("addresses");
+		}
+
+		if (!requestData.cards) {
+			throw new MandatoryParameter("cards");
+		}
+
+		if (!requestData.clientData.password) {
+			throw new MandatoryParameter("password");
+		}
+
+		if (!requestData.clientData.telephone) {
+			throw new MandatoryParameter("telephone");
+		}
 	}
 
 	public updateData(updatedData: IUpdateClientData) {
@@ -265,6 +285,20 @@ export default class Client extends DomainEntity {
 		}
 		if (updatedData.telephone) {
 			this.telephone.updateData(updatedData.telephone);
+		}
+	}
+
+	public inactivate() {
+		this.isActive = false;
+		this.password.inactivate();
+		this.telephone.inactivate();
+
+		for (const card of this.cards) {
+			card.inactivate();
+		}
+
+		for (const address of this.addresses) {
+			address.inactivate();
 		}
 	}
 }

@@ -26,4 +26,8 @@ export default class CardFlag extends DomainEntity {
 			this.description = updatedCardFlagData.description;
 		}
 	}
+
+	public inactivate() {
+		this.isActive = false;
+	}
 }

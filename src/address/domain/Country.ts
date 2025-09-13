@@ -40,4 +40,8 @@ export default class Country extends DomainEntity {
 			this.acronym = updatedCountryData.acronym;
 		}
 	}
+
+	public inactivate() {
+		this.isActive = false;
+	}
 }

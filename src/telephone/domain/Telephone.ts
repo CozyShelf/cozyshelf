@@ -67,4 +67,8 @@ export default class Telephone extends DomainEntity {
 			this.type = updatedData.type;
 		}
 	}
+
+	public inactivate() {
+		this.isActive = false;
+	}
 }

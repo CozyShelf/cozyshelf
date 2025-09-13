@@ -185,6 +185,8 @@ export default class Address extends DomainEntity {
 	}
 
 	public static fromRequestData(requestData: IAddressData) {
+		Address.validateNonPrimitiveFields(requestData);
+
 		return new Address(
 			requestData.zipCode,
 			requestData.number,
@@ -199,6 +201,12 @@ export default class Address extends DomainEntity {
 			Country.fromRequestData(requestData.country),
 			requestData.type
 		);
+	}
+
+	private static validateNonPrimitiveFields(requestData: IAddressData) {
+		if (!requestData.country) {
+			throw new MandatoryParameter("country");
+		}
 	}
 
 	public updateData(updatedAddresData: IUpdateAddressData) {
@@ -238,5 +246,9 @@ export default class Address extends DomainEntity {
 		if (updatedAddresData.country) {
 			this.country.updateData(updatedAddresData.country);
 		}
+	}
+
+	public inactivate() {
+		this.isActive = false;
 	}
 }
