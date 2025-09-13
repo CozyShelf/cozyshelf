@@ -23,36 +23,39 @@ export class CardDAO implements IDAO<CreditCardModel> {
 	}
 
 	public async findById(id: string): Promise<CreditCardModel | null> {
-		return await this.repository.findOne({
-			where: { id, isActive: true },
-			relations: ["cardFlag", "client"],
-		});
-	}
-
-	public async findByIdWithClient(id: string): Promise<CreditCardModel | null> {
 		return await this.repository
 			.createQueryBuilder("card")
 			.leftJoinAndSelect("card.cardFlag", "cardFlag")
 			.leftJoinAndSelect("card.client", "client")
 			.leftJoinAndSelect(
+				"client.addresses",
+				"clientAddresses",
+				"clientAddresses.isActive = :addressActive",
+				{ addressActive: true }
+			)
+			.leftJoinAndSelect(
 				"client.cards",
 				"clientCards",
-				"clientCards.isActive = :cardActive"
+				"clientCards.isActive = :cardActive",
+				{ cardActive: true }
 			)
+			.leftJoinAndSelect("client.password", "password")
+			.leftJoinAndSelect("client.telephone", "telephone")
+			.leftJoinAndSelect("clientAddresses.country", "addressCountry")
+			.leftJoinAndSelect("clientCards.cardFlag", "clientCardFlag")
 			.where("card.id = :id", { id })
 			.andWhere("card.isActive = :isActive", { isActive: true })
-			.setParameters({ cardActive: true })
 			.getOne();
 	}
 
 	public async findByClientId(clientId: string): Promise<CreditCardModel[]> {
-		return await this.repository.find({
-			where: {
-				client: { id: clientId },
-				isActive: true,
-			},
-			relations: ["cardFlag", "client"],
-		});
+		return await this.repository
+			.createQueryBuilder("card")
+			.leftJoinAndSelect("card.cardFlag", "cardFlag")
+			.leftJoinAndSelect("card.client", "client")
+			.where("client.id = :clientId", { clientId })
+			.andWhere("card.isActive = :isActive", { isActive: true })
+			.getMany();
 	}
 
 	public async findByCardNumber(

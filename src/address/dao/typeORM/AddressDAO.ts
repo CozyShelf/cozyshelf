@@ -18,10 +18,29 @@ export class AddressDAO implements IDAO<AddressModel> {
 	}
 
 	public async findById(id: string): Promise<AddressModel | null> {
-		return await this.repository.findOne({ 
-			where: { id, isActive: true },
-			relations: ["client", "country"],
-		});
+		return await this.repository
+			.createQueryBuilder("address")
+			.leftJoinAndSelect("address.client", "client")
+			.leftJoinAndSelect("address.country", "country")
+			.leftJoinAndSelect(
+				"client.addresses",
+				"clientAddresses",
+				"clientAddresses.isActive = :addressActive",
+				{ addressActive: true }
+			)
+			.leftJoinAndSelect(
+				"client.cards",
+				"clientCards",
+				"clientCards.isActive = :cardActive",
+				{ cardActive: true }
+			)
+			.leftJoinAndSelect("client.password", "password")
+			.leftJoinAndSelect("client.telephone", "telephone")
+			.leftJoinAndSelect("clientAddresses.country", "addressCountry")
+			.leftJoinAndSelect("clientCards.cardFlag", "cardFlag")
+			.where("address.id = :id", { id })
+			.andWhere("address.isActive = :isActive", { isActive: true })
+			.getOne();
 	}
 
 	public async findByClientId(clientId: string): Promise<AddressModel[]> {
