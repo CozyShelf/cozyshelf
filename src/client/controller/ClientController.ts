@@ -17,9 +17,9 @@ export default class ClientController {
 
 	public async create(req: Request, res: Response): Promise<void> {
 		try {
-			this.verifyRequestBody(req, res);
+			const body = req.body as INewClientInputData;
+			const client = Client.fromRequestData(body);
 
-			const client = Client.fromRequestData(req.body as INewClientInputData);
 			const createdClient = await this.service.create(client);
 
 			res.status(201).json({
@@ -67,8 +67,6 @@ export default class ClientController {
 		try {
 			const { id } = req.params;
 
-			this.verifyRequestBody(req, res);
-
 			const updatedClient = await this.service.update(
 				id,
 				req.body as IUpdateClientData
@@ -86,8 +84,6 @@ export default class ClientController {
 	public async updatePassword(req: Request, res: Response): Promise<void> {
 		try {
 			const { id } = req.params;
-
-			this.verifyRequestBody(req, res);
 
 			await this.passwordService.updatePasswordByClientId(
 				id,
@@ -139,7 +135,7 @@ export default class ClientController {
 	public async renderClientDetails(req: Request, res: Response): Promise<void> {
 		const userEntity = await this.service.getById(req.params.id);
 		const user = ClientDetailsDTO.fromEntity(userEntity);
-		
+
 		res.render("clientDetails", {
 			title: "Detalhes do Cliente",
 			currentHeaderTab: "profile",
@@ -155,7 +151,7 @@ export default class ClientController {
 		res: Response
 	): Promise<void> {
 		const { id } = req.params;
-		try{
+		try {
 			const client = await this.service.getById(id);
 			const clientDetailsDTO = ClientDetailsDTO.fromEntity(client);
 
@@ -165,9 +161,9 @@ export default class ClientController {
 				layout: "defaultLayoutAdmin",
 				currentUrl: "clients",
 				user: clientDetailsDTO,
-            	states: brazilStates, 
+				states: brazilStates,
 			});
-		}catch(e){
+		} catch (e) {
 			this.createErrorResponse(res, e as Error);
 		}
 	}
@@ -188,16 +184,6 @@ export default class ClientController {
 			currentUrl: "password",
 			isAdmin: false,
 		});
-	}
-
-	private verifyRequestBody(req: Request, res: Response) {
-		if (!req.body || Object.keys(req.body).length === 0) {
-			res.status(400).json({
-				error: true,
-				message: "Dados do cliente são obrigatórios para o cadastro!",
-			});
-			return;
-		}
 	}
 
 	private createErrorResponse(res: Response, e: Error) {
