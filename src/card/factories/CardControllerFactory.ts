@@ -7,11 +7,21 @@ import CardFlagDAO from "../dao/typeORM/CardFlagDAO";
 import { CardService } from "../service/CardService";
 
 export class CardControllerFactory implements IFactory<CardController> {
+	private cardDAO: CardDAO;
+	private cardFlagDAO: CardFlagDAO;
+
+	public constructor() {
+		this.cardDAO = new CardDAO(postgresDataSource);
+		this.cardFlagDAO = new CardFlagDAO(postgresDataSource);
+	}
+
 	public make(): CardController {
-		const cardDAO = new CardDAO(postgresDataSource);
 		const clientDAO = new ClientDAO(postgresDataSource);
-		const cardFlagDAO = new CardFlagDAO(postgresDataSource);
-		const cardService = new CardService(cardDAO, clientDAO, cardFlagDAO);
+		const cardService = this.makeCardService(clientDAO);
 		return new CardController(cardService);
+	}
+
+	public makeCardService(clientDAO: ClientDAO) {
+		return new CardService(this.cardDAO, clientDAO, this.cardFlagDAO);
 	}
 }

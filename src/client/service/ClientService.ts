@@ -1,6 +1,5 @@
-import CountryDAO from "../../address/dao/typeORM/CountryDAO";
-import CardFlagDAO from "../../card/dao/typeORM/CardFlagDAO";
-import InexistentCardFlag from "../../card/service/exceptions/InexistentCardFlag";
+import { AddressService } from "../../address/service/AddressService";
+import { CardService } from "../../card/service/CardService";
 import ClientDAO from "../dao/typeORM/ClientDAO";
 import Client from "../domain/Client";
 import ClientModel from "../model/ClientModel";
@@ -11,8 +10,8 @@ import NoClientsFound from "./exceptions/NoClientsFound";
 export class ClientService {
 	constructor(
 		private readonly clientDAO: ClientDAO,
-		private readonly cardFlagDAO: CardFlagDAO,
-		private readonly countryDAO: CountryDAO
+		private readonly cardService: CardService,
+		private readonly addressService: AddressService
 	) {}
 
 	public async create(client: Client): Promise<Client> {
@@ -24,25 +23,13 @@ export class ClientService {
 		const clientModel = ClientModel.fromEntity(client);
 
 		for (const cardModel of clientModel.cards) {
-			const flagModel = await this.cardFlagDAO.getFlagByDescription(
+			cardModel.cardFlag = await this.cardService.getExistentCardFlag(
 				cardModel.flagDescription
 			);
-
-			if (!flagModel) {
-				throw new InexistentCardFlag(cardModel.flagDescription);
-			}
-
-			cardModel.cardFlag = flagModel;
 		}
 
 		for (const address of clientModel.addresses) {
-			let country = await this.countryDAO.findByAcronym(
-				address.country.acronym
-			);
-
-			if (country) {
-				address.country = country;
-			}
+			await this.addressService.getExistingCountryByAcronym(address.country);
 		}
 
 		const savedClient = await this.clientDAO.save(clientModel);
@@ -100,17 +87,10 @@ export class ClientService {
 			throw new NoClientsFound(id);
 		}
 
-		existingClient.isActive = false;
-		existingClient.telephone.isActive = false;
-		existingClient.password.isActive = false;
+		const updatedEntity = existingClient.toEntity();
+		updatedEntity.inactivate();
 
-		for (const address of existingClient.addresses) {
-			address.isActive = false;
-		}
-
-		for (const card of existingClient.cards) {
-			card.isActive = false;
-		}
+		existingClient.updateFromEntity(updatedEntity, true);
 
 		await this.clientDAO.save(existingClient);
 	}

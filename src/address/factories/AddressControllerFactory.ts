@@ -7,12 +7,21 @@ import CountryDAO from "../dao/typeORM/CountryDAO";
 import { AddressService } from "../service/AddressService";
 
 export class AddressControllerFactory implements IFactory<AddressController> {
-	public make(): AddressController {
-		const dao = new AddressDAO(postgresDataSource);
-		const clientDAO = new ClientDAO(postgresDataSource);
-		const countryDAO = new CountryDAO(postgresDataSource);
+	private addressDAO: AddressDAO;
+	private countryDAO: CountryDAO;
 
-		const service = new AddressService(dao, clientDAO, countryDAO);
+	public constructor() {
+		this.addressDAO = new AddressDAO(postgresDataSource);
+		this.countryDAO = new CountryDAO(postgresDataSource);
+	}
+
+	public make(): AddressController {
+		const clientDAO = new ClientDAO(postgresDataSource);
+		const service = this.makeAddressService(clientDAO);
 		return new AddressController(service);
+	}
+
+	public makeAddressService(clientDAO: ClientDAO) {
+		return new AddressService(this.addressDAO, clientDAO, this.countryDAO);
 	}
 }
