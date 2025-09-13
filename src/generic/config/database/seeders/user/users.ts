@@ -20,8 +20,8 @@ const users = [
 		} as unknown as TelephoneModel,
 		addresses: [
 			{
-				zipCode: "08900-000",
-				number: "100",
+			zipCode: "08900-000",
+			number: "100",
 				residenceType: "Apartment",
 				streetName: "Rua das Flores",
 				streetType: "Rua",

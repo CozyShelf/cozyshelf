@@ -5,7 +5,7 @@ export default class InvalidAddressesProvided extends DomainException {
 	constructor(addressType: AddressType) {
 		super(
 			`É necessário o cadastro de ao menos um endereço de ${
-				addressType == AddressType.BILLING ? "entrega" : "cobrança"
+				addressType == AddressType.BILLING ? 'entrega' : 'cobrança'
 			}.`
 		);
 	}
