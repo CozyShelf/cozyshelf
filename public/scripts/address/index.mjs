@@ -1,5 +1,5 @@
-import { setupViaCepIntegration } from "./fillWithViaCep.mjs";
-import { setupCepMask } from "./inputMasks.mjs";
+import { setupViaCepIntegration } from "./viaCep/fillWithViaCep.mjs";
+import { setupCepMask } from "./validations/inputMasks.mjs";
 import { setupAddressForm } from "./create/formCreateAndUpdateAddress.mjs";
 
 document.addEventListener('DOMContentLoaded', () => {

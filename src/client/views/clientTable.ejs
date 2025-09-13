@@ -26,7 +26,7 @@
                             <a href="/admin/clients/<%= client.id %>" class="hover:text-gray flex justify-center items-center" title="Visualizar">
                                 <span class="material-symbols-outlined text-base">visibility</span>
                             </a>
-                            <a href="/clients/delete/<%= client.id %>" class="hover:text-gray flex justify-center items-center delete-btn" title="Inativar">
+                            <a href="/<%= client.id %>" class="hover:text-gray flex justify-center items-center delete-btn" title="Inativar">
                                 <span class="material-symbols-outlined text-base">account_circle_off</span>
                             </a>
                         </td>
@@ -40,4 +40,4 @@
         </tbody>
     </table>
 </div>
-<script src="/scripts/client/list/inactiveClient.mjs" type="module"></script>
+<script src="/scripts/client/delete/inactiveClient.mjs" type="module"></script>

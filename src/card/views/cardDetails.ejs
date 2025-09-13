@@ -4,7 +4,7 @@
 
         <div class="flex flex-col gap-10" id="cards">
             <div class="flex flex-col gap-3 justify-start" id="card">
-								<input type="text" value=<%= card.id %> id="cardId" hidden>
+                <input type="text" value="<%= card?.id %>" id="cardId" hidden>
                 <div class="flex flex-row gap-10">
                     <%- include('buttons/toggleButton.ejs', {
                         toggleName: "card-is-preferred",

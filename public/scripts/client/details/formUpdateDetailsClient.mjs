@@ -1,4 +1,4 @@
-import { extractPhoneData } from '../create/inputMasks.mjs';
+import { extractPhoneData } from '../inputMasks/inputMasks.mjs';
 
 export function setupClientDetailsForm() {
     const form = document.getElementById("client-details-form");

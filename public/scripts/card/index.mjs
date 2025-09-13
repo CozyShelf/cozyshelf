@@ -1,5 +1,5 @@
-import { setupCardForm } from "./formCreatAndUpdateCard.mjs";
-import { setupCardInputMasks } from "./inputMask.mjs";
+import { setupCardForm } from "./create/formCreatAndUpdateCard.mjs";
+import { setupCardInputMasks } from "./validations/inputMasks.mjs";
 
 document.addEventListener('DOMContentLoaded', () => {
     setupCardInputMasks();

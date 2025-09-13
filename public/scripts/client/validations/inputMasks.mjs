@@ -1,4 +1,4 @@
-import { setupCardInputMasks } from "../../card/inputMask.mjs";
+import { setupCardInputMasks } from "../../card/validations/inputMask.mjs";
 import { setupCepMask } from "../../address/inputMasks.mjs";
 
 export function setupInputMasks() {
@@ -10,6 +10,8 @@ export function setupInputMasks() {
     setupPreferredToggle();
 }
 
+/* ========================================================== */
+/* ===================== INPUT MASKS ======================== */
 /* ========================================================== */
 
 // Máscara para telefone: (DD) NNNNN-NNNN
@@ -59,6 +61,8 @@ export function setupCpfMask() {
 }
 
 /* ========================================================== */
+/* ====================== VALIDAÇÕES ======================== */
+/* ========================================================== */
 
 // Validação de data de nascimento (+18 anos)
 export function setupBirthDateValidation() {
@@ -96,24 +100,7 @@ export function setupBirthDateValidation() {
     });
 }
 
-/* ========================================================== */
-
-// Função para limpar máscaras e obter valores puros
-export function getCleanValue(input) {
-    const name = input.name;
-    const value = input.value;
-    
-    switch (name) {
-        case 'client-phone':
-        case 'client-cpf':
-        case 'card-number':
-        case 'address-zip-code':
-            return value.replace(/\D/g, '');
-        default:
-            return value;
-    }
-}
-
+// Validar e garantir que apenas um cartão seja marcado como preferencial
 export function setupPreferredToggle() {
     document.addEventListener('change', function (event) {
         // Verifica se o toggle é do tipo preferencial de cartão
@@ -127,6 +114,10 @@ export function setupPreferredToggle() {
         }
     });
 }
+
+/* ========================================================== */
+/* ==================== EXTRAÇÃO DE DADOS =================== */
+/* ========================================================== */
 
 // Função para extrair DDD e número do telefone
 export function extractPhoneData(phoneValue) {
@@ -145,4 +136,20 @@ export function extractPhoneData(phoneValue) {
     }
     
     throw new Error('Telefone inválido');
+}
+
+// Função para limpar máscaras e obter valores puros
+export function getCleanValue(input) {
+    const name = input.name;
+    const value = input.value;
+    
+    switch (name) {
+        case 'client-phone':
+        case 'client-cpf':
+        case 'card-number':
+        case 'address-zip-code':
+            return value.replace(/\D/g, '');
+        default:
+            return value;
+    }
 }

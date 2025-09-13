@@ -1,8 +1,9 @@
-
 export function setupCardInputMasks() {
     setupCardNumberMask();
 }
 
+/* ========================================================== */
+/* ===================== INPUT MASKS ======================== */
 /* ========================================================== */
 
 // Máscara para número do cartão: XXXX XXXX XXXX XXXX

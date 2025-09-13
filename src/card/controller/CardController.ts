@@ -154,7 +154,6 @@ export default class CardController {
 	}
 
 	public renderCreateCardForm(_: Request, res: Response) {
-		console.log("Rendering create card form");
 		res.render("cardDetails", {
 			title: "Novo Cartão",
 			currentHeaderTab: "profile",
