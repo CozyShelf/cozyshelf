@@ -51,12 +51,13 @@ export default class ClientController {
 	public async getById(req: Request, res: Response): Promise<void> {
 		try {
 			const { id } = req.params;
+
 			const client = await this.service.getById(id);
 			const clientDetailsDTO = ClientDetailsDTO.fromEntity(client);
 
 			res.status(200).json({
 				message: `Dados do cliente carregados com sucesso!`,
-				data: clientDetailsDTO,
+				data: client,
 			});
 		} catch (e) {
 			this.createErrorResponse(res, e as Error);
