@@ -14,7 +14,7 @@ export default abstract class GenericModel {
 	@CreateDateColumn()
 	createdAt!: Date;
 
-	@Column({ type: "boolean", default: true })
+	@Column({ type: "boolean" })
 	isActive: boolean = true;
 
 	abstract toEntity(): Entity;

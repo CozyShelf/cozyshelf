@@ -60,7 +60,8 @@ export default class AddressModel extends GenericModel {
 		city: string,
 		state: string,
 		country: CountryModel,
-		type: AddressType
+		type: AddressType,
+		isActive: boolean
 	) {
 		super();
 		this.zipCode = zipCode;
@@ -75,6 +76,7 @@ export default class AddressModel extends GenericModel {
 		this.state = state;
 		this.country = country;
 		this.type = type;
+		this.isActive = isActive;
 	}
 
 	public toEntity(): Address {
@@ -95,6 +97,7 @@ export default class AddressModel extends GenericModel {
 			this.type
 		);
 		address.id = this.id;
+		address.isActive = this.isActive;
 
 		return address;
 	}
@@ -112,7 +115,8 @@ export default class AddressModel extends GenericModel {
 			address.city,
 			address.state,
 			CountryModel.fromEntity(address.country),
-			address.type
+			address.type,
+			address.isActive
 		);
 	}
 
@@ -146,6 +150,9 @@ export default class AddressModel extends GenericModel {
 		}
 		if (updatedAddress.observation != this.observation) {
 			this.observation = updatedAddress.observation;
+		}
+		if (updatedAddress.isActive != this.isActive) {
+			this.isActive = updatedAddress.isActive;
 		}
 		this.country.updateFromEntity(updatedAddress.country);
 	}

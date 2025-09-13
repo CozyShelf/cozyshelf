@@ -14,20 +14,22 @@ export default class CountryModel extends GenericModel {
 	@OneToMany(() => AddressModel, (address) => address.country)
 	addresses!: AddressModel[];
 
-	constructor(name: string, acronym: string) {
+	constructor(name: string, acronym: string, isActive: boolean) {
 		super();
 		this.name = name;
 		this.acronym = acronym;
+		this.isActive = isActive;
 	}
 
 	public toEntity(): Country {
 		const country = new Country(this.name, this.acronym);
 		country.id = this.id;
+		country.isActive = this.isActive;
 		return country;
 	}
 
 	public static fromEntity(country: Country): CountryModel {
-		return new CountryModel(country.name, country.acronym);
+		return new CountryModel(country.name, country.acronym, country.isActive);
 	}
 
 	public updateFromEntity(updatedCountry: Country) {

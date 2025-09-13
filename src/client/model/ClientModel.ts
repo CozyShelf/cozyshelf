@@ -57,7 +57,8 @@ export default class ClientModel extends GenericModel {
 		ranking: number,
 		gender: Gender,
 		addresses: AddressModel[],
-		cards: CreditCardModel[]
+		cards: CreditCardModel[],
+		isActive: boolean
 	) {
 		super();
 		this.name = name;
@@ -70,6 +71,7 @@ export default class ClientModel extends GenericModel {
 		this.gender = gender;
 		this.addresses = addresses;
 		this.cards = cards;
+		this.isActive = isActive;
 	}
 
 	public toEntity(): Client {
@@ -94,6 +96,7 @@ export default class ClientModel extends GenericModel {
 			cards
 		);
 		client.id = this.id;
+		client.isActive = this.isActive;
 
 		return client;
 	}
@@ -109,13 +112,17 @@ export default class ClientModel extends GenericModel {
 			client.ranking,
 			client.gender,
 			client.addresses.map((address) => AddressModel.fromEntity(address)),
-			client.cards.map((card) => CreditCardModel.fromEntity(card))
+			client.cards.map((card) => CreditCardModel.fromEntity(card)),
+			client.isActive
 		);
 
 		return clientModel;
 	}
 
-	public updateFromEntity(updatedClient: Client) {
+	public updateFromEntity(
+		updatedClient: Client,
+		fullUpdate: boolean = false
+	) {
 		if (this.name != updatedClient.name) {
 			this.name = updatedClient.name;
 		}
@@ -131,6 +138,30 @@ export default class ClientModel extends GenericModel {
 		if (this.gender != updatedClient.gender) {
 			this.gender = updatedClient.gender;
 		}
+		if (this.isActive != updatedClient.isActive) {
+			this.isActive = updatedClient.isActive;
+		}
 		this.telephone.updateFromEntity(updatedClient.telephone);
+
+		if (fullUpdate) {
+			this.password.updateFromEntity(updatedClient.password);
+
+			const addressMap = new Map(this.addresses.map((addr) => [addr.id, addr]));
+			const cardsMap = new Map(this.cards.map((card) => [card.id, card]));
+
+			for (const updatedAddress of updatedClient.addresses) {
+				const existingAddress = addressMap.get(updatedAddress.id);
+				if (existingAddress) {
+					existingAddress.updateFromEntity(updatedAddress);
+				}
+			}
+
+			for (const updatedCard of updatedClient.cards) {
+				const existingCard = cardsMap.get(updatedCard.id);
+				if (existingCard) {
+					existingCard.updateFromEntity(updatedCard);
+				}
+			}
+		}
 	}
 }

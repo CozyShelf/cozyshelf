@@ -33,7 +33,8 @@ export default class CreditCardModel extends GenericModel {
 		nameOnCard: string,
 		cvv: string,
 		isPreferred: boolean,
-		flagDescription: string
+		flagDescription: string,
+		isActive: boolean
 	) {
 		super();
 		this.number = number;
@@ -41,6 +42,7 @@ export default class CreditCardModel extends GenericModel {
 		this.cvv = cvv;
 		this.isPreferred = isPreferred;
 		this.flagDescription = flagDescription;
+		this.isActive = isActive;
 	}
 
 	public toEntity(): CreditCard {
@@ -54,6 +56,7 @@ export default class CreditCardModel extends GenericModel {
 			cardFlag
 		);
 		card.id = this.id;
+		card.isActive = this.isActive;
 
 		return card;
 	}
@@ -64,7 +67,8 @@ export default class CreditCardModel extends GenericModel {
 			card.nameOnCard,
 			card.cvv,
 			card.isPreferred,
-			card.cardFlag.description
+			card.cardFlag.description,
+			card.isActive
 		);
 	}
 
@@ -83,6 +87,9 @@ export default class CreditCardModel extends GenericModel {
 		}
 		if (updatedCard.cardFlag.description != this.flagDescription) {
 			this.flagDescription = updatedCard.cardFlag.description;
+		}
+		if (updatedCard.isActive != this.isActive) {
+			this.isActive = updatedCard.isActive;
 		}
 		this.cardFlag.updateFromEntity(updatedCard.cardFlag);
 	}

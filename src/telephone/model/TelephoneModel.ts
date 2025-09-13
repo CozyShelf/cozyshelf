@@ -15,21 +15,33 @@ export default class TelephoneModel extends GenericModel {
 	@OneToOne(() => ClientModel, (client) => client.telephone)
 	client!: ClientModel;
 
-	constructor(ddd: string, number: string, type: TelephoneType) {
+	constructor(
+		ddd: string,
+		number: string,
+		type: TelephoneType,
+		isActive: boolean
+	) {
 		super();
 		this.ddd = ddd;
 		this.number = number;
 		this.type = type;
+		this.isActive = isActive;
 	}
 
 	public toEntity(): Telephone {
 		const telephone = new Telephone(this.ddd, this.number, this.type);
 		telephone.id = this.id;
+		telephone.isActive = this.isActive;
 		return telephone;
 	}
 
 	public static fromEntity(telephone: Telephone): TelephoneModel {
-		return new TelephoneModel(telephone.ddd, telephone.number, telephone.type);
+		return new TelephoneModel(
+			telephone.ddd,
+			telephone.number,
+			telephone.type,
+			telephone.isActive
+		);
 	}
 
 	public updateFromEntity(updatedTelephone: Telephone) {
@@ -41,6 +53,9 @@ export default class TelephoneModel extends GenericModel {
 		}
 		if (this.type != updatedTelephone.type) {
 			this.type = updatedTelephone.type;
+		}
+		if (this.isActive != updatedTelephone.isActive) {
+			this.isActive = updatedTelephone.isActive;
 		}
 	}
 }
