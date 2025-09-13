@@ -21,8 +21,11 @@ export class CardService {
 	) {}
 
 	async create(clientId: string, card: CreditCard): Promise<CreditCard> {
+		const existingClient = await this.clientDAO.findById(clientId);
+		if (!existingClient) {
+			throw new NoClientsFound(clientId);
+		}
 
-		const existingClient = await this.validateClientExists(clientId);
 		await this.validateCardNumberIsUnique(card.number);
 		const cardFlag = await this.getExistentCardFlag(card.cardFlag.description);
 
@@ -34,14 +37,6 @@ export class CardService {
 		const savedCardModel = await this.cardDAO.save(newCardModel);
 
 		return savedCardModel.toEntity();
-	}
-
-	private async validateClientExists(clientId: string): Promise<ClientModel> {
-		const existingClient = await this.clientDAO.findById(clientId);
-		if (!existingClient) {
-			throw new NoClientsFound(clientId);
-		}
-		return existingClient;
 	}
 
 	private async unsetOtherPreferredCards(clientId: string): Promise<void> {
@@ -124,25 +119,20 @@ export class CardService {
 	}
 
 	async update(id: string, updateData: IUpdateCardData): Promise<CreditCard> {
-		const existingCard = await this.cardDAO.findByIdWithClient(id);
+		const existingCard = await this.cardDAO.findById(id);
 		if (!existingCard) {
 			throw new NoCardsFound(id);
 		}
 
 		const updatedCardEntity = existingCard.toEntity();
 		updatedCardEntity.updateData(updateData);
-		console.log("Updated Card Entity:", updatedCardEntity);
 
-		if (updateData.isPreferred !== undefined) {
-			console.log("Updated Card Entity:", updatedCardEntity);
+		if (updateData.isPreferred === true) {
+			await this.unsetOtherPreferredCards(existingCard.client.id);
+		}
 
-			if (updateData.isPreferred === true) {
-				await this.unsetOtherPreferredCards(existingCard.client.id);
-			}
-
-			if(existingCard.isPreferred && updateData.isPreferred === false) {
-				throw new CannotRemoveLastPreferredCard();
-			}
+		if(existingCard.isPreferred && updateData.isPreferred === false) {
+			throw new CannotRemoveLastPreferredCard();
 		}
 
 		if (updateData.number && updateData.number !== existingCard.number) {
