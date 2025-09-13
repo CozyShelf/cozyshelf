@@ -13,7 +13,7 @@ import DomainEntity from "../../generic/domain/DomainEntity";
 import IUpdateClientData from "../types/IUpdateClientData";
 import InvalidCPFFormat from "./exceptions/InvalidCPFFormat";
 import InvalidPreferredCardsProvided from "./exceptions/InvalidPreferredCardsProvided";
-import CannotRemoveLastPreferredCard from "./exceptions/CannotRemoveLastPreferredCard";
+import { AddressCantBeRemoved } from "./exceptions/AddressCantBeRemoved";
 
 export default class Client extends DomainEntity {
 	_name!: string;
@@ -177,6 +177,33 @@ export default class Client extends DomainEntity {
 		this._addresses = addresses;
 	}
 
+	public verifyAddressDeletion(addressToBeDeletedId: string) {
+		if (this.addresses.length <= 1) {
+			throw new AddressCantBeRemoved();
+		}
+
+		const hasDeliveryAddress = this.addresses.some(
+			(addr) =>
+				addr.id !== addressToBeDeletedId &&
+				(addr.type === AddressType.DELIVERY ||
+					addr.type === AddressType.DELIVERY_AND_BILLING)
+		);
+		const hasBillingAddress = this.addresses.some(
+			(addr) =>
+				addr.id !== addressToBeDeletedId &&
+				(addr.type === AddressType.BILLING ||
+					addr.type === AddressType.DELIVERY_AND_BILLING)
+		);
+
+		if (!hasDeliveryAddress) {
+			throw new InvalidAddressesProvided(AddressType.DELIVERY);
+		}
+
+		if (!hasBillingAddress) {
+			throw new InvalidAddressesProvided(AddressType.BILLING);
+		}
+	}
+
 	get cards(): CreditCard[] {
 		return this._cards;
 	}
@@ -199,36 +226,6 @@ export default class Client extends DomainEntity {
 		}
 
 		this._cards = cards;
-	}
-
-	public verifyPreferredCards(newCard: CreditCard): void {
-		if (newCard.isPreferred) {
-			const hasPreferred = this._cards.some((card) => card.isPreferred);
-			if (hasPreferred) {
-				throw new InvalidPreferredCardsProvided();
-			}
-		}
-	}
-
-	public verifyCardUpdate(cardId: string, updatedCard: CreditCard): void {
-		const simulatedCards = this._cards.map((card) => {
-			if (card.id === cardId) {
-				return updatedCard;
-			}
-			return card;
-		});
-
-		const hasPreferred = simulatedCards.some((card) => card.isPreferred);
-		if (!hasPreferred) {
-			throw new CannotRemoveLastPreferredCard();
-		}
-
-		const preferredCount = simulatedCards.filter(
-			(card) => card.isPreferred
-		).length;
-		if (preferredCount > 1) {
-			throw new InvalidPreferredCardsProvided();
-		}
 	}
 
 	public static fromRequestData(requestData: INewClientInputData) {
