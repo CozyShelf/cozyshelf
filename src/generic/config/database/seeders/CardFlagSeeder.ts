@@ -11,9 +11,9 @@ export default class CardFlagSeeder {
 		}
 
 		const cardFlags = [
-			new CardFlagModel("Visa"),
-			new CardFlagModel("Elo"),
-			new CardFlagModel("Mastercard"),
+			new CardFlagModel("Visa", true),
+			new CardFlagModel("Elo", true),
+			new CardFlagModel("Mastercard", true),
 		];
 
 		await cardFlagDAO.save(cardFlags);

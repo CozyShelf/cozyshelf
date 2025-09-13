@@ -28,13 +28,15 @@ export default class UserSeeder {
 				}
 
 				const password = new PasswordModel(
-					Password.encrytPassword(user.password)
+					Password.encrytPassword(user.password),
+					true
 				);
 
 				const telephone = new TelephoneModel(
 					user.telephone.ddd,
 					user.telephone.number,
-					user.telephone.type
+					user.telephone.type,
+					true
 				);
 
 				const cards = [];
@@ -44,17 +46,25 @@ export default class UserSeeder {
 						cardInfo.nameOnCard,
 						cardInfo.cvv,
 						cardInfo.isPreferred,
-						cardInfo.cardFlag.description
+						cardInfo.cardFlag.description,
+						true
 					);
 
-					const flagModel = await cardFlagDao.findOneBy({
+					let flagModel = await cardFlagDao.findOneBy({
 						description: card.flagDescription,
 					});
 
-					if (flagModel) {
-						card.cardFlag = flagModel;
+					if (!flagModel) {
+						flagModel = new CardFlagModel(card.flagDescription, true);
+						flagModel = await cardFlagDao.save(flagModel);
 					}
 
+					if (!flagModel.isActive) {
+						flagModel.isActive = true;
+						await cardFlagDao.save(flagModel);
+					}
+
+					card.cardFlag = flagModel;
 					cards.push(card);
 				}
 
@@ -62,7 +72,8 @@ export default class UserSeeder {
 				for (const addr of user.addresses) {
 					const countryModel = new CountryModel(
 						addr.country.name,
-						addr.country.acronym
+						addr.country.acronym,
+						true
 					);
 
 					const address = new AddressModel(
@@ -77,7 +88,8 @@ export default class UserSeeder {
 						addr.city,
 						addr.state,
 						countryModel,
-						addr.type
+						addr.type,
+						true
 					);
 
 					addresses.push(address);
@@ -93,11 +105,12 @@ export default class UserSeeder {
 					user.ranking,
 					user.gender,
 					addresses,
-					cards
+					cards,
+					true
 				);
-			
+
 				client.id = user.id;
-				
+
 				await clientDao.save(client);
 			}
 		} catch (error) {
