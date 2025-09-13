@@ -16,8 +16,6 @@ export default class AddressController {
 
 	public async create(req: Request, res: Response): Promise<void> {
 		try {
-			this.verifyRequestBody(req, res);
-
 			const body = req.body as INewAddressData;
 			const clientId = body.clientId;
 
@@ -26,7 +24,7 @@ export default class AddressController {
 
 			res.status(201).json({
 				message: `Endereço ${createdAddress.shortPhrase} criado com sucesso para o cliente de id: ${clientId}!`,
-				addressId: createdAddress.id,
+				addressId: createdAddress.id
 			});
 		} catch (e) {
 			this.createErrorResponse(res, e as Error);
@@ -70,8 +68,6 @@ export default class AddressController {
 		try {
 			const { id } = req.params;
 
-			this.verifyRequestBody(req, res);
-
 			const updatedAddress = await this.service.update(
 				id,
 				req.body as IUpdateAddressData
@@ -89,17 +85,9 @@ export default class AddressController {
 	public async delete(req: Request, res: Response): Promise<void> {
 		try {
 			const { id } = req.params;
-			console.log("Deleting address with id:", id);
-
-			if (!id || id.trim() === "") {
-				res.status(400).json({
-					error: true,
-					message: "ID do endereço é obrigatório para exclusão!",
-				});
-				return;
-			}
 
 			await this.service.delete(id);
+
 			res.status(200).json({
 				message: `Endereço removido com sucesso!`,
 				addressId: id,
@@ -124,7 +112,7 @@ export default class AddressController {
 			isAdmin: false,
 			addresses,
 		});
-	
+
 	}
 
 	public async renderAddressDetails(req: Request, res: Response) {
@@ -158,16 +146,6 @@ export default class AddressController {
 			address: null,
 			states: brazilStates,
 		});
-	}
-
-	private verifyRequestBody(req: Request, res: Response) {
-		if (!req.body || Object.keys(req.body).length === 0) {
-			res.status(400).json({
-				error: true,
-				message: "Dados do endereço são obrigatórios!",
-			});
-			return;
-		}
 	}
 
 	private createErrorResponse(res: Response, e: Error) {
