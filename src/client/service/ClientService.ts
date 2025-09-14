@@ -4,6 +4,7 @@ import InexistentCardFlag from "../../card/service/exceptions/InexistentCardFlag
 import ClientDAO from "../dao/typeORM/ClientDAO";
 import Client from "../domain/Client";
 import ClientModel from "../model/ClientModel";
+import IClientFilters from "../types/IClientFilters";
 import IUpdateClientData from "../types/IUpdateClientData";
 import ClientAlreadyExists from "./exceptions/ClientAlreadyExists";
 import NoClientsFound from "./exceptions/NoClientsFound";
@@ -58,8 +59,8 @@ export class ClientService {
 		return !!alreadyExistsWithEmail || !!alreadyExistsWithCPF;
 	}
 
-	public async getAll(): Promise<Client[]> {
-		const clientsFound = await this.clientDAO.findAll();
+	public async getAll(filters?: IClientFilters): Promise<Client[]> {
+		const clientsFound = await this.clientDAO.findAll(filters);
 		if (!clientsFound) {
 			throw new NoClientsFound();
 		}
