@@ -1,4 +1,4 @@
-import { deleteConfirmationPopup } from "../../generic/delete/deleteConfirmationPopup.mjs";
+import { deleteConfirmation } from "../../generic/delete/deleteConfirmation.mjs";
 
 const CARD_DELETE_URL = '/api/cards/';
 
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            deleteConfirmationPopup('cartão', CARD_DELETE_URL, cardId);
+            deleteConfirmation('cartão', CARD_DELETE_URL, cardId);
         });
     });
 });

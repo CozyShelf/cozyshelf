@@ -89,6 +89,7 @@ export class ClientService {
 		updatedEntity.updateData(updatedData);
 
 		existingClientModel.updateFromEntity(updatedEntity);
+		console.log("Cliente atualizado:", existingClientModel);
 		const updatedModel = await this.clientDAO.save(existingClientModel);
 
 		return updatedModel.toEntity();

@@ -1,4 +1,4 @@
-import { deleteConfirmationPopup } from "../../generic/delete/deleteConfirmationPopup.mjs";
+import { deleteConfirmation } from "../../generic/delete/deleteConfirmation.mjs";
 
 const DELETE_ADDRESS_URL = '/api/addresses/';
 
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
 
             const addressId = btn.getAttribute('href').replace('/', '');
-            deleteConfirmationPopup('endereço', DELETE_ADDRESS_URL, addressId);
+            deleteConfirmation('endereço', DELETE_ADDRESS_URL, addressId);
         });
     });
 });

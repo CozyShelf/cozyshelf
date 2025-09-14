@@ -1,5 +1,5 @@
-import { setupPasswordUpdateForm } from './formUpdatePassword.mjs';
+import { handlePasswordUpdate } from './update/updatePassword.mjs';
 
 document.addEventListener('DOMContentLoaded', () => {
-    setupPasswordUpdateForm();
+    handlePasswordUpdate();
 });

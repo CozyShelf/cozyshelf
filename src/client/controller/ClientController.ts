@@ -68,12 +68,12 @@ export default class ClientController {
 			const { id } = req.params;
 
 			this.verifyRequestBody(req, res);
-
+			console.log("Request Body:", req.body);
 			const updatedClient = await this.service.update(
 				id,
 				req.body as IUpdateClientData
 			);
-
+			console.log("Cliente atualizado:", updatedClient);
 			res.status(200).json({
 				message: `Dados do cliente ${updatedClient.name} atualizados com sucesso!`,
 				clientId: updatedClient.id,
