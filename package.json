@@ -11,8 +11,6 @@
 		"db:down": "docker compose down",
 		"db:down_volumes": "docker compose down -v",
 		"test": "npx cypress open",
-		"test:watch": "",
-		"test:coverage": "",
 		"tailwind": "tailwindcss -i ./public/styles/input.css -o ./public/styles/output.css --watch"
 	},
 	"keywords": [],
