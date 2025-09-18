@@ -10,9 +10,7 @@
 		"db:up": "docker compose up -d db",
 		"db:down": "docker compose down",
 		"db:down_volumes": "docker compose down -v",
-		"test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles",
-		"test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles --watch",
-		"test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles --watch --coverage",
+		"test": "npx cypress open",
 		"tailwind": "tailwindcss -i ./public/styles/input.css -o ./public/styles/output.css --watch"
 	},
 	"keywords": [],
@@ -20,10 +18,12 @@
 	"license": "ISC",
 	"devDependencies": {
 		"@jest/globals": "^30.0.4",
+		"@types/cypress": "^0.1.6",
 		"@types/express": "^5.0.3",
 		"@types/express-ejs-layouts": "^2.5.4",
 		"@types/jest": "^30.0.0",
 		"@types/node": "^24.2.1",
+		"cypress": "^15.2.0",
 		"dotenv": "^17.1.0",
 		"jest": "^30.0.4",
 		"supertest": "^7.1.3",
