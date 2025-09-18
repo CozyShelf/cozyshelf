@@ -1,29 +1,29 @@
 import CardFlag from "./CardFlag";
-import Client from "./Client";
 import MandatoryParameter from "../../generic/domain/exceptions/MandatoryParameter";
+import ICardData from "../types/ICardData";
+import IUpdateCardData from "../types/IUpdateCardData";
+import DomainEntity from "../../generic/domain/DomainEntity";
 
-export default class CreditCard {
+export default class CreditCard extends DomainEntity {
 	_number!: string;
 	_nameOnCard!: string;
 	_cvv!: string;
 	_isPreferred!: boolean;
 	_cardFlag!: CardFlag;
-	_client!: Client;
 
 	constructor(
 		number: string,
 		nameOnCard: string,
 		cvv: string,
 		isPreferred: boolean,
-		cardFlag: CardFlag,
-		client: Client
+		cardFlag: CardFlag
 	) {
-		this._number = number;
-		this._nameOnCard = nameOnCard;
-		this._cvv = cvv;
-		this._isPreferred = isPreferred;
-		this._cardFlag = cardFlag;
-		this._client = client;
+		super();
+		this.number = number;
+		this.nameOnCard = nameOnCard;
+		this.cvv = cvv;
+		this.isPreferred = isPreferred;
+		this.cardFlag = cardFlag;
 	}
 
 	get number(): string {
@@ -78,12 +78,43 @@ export default class CreditCard {
 		this._cardFlag = value;
 	}
 
-	get client(): Client {
-		return this._client;
+	public static fromRequestData(requestData: ICardData) {
+		CreditCard.validateNonPrimitiveFields(requestData);
+
+		return new CreditCard(
+			requestData.number,
+			requestData.nameOnCard,
+			requestData.cvv,
+			requestData.isPreferred,
+			CardFlag.fromRequestData(requestData.cardFlag)
+		);
 	}
 
-	set client(value: Client) {
-		this._client = value;
+	private static validateNonPrimitiveFields(requestData: ICardData) {
+		if (!requestData.cardFlag) {
+			throw new MandatoryParameter("cardFlag");
+		}
 	}
 
+	public updateData(updatedCardData: IUpdateCardData) {
+		if (updatedCardData.number) {
+			this.number = updatedCardData.number;
+		}
+		if (updatedCardData.nameOnCard) {
+			this.nameOnCard = updatedCardData.nameOnCard;
+		}
+		if (updatedCardData.cvv) {
+			this.cvv = updatedCardData.cvv;
+		}
+		if (updatedCardData.isPreferred !== undefined) {
+			this.isPreferred = updatedCardData.isPreferred;
+		}
+		if (updatedCardData.cardFlag) {
+			this.cardFlag.updateData(updatedCardData.cardFlag);
+		}
+	}
+
+	public inactivate() {
+		this.isActive = false;
+	}
 }

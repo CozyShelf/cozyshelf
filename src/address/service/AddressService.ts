@@ -1,72 +1,104 @@
+import ClientDAO from "../../client/dao/typeORM/ClientDAO";
+import NoClientsFound from "../../client/service/exceptions/NoClientsFound";
+import { AddressDAO } from "../dao/typeORM/AddressDAO";
+import CountryDAO from "../dao/typeORM/CountryDAO";
 import Address from "../domain/Address";
-import {AddressDAO} from "../dao/typeORM/AddressDAO";
 import AddressModel from "../model/AddressModel";
 import CountryModel from "../model/CountryModel";
+import IUpdateAddressData from "../types/IUpdateAddressData";
+import AddressNotFound from "./exceptions/AddressNotFound";
+import NoAddressesFound from "./exceptions/NoAddressesFound";
 
 export class AddressService {
-
-	private readonly addressDAO: AddressDAO;
-
-	constructor(addressDAO: AddressDAO) {
+	constructor(
+		private readonly addressDAO: AddressDAO,
+		private readonly clientDAO: ClientDAO,
+		private readonly countryDAO: CountryDAO
+	) {
 		this.addressDAO = addressDAO;
+		this.clientDAO = clientDAO;
+		this.countryDAO = countryDAO;
 	}
 
-	async create(address: any): Promise<AddressModel> {
-		const newAddress = new Address(
-			address.zipCode, address.number,
-			address.residenceType, address.streetName,
-			address.streetType, address.neighborhood,
-			address.shortPhrase, address.observation,
-			address.city, address.state,
-			address.country, address.type
-		);
-
-		const addressModel = new AddressModel(
-			newAddress.zipCode, newAddress.number,
-			newAddress.residenceType, newAddress.streetName,
-			newAddress.streetType, newAddress.neighborhood,
-			newAddress.shortPhrase, newAddress.observation,
-			newAddress.city, newAddress.state,
-			new CountryModel(newAddress.country.name, newAddress.country.acronym),
-			newAddress.type);
-
-		return this.addressDAO.save(addressModel);
-	}
-
-	async getById(id: string): Promise<AddressModel | null> {
-		return this.addressDAO.findById(id);
-	}
-
-	async getAll(): Promise<AddressModel[]| null> {
-		return this.addressDAO.findAll()
-	}
-
-	async update(id: string, address: any): Promise<AddressModel | null> {
-		const existingAddress = await this.addressDAO.findById(id);
-		if (!existingAddress) {
-			return null;
+	async create(clientId: string, address: Address): Promise<Address> {
+		const existingClient = await this.clientDAO.findById(clientId);
+		if (!existingClient) {
+			throw new NoClientsFound(clientId);
 		}
 
-		existingAddress.zipCode = address.zipCode;
-		existingAddress.number = address.number;
-		existingAddress.residenceType = address.residenceType;
-		existingAddress.streetName = address.streetName;
-		existingAddress.streetType = address.streetType;
-		existingAddress.neighborhood = address.neighborhood;
-		existingAddress.shortPhrase = address.shortPhrase;
-		existingAddress.observation = address.observation;
-		existingAddress.city = address.city;
-		existingAddress.state = address.state;
-		existingAddress.country = address.country;
-		existingAddress.type = address.type;
+		let newAddressModel = AddressModel.fromEntity(address);
+		newAddressModel.client = existingClient;
 
-		return this.addressDAO.save(existingAddress);
+		await this.getExistingCountryByAcronym(newAddressModel.country);
+		newAddressModel = await this.addressDAO.save(newAddressModel);
+
+		return newAddressModel.toEntity();
+	}
+
+	async getById(id: string): Promise<Address> {
+		const addressModel = await this.addressDAO.findById(id);
+		if (!addressModel) {
+			throw new AddressNotFound(id);
+		}
+		return addressModel.toEntity();
+	}
+
+	async getAll(): Promise<Address[]> {
+		const addressModels = await this.addressDAO.findAll();
+		if (!addressModels || addressModels.length === 0) {
+			throw new NoAddressesFound();
+		}
+		return addressModels.map((addressModel) => addressModel.toEntity());
+	}
+
+	async getByClientId(clientId: string): Promise<Address[]> {
+		const existingClient = await this.clientDAO.findById(clientId);
+		if (!existingClient) {
+			throw new NoClientsFound(clientId);
+		}
+
+		const addressModels = await this.addressDAO.findByClientId(clientId);
+		if (!addressModels || addressModels.length === 0) {
+			return [];
+		}
+		return addressModels.map((addressModel) => addressModel.toEntity());
+	}
+
+	async update(id: string, updateData: IUpdateAddressData): Promise<Address> {
+		const existingAddress = await this.addressDAO.findById(id);
+		if (!existingAddress) {
+			throw new AddressNotFound(id);
+		}
+
+		const updatedAddressEntity = existingAddress.toEntity();
+		updatedAddressEntity.updateData(updateData);
+
+		existingAddress.updateFromEntity(updatedAddressEntity);
+		await this.getExistingCountryByAcronym(existingAddress.country);
+
+		const updatedAddressModel = await this.addressDAO.save(existingAddress);
+		return updatedAddressModel.toEntity();
 	}
 
 	async delete(id: string): Promise<void> {
 		const existingAddress = await this.addressDAO.findById(id);
-		if (existingAddress) {
-			await this.addressDAO.delete(id);
+		if (!existingAddress) {
+			throw new AddressNotFound(id);
+		}
+
+		const client = existingAddress.client;
+
+		client.toEntity().verifyAddressDeletion(id);
+
+		await this.addressDAO.delete(id);
+	}
+
+	async getExistingCountryByAcronym(countryModel: CountryModel): Promise<void> {
+		const country = await this.countryDAO.findByAcronym(countryModel.acronym);
+		if (country) {
+			countryModel.id = country.id;
+			countryModel.name = country.name;
+			countryModel.isActive = country.isActive;
 		}
 	}
 }

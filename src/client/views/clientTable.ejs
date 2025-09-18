@@ -1,38 +1,90 @@
-<div class="mt-10">
-    <%- include("headers/detailsHeader.ejs", { pageTitle: "Listagem de Clientes" }) %>
-</div>
-<div class="flex flex-col w-full gap-8 mt-7 mb-12 px-32">
-    <div class="flex justify-between items-center">
-        <h1 class="font-semibold text-[16px]">Clientes (1)</h1>
+<div class="flex flex-col w-full gap-10 mt-9 mb-15 px-32">
+    <div class="flex justify-between align-middle">
+        <h1 class="font-semibold text-[20px]">Clientes (<%= clients.length %>)</h1>
         <a href="/clients/register" class="flex items-center gap-1 px-4 py-1 bg-brown text-white rounded hover:bg-dark-brown text-[14px] h-8">
             <span class="material-symbols-outlined text-[18px]">add</span>
-            <span class="font-semibold">Adicionar</span>
+            <span class="font-semibold">Criar cliente</span>
         </a>
     </div>
-    <table class="w-full border-separate">
-        <thead>
-            <tr class="bg-dark-brown text-white text-center">
-            <th class="px-4 py-2 rounded-l-xl font-semibold text-[14px]">id</th>
-            <th class="px-4 py-2 font-semibold text-[14px]">Nome</th>
-            <th class="px-4 py-2 font-semibold text-[14px]">Email</th>
-            <th class="px-4 py-2 rounded-r-xl font-semibold"></th>
+    <div class="flex align-middle items-center gap-2">
+        <h2 class="text-gray text-[14px]">Filtrar por: </h2>
+        <form id="filterForm" class="flex items-center gap-2" method="GET">
+            <div>
+                <label class="sr-only">Nome</label>
+                <input 
+                    type="text" name="name" placeholder="Nome..."
+                    value="<%= filters?.name || '' %>"
+                    class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
+                >
+            </div>
+            <div>
+                <label class="sr-only">CPF</label>
+                <input 
+                    type="text" name="cpf" placeholder="CPF..."
+                    value="<%= filters?.cpf || '' %>"
+                    class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
+                >
+            </div>
+            <div>
+                <label class="sr-only">Email</label>
+                <input 
+                    type="text" name="email" placeholder="Email..."
+                    value="<%= filters?.email || '' %>"
+                    class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
+                >
+            </div>
+            <div>
+                <label class="sr-only">Telefone</label>
+                <input 
+                    type="text" name="phone" placeholder="Telefone..."
+                    value="<%= filters?.phone || '' %>"
+                    class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
+                >
+            </div>
+            <button type="submit" class="flex items-center gap-1 px-2 py-1 bg-brown text-white rounded hover:bg-dark-brown text-[14px] h-8">
+                <span class="material-symbols-outlined text-[15px]">search</span>
+            </button>
+            <% if (filters && (filters.name || filters.cpf || filters.email || filters.phone)) { %>
+                <a href="/admin/clients" class="flex items-center gap-1 px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 text-[14px] h-8">
+                    <span class="material-symbols-outlined text-[15px]">clear</span>
+                </a>
+            <% } %>
+        </form>
+    </div>
+
+    <table class="min-w-full border-none rounded-lg overflow-hidden shadow-md">
+        <thead class="bg-dark-brown text-white text-sm uppercase">
+            <tr>
+                <th class="px-6 py-3 text-left font-semibold">ID</th>
+                <th class="px-6 py-3 text-left font-semibold">Nome</th>
+                <th class="px-6 py-3 text-left font-semibold">Email</th>
+                <th class="px-6 py-3 text-left font-semibold">Ações</th>
             </tr>
         </thead>
-        <tbody>
-            <tr class="bg-lighter-brown h-8 border border-dark-brown text-center align-middle">
-                <td class="px-4 py-2 border-r border-dark-brown rounded-l-xl text-[13px]">1</td>
-                <td class="px-4 py-2 border-r border-dark-brown text-[13px]">José da Silva</td>
-                <td class="px-4 py-2 border-r border-dark-brown text-[13px]">jose123@hotmail.com</td>
-                <td class="px-4 py-2 rounded-r-xl flex gap-2 justify-center">
-                    <a href="/clients/id" class="hover:text-gray flex justify-center items-center text-[16px] h-6 w-6">
-                        <span class="material-symbols-outlined text-[16px]">visibility</span>
-                    </a>
-                    <a href="/cards/delete/id" class="hover:text-gray flex justify-center items-center delete-btn text-[16px] h-6 w-6">
-                        <span class="material-symbols-outlined text-[16px]">delete</span>
-                    </a>
-                </td>
-            </tr>
+        <tbody class="divide-y divide-light-brown text-sm text-gray-2 bg-lighter-brown">
+            <% if (clients && clients.length > 0) { %>
+                <% clients.forEach(client => { %>
+                    <tr>
+                        <td class="px-6 py-3 font-medium text-gray-2"><%= client.id %></td>
+                        <td class="px-6 py-3"><%= client.name %></td>
+                        <td class="px-6 py-3"><%= client.email %></td>
+                        <td class="px-6 py-3 flex gap-2">
+                            <a href="/admin/clients/<%= client.id %>" class="hover:text-gray flex justify-center items-center" title="Visualizar">
+                                <span class="material-symbols-outlined text-base">visibility</span>
+                            </a>
+                            <a href="/<%= client.id %>" class="hover:text-gray flex justify-center items-center delete-btn" title="Inativar">
+                                <span class="material-symbols-outlined text-base">account_circle_off</span>
+                            </a>
+                        </td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="4" class="px-6 py-8 text-center text-gray-500">Nenhum cliente encontrado</td>
+                </tr>
+            <% } %>
         </tbody>
     </table>
 </div>
-<script src="/scripts/deleteSubmit.mjs"></script>
+<script src="/scripts/client/delete/inactiveClient.mjs" type="module"></script>
+<script src="/scripts/client/filter/filterClientAdminTable.mjs" type="module"></script>

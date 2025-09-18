@@ -2,194 +2,158 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import AddressType from "../domain/enums/AddressType";
 import CountryModel from "./CountryModel";
 import GenericModel from "../../generic/model/GenericModel";
-import Address from "../domain/Address";
 import ClientModel from "../../client/model/ClientModel";
+import Address from "../domain/Address";
 
 @Entity()
 export default class AddressModel extends GenericModel {
-	@Column({type: "varchar"})
-	_shortPhrase!: string;
+	@Column({ type: "varchar" })
+	shortPhrase!: string;
 
-	@Column({type: "varchar"})
-	_zipCode!: string;
+	@Column({ type: "varchar" })
+	zipCode!: string;
 
-	@Column({type: "varchar"})
-	_streetType!: string;
+	@Column({ type: "varchar" })
+	streetType!: string;
 
-	@Column({type: "varchar"})
-	_streetName!: string;
+	@Column({ type: "varchar" })
+	streetName!: string;
 
-	@Column({type: "varchar"})
-	_number!: string;
+	@Column({ type: "varchar" })
+	number!: string;
 
-	@Column({type: "varchar"})
-	_residenceType?: string;
+	@Column({ type: "varchar" })
+	residenceType!: string;
 
-	@Column({type: "varchar"})
-	_neighborhood!: string;
+	@Column({ type: "varchar" })
+	neighborhood!: string;
 
-	@Column({type: "varchar"})
-	_city!: string;
+	@Column({ type: "varchar" })
+	city!: string;
 
-	@Column({type: "varchar"})
-	_state!: string;
+	@Column({ type: "varchar" })
+	state!: string;
 
-	@ManyToOne(() => CountryModel)
+	@ManyToOne(() => CountryModel, { cascade: true, eager: true })
 	@JoinColumn()
-	_country!: CountryModel;
+	country!: CountryModel;
 
-	@Column({type: "enum", enum: AddressType})
-	_type!: AddressType;
+	@Column({ type: "enum", enum: AddressType })
+	type!: AddressType;
 
-	@Column({type: "varchar"})
-	_observation?: string;
+	@Column({ type: "varchar" })
+	observation: string;
 
 	@ManyToOne(() => ClientModel, (client: ClientModel) => client.addresses)
 	@JoinColumn()
-	_client!: ClientModel;
+	client!: ClientModel;
 
 	constructor(
-			zipCode: string,
-			number: string,
-			residenceType: string,
-			streetName: string,
-			streetType: string,
-			neighborhood: string,
-			shortPhrase: string,
-			observation: string,
-			city: string,
-			state: string,
-			country: CountryModel,
-			type: AddressType
+		zipCode: string,
+		number: string,
+		residenceType: string,
+		streetName: string,
+		streetType: string,
+		neighborhood: string,
+		shortPhrase: string,
+		observation: string,
+		city: string,
+		state: string,
+		country: CountryModel,
+		type: AddressType,
+		isActive: boolean
 	) {
-			super();
-			this._zipCode = zipCode;
-			this._number = number;
-			this._residenceType = residenceType;
-			this._streetName = streetName;
-			this._streetType = streetType;
-			this._neighborhood = neighborhood;
-			this._shortPhrase = shortPhrase;
-			this._observation = observation;
-			this._city = city;
-			this._state = state;
-			this._country = country;
-			this._type = type;
+		super();
+		this.zipCode = zipCode;
+		this.number = number;
+		this.residenceType = residenceType;
+		this.streetName = streetName;
+		this.streetType = streetType;
+		this.neighborhood = neighborhood;
+		this.shortPhrase = shortPhrase;
+		this.observation = observation;
+		this.city = city;
+		this.state = state;
+		this.country = country;
+		this.type = type;
+		this.isActive = isActive;
 	}
 
-	get shortPhrase(): string {
-		return this._shortPhrase;
-	}
+	public toEntity(): Address {
+		const country = this.country.toEntity();
 
-	set shortPhrase(value: string) {
-		this._shortPhrase = value;
-	}
-
-	get zipCode(): string {
-		return this._zipCode;
-	}
-
-	set zipCode(value: string) {
-		this._zipCode = value;
-	}
-
-	get streetType(): string {
-		return this._streetType;
-	}
-
-	set streetType(value: string) {
-		this._streetType = value;
-	}
-
-	get streetName(): string {
-		return this._streetName;
-	}
-
-	set streetName(value: string) {
-		this._streetName = value;
-	}
-
-	get number(): string {
-		return this._number;
-	}
-
-	set number(value: string) {
-		this._number = value;
-	}
-
-	get residenceType(): string | undefined {
-		return this._residenceType;
-	}
-
-	set residenceType(value: string) {
-		this._residenceType = value;
-	}
-
-	get neighborhood(): string {
-		return this._neighborhood;
-	}
-
-	set neighborhood(value: string) {
-		this._neighborhood = value;
-	}
-
-	get city(): string {
-		return this._city;
-	}
-
-	set city(value: string) {
-		this._city = value;
-	}
-
-	get state(): string {
-		return this._state;
-	}
-
-	set state(value: string) {
-		this._state = value;
-	}
-
-	get country(): CountryModel {
-		return this._country;
-	}
-
-	set country(value: CountryModel) {
-		this._country = value;
-	}
-
-	get type(): AddressType {
-		return this._type;
-	}
-
-	set type(value: AddressType) {
-		this._type = value;
-	}
-
-	get observation(): string | undefined {
-		return this._observation;
-	}
-
-	set observation(value: string) {
-		this._observation = value;
-	}
-
-	get client(): ClientModel {
-		return this._client;
-	}
-
-	set client(value: ClientModel) {
-		this._client = value;
-	}
-
-	 toDomain(): Address {
-		return new Address(
-			this._zipCode, this._number,
-			this._residenceType || "",
-			this._streetName, this._streetType,
-			this._neighborhood,	this._shortPhrase,
-			this._observation || "",
-			this._city, this._state,
-			this._country, this._type
+		const address = new Address(
+			this.zipCode,
+			this.number,
+			this.residenceType,
+			this.streetName,
+			this.streetType,
+			this.neighborhood,
+			this.shortPhrase,
+			this.observation,
+			this.city,
+			this.state,
+			country,
+			this.type
 		);
+		address.id = this.id;
+		address.isActive = this.isActive;
+
+		return address;
+	}
+
+	public static fromEntity(address: Address): AddressModel {
+		return new AddressModel(
+			address.zipCode,
+			address.number,
+			address.residenceType,
+			address.streetName,
+			address.streetType,
+			address.neighborhood,
+			address.shortPhrase,
+			address.observation,
+			address.city,
+			address.state,
+			CountryModel.fromEntity(address.country),
+			address.type,
+			address.isActive
+		);
+	}
+
+	public updateFromEntity(updatedAddress: Address) {
+		if (updatedAddress.shortPhrase != this.shortPhrase) {
+			this.shortPhrase = updatedAddress.shortPhrase;
+		}
+		if (updatedAddress.zipCode != this.zipCode) {
+			this.zipCode = updatedAddress.zipCode;
+		}
+		if (updatedAddress.streetType != this.streetType) {
+			this.streetType = updatedAddress.streetType;
+		}
+		if (updatedAddress.streetName != this.streetName) {
+			this.streetName = updatedAddress.streetName;
+		}
+		if (updatedAddress.number != this.number) {
+			this.number = updatedAddress.number;
+		}
+		if (updatedAddress.residenceType != this.residenceType) {
+			this.residenceType = updatedAddress.residenceType;
+		}
+		if (updatedAddress.neighborhood != this.neighborhood) {
+			this.neighborhood = updatedAddress.neighborhood;
+		}
+		if (updatedAddress.city != this.city) {
+			this.city = updatedAddress.city;
+		}
+		if (updatedAddress.state != this.state) {
+			this.state = updatedAddress.state;
+		}
+		if (updatedAddress.observation != this.observation) {
+			this.observation = updatedAddress.observation;
+		}
+		if (updatedAddress.isActive != this.isActive) {
+			this.isActive = updatedAddress.isActive;
+		}
+		this.country.updateFromEntity(updatedAddress.country);
 	}
 }

@@ -1,4 +1,4 @@
-<form class="flex flex-col w-full gap-10 mt-9 mb-10 px-32" id="client-register-form">
+<form class="flex flex-col w-full gap-10 mt-9 mb-10 px-32" id="client-details-form">
     <div class="flex flex-col gap-4">
         <h1 class="font-semibold text-[20px]">Informações Pessoais</h1>
         <div class="flex flex-row gap-10">
@@ -6,26 +6,25 @@
                 <label class="flex flex-col text-[12px] gap-3">
                     Nome Completo *
                     <input placeholder="Ex: José da Silva" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-                        name="client-name" required value="José da Silva">
+                        name="client-name" required value="<%= user?.name || '' %>">
                 </label>
                 <label class="flex flex-col text-[12px]  gap-3">
                     Data de Nascimento *
                     <input placeholder="DD/MM/AAAA" class="border rounded-[5px] border-gray h-10 p-2.5" type="date"
-                        name="client-birth-date" required value="2000-01-01">
+                        name="client-birth-date" required value="<%= user?.birthDate || '' %>">
                 </label>
-                
             </div>
 
             <div class="flex flex-col w-full gap-5">
                 <label class="flex flex-col text-[12px] gap-3">
                     CPF *
                     <input placeholder="XXX XXX XXX XX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-                        name="client-cpf" required value="123.456.789-00">
+                        name="client-cpf" required value="<%= user?.cpf || '' %>" maxlength="14">
                 </label>
                 <label class="flex flex-col text-[12px] gap-3">
                     Telefone *
                     <input placeholder="(DD) NNNN-NNNN" class="border rounded-[5px] border-gray h-10 p-2.5" type="tel"
-                        name="client-phone" required value="(11) 91234-5678">
+                        name="client-phone" required value="<%= user?.formattedTelephone || '' %>" maxlength="15">
                 </label>
             </div>
 
@@ -34,26 +33,26 @@
                     Gênero *
                     <select name="client-gender" class="border rounded-[5px] border-gray h-10 p-2.5" required>
                         <option value="">Selecione...</option>
-                        <option value="Male" selected>Masculino</option>
-                        <option value="Female">Feminino</option>
-                        <option value="Others">Outros</option>
+                        <option value="MALE" <%= user?.gender === 'MALE' ? 'selected' : '' %>>Masculino</option>
+                        <option value="FEMALE" <%= user?.gender === 'FEMALE' ? 'selected' : '' %>>Feminino</option>
+                        <option value="OTHER" <%= user?.gender === 'OTHER' ? 'selected' : '' %>>Outros</option>
                     </select>
                 </label>
                 <label class="flex flex-col text-[12px] gap-3">
                     Tipo de Telefone *
-                    <select name="client-phone-type" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+                    <select name="client-phone-type" class="border rounded-[5px] border-gray h-10 p-2.5" required >
                         <option value="">Selecione...</option>
-                        <option value="Fixed">Fixo</option>
-                        <option value="Mobile" selected>Móvel</option>
+                        <option value="FIXED" <%= user?.telephoneType === 'FIXED' ? 'selected' : '' %>>Fixo</option>
+                        <option value="MOBILE" <%= user?.telephoneType === 'MOBILE' ? 'selected' : '' %>>Móvel</option>
                     </select>
                 </label>
             </div>
         </div>
-            <div class="flex flex-col w-full gap-5">
+        <div class="flex flex-col w-full gap-5">
             <label class="flex flex-col text-[12px] gap-3">
                 Email *
                 <input placeholder="Ex: exemplo@hotmail.com" class="border rounded-[5px] border-gray h-10 p-2.5 w-full"
-                    type="email" name="client-email" required value="jose123@hotmail.com">
+                    type="email" name="client-email" required value="<%= user?.email || '' %>">
             </label>
         </div>
         <div class="flex justify-end">
@@ -63,4 +62,4 @@
         </div>
     </div>
 </form>
-<script src="/scripts/handleSubmit.mjs"></script>
+<script type="module" src="/scripts/client/update/index.mjs"></script>

@@ -3,88 +3,119 @@ import ClientModel from "../../../../../client/model/ClientModel";
 import AddressModel from "../../../../../address/model/AddressModel";
 import CountryModel from "../../../../../address/model/CountryModel";
 import PasswordModel from "../../../../../password/model/PasswordModel";
+import Password from "../../../../../password/domain/Password";
 import TelephoneModel from "../../../../../telephone/model/TelephoneModel";
 import CreditCardModel from "../../../../../card/model/CreditCardModel";
 import CardFlagModel from "../../../../../card/model/CardFlagModel";
 import users from "./users";
 
 export default class UserSeeder {
-    static async execute(dataSource: DataSource): Promise<void> {
-        try {
-            const passwordDao = dataSource.getRepository(PasswordModel);
-            const telephoneDao = dataSource.getRepository(TelephoneModel);
-            const clientDao = dataSource.getRepository(ClientModel);
-            const countryDao = dataSource.getRepository(CountryModel);
-            const cardFlagDao = dataSource.getRepository(CardFlagModel);
-            const cardDao = dataSource.getRepository(CreditCardModel);
-            const addressDao = dataSource.getRepository(AddressModel);
+	static async execute(dataSource: DataSource): Promise<void> {
+		try {
+			const clientDao = dataSource.getRepository(ClientModel);
+			const cardFlagDao = dataSource.getRepository(CardFlagModel);
 
-            for (const user of users) {
-							let password = passwordDao.create(user.password);
-							password = await passwordDao.save(password);
+			for (const user of users) {
+				const existingClient = await clientDao.findOne({
+					where: { email: user.email },
+				});
 
-							let telephone = telephoneDao.create(user.telephone);
-							telephone = await telephoneDao.save(telephone);
+				if (existingClient) {
+					console.log(
+						`Client with email ${user.email} already exists, skipping...`
+					);
+					continue;
+				}
 
-							let client = clientDao.create({
-								_name: user.name,
-								_birthDate: user.birthDate,
-								_cpf: user.cpf,
-								_email: user.email,
-								_password: password,
-								_ranking: user.ranking,
-								_telephone: telephone,
-								_gender: user.gender,
-							});
-							client = await clientDao.save(client);
+				const password = new PasswordModel(
+					Password.encrytPassword(user.password),
+					true
+				);
 
-							for (const cardInfo of user.cards) {
-								let cardFlag = await cardFlagDao.findOneBy(cardInfo.cardFlag);
-								if (!cardFlag) {
-									cardFlag = cardFlagDao.create(cardInfo.cardFlag);
-									cardFlag = await cardFlagDao.save(cardFlag);
-								}
+				const telephone = new TelephoneModel(
+					user.telephone.ddd,
+					user.telephone.number,
+					user.telephone.type,
+					true
+				);
 
-								let card = cardDao.create({
-									_number: cardInfo.number,
-									_nameOnCard: cardInfo.nameOnCard,
-									_cvv: cardInfo.cvv,
-									_isPreferred: cardInfo.isPreferred,
-									_cardFlag: cardFlag,
-									_client: client,
-								});
-								card = await cardDao.save(card);
-							}
+				const cards = [];
+				for (const cardInfo of user.cards) {
+					const card = new CreditCardModel(
+						cardInfo.number,
+						cardInfo.nameOnCard,
+						cardInfo.cvv,
+						cardInfo.isPreferred,
+						cardInfo.cardFlag.description,
+						true
+					);
 
-							let country = await countryDao.findOneBy(user.country);
-							if (!country) {
-								country = countryDao.create(user.country);
-								country = await countryDao.save(country);
-							}
+					let flagModel = await cardFlagDao.findOneBy({
+						description: card.flagDescription,
+					});
 
-							for (const addr of user.addresses) {
-								let address = addressDao.create({
-									_zipCode: addr.zipCode,
-									_number: addr.number,
-									_residenceType: addr.residenceType,
-									_streetName: addr.streetName,
-									_streetType: addr.streetType,
-									_neighborhood: addr.neighborhood,
-									_shortPhrase: addr.shortPhrase,
-									_observation: addr.observation,
-									_city: addr.city,
-									_state: addr.state,
-									_country: country,
-									_type: addr.type,
-									_client: client,
-								});
-								address = await addressDao.save(address);
-							}
-						}
+					if (!flagModel) {
+						flagModel = new CardFlagModel(card.flagDescription, true);
+						flagModel = await cardFlagDao.save(flagModel);
+					}
 
-        } catch (error) {
-            console.error("[ERROR] 🔴 Error in corrected seeding:", error);
-            throw error;
-        }
-    };
+					if (!flagModel.isActive) {
+						flagModel.isActive = true;
+						await cardFlagDao.save(flagModel);
+					}
+
+					card.cardFlag = flagModel;
+					cards.push(card);
+				}
+
+				const addresses = [];
+				for (const addr of user.addresses) {
+					const countryModel = new CountryModel(
+						addr.country.name,
+						addr.country.acronym,
+						true
+					);
+
+					const address = new AddressModel(
+						addr.zipCode,
+						addr.number,
+						addr.residenceType,
+						addr.streetName,
+						addr.streetType,
+						addr.neighborhood,
+						addr.shortPhrase,
+						addr.observation,
+						addr.city,
+						addr.state,
+						countryModel,
+						addr.type,
+						true
+					);
+
+					addresses.push(address);
+				}
+
+				const client = new ClientModel(
+					user.name,
+					user.birthDate,
+					user.cpf,
+					telephone,
+					user.email,
+					password,
+					user.ranking,
+					user.gender,
+					addresses,
+					cards,
+					true
+				);
+
+				client.id = user.id;
+
+				await clientDao.save(client);
+			}
+		} catch (error) {
+			console.error("[ERROR] 🔴 Error in corrected seeding:", error);
+			throw error;
+		}
+	}
 }
