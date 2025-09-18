@@ -1,6 +1,6 @@
 <label class="relative inline-flex items-center cursor-pointer">
 	<input type="hidden" name=<%= toggleName %> value="false">
-	<input type="checkbox" name=<%= toggleName %> class="sr-only peer" value="true">
+	<input type="checkbox" name=<%= toggleName %> class="sr-only peer" value="true" <% if (isChecked) { %>checked<% } %>>
 	<div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer-checked:bg-brown transition-all">
 	</div>
 	<span

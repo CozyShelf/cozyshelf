@@ -2,22 +2,27 @@ import { Router, Request, Response } from "express";
 import { BookControllerFactory } from "../../books/factories/BookControllerFactory";
 import ConfigDynamicPaths from "../../generic/helpers/ConfigDynamicPaths";
 import path from "path";
+import { ClientControllerFactory } from "../../client/factories/ClientControllerFactory";
+
+// TODO: Criar routers de admin especificos para cada entidade e alterar admin router (e.g. defaultAPIRouter.ts);
 
 const adminRouter = Router();
 adminRouter.use(
 	ConfigDynamicPaths.configViewsPath([
 		path.join(__dirname, "../views"),
 		path.join(__dirname, "../../order/views"),
+		path.join(__dirname, "../../client/views"),
 	])
 );
 
 const bookController = new BookControllerFactory().make();
+const clientController = new ClientControllerFactory().make();
 
 adminRouter.get("/orders", (_: Request, res: Response) => {
 	res.render("ordersTable", {
-		title: "Meus Pedidos",
+		title: "Pedidos",
 		currentHeaderTab: "profile",
-		layout: "detailsLayout",
+		layout: "defaultLayoutAdmin",
 		currentUrl: "orders",
 		isAdmin: true,
 	});
@@ -27,7 +32,7 @@ adminRouter.get("/orders/exchange-orders", (_: Request, res: Response) => {
 	res.render("exchangeOrdersTable", {
 		title: "Pedidos de Troca",
 		currentHeaderTab: "profile",
-		layout: "detailsLayout",
+		layout: "defaultLayoutAdmin",
 		currentUrl: "exchange-orders",
 		isAdmin: true,
 	});
@@ -38,9 +43,9 @@ adminRouter.get("/orders/:id", async (req: Request, res: Response) => {
 	res.render("orderDetails", {
 		title: "Detalhes do Pedido",
 		currentHeaderTab: "profile",
-		layout: "detailsLayout",
+		layout: "defaultLayoutAdmin",
 		isNewOrder: false,
-		books: books,
+		books,
 		currentUrl: "orders",
 		isAdmin: true,
 	});
@@ -55,7 +60,7 @@ adminRouter.get("/stock", async (req: Request, res: Response) => {
 		layout: "defaultLayoutAdmin",
 		currentUrl: "stock",
 		isAdmin: true,
-		books: books,
+		books,
 	});
 });
 
@@ -78,13 +83,21 @@ adminRouter.get("/dashboard", async (req: Request, res: Response) => {
 	res.render("dashboard", {
 		title: "Dashboard - Grafico de linha de vendas",
 		currentHeaderTab: "profile",
-		layout: "detailsLayout",
+		layout: "defaultLayoutAdmin",
 		currentUrl: "dashboard",
 		isAdmin: true,
 		books,
 		labels,
 		salesHistory,
 	});
+});
+
+adminRouter.get("/clients", async (req: Request, res: Response) => {
+	await clientController.renderClientTable(req, res);
+});
+
+adminRouter.get("/clients/:id", async (req: Request, res: Response) => {
+	await clientController.renderClientDetailsAdmin(req, res);
 });
 
 export default adminRouter;

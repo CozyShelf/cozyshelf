@@ -5,23 +5,23 @@ import TelephoneModel from "../../../../../telephone/model/TelephoneModel";
 
 const users = [
 	{
+		id: "f4a4ecf2-e31e-41b2-8c9f-a36898e23d81",
 		name: "João Silva",
 		birthDate: new Date("1990-05-15"),
-		cpf: "12345678901",
+		cpf: "123.456.378-21",
 		email: "joao.silva@email.com",
-		password: { _value: "senha123@@", _force: 8 },
+		password: "Senha123@@",
 		ranking: 5,
 		gender: Gender.MALE,
-		country: { _name: "Brasil", _acronym: "BR" },
 		telephone: {
-			_ddd: "55",
-			_number: "11999999999",
-			_type: TelephoneType.MOBILE,
+			ddd: "11",
+			number: "988888888",
+			type: TelephoneType.MOBILE,
 		} as unknown as TelephoneModel,
 		addresses: [
 			{
-				zipCode: "01234567",
-				number: "100",
+			zipCode: "08900-000",
+			number: "100",
 				residenceType: "Apartment",
 				streetName: "Rua das Flores",
 				streetType: "Rua",
@@ -40,7 +40,7 @@ const users = [
 				nameOnCard: "João Silva",
 				cvv: "123",
 				isPreferred: true,
-				cardFlag: { _description: "Visa" },
+				cardFlag: { description: "Visa" },
 			},
 		],
 	},

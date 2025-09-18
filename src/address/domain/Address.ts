@@ -2,9 +2,11 @@ import Country from "./Country";
 import AddressType from "./enums/AddressType";
 import InvalidZipCode from "./exceptions/InvalidZipCode";
 import MandatoryParameter from "../../generic/domain/exceptions/MandatoryParameter";
-import Client from "../../client/domain/Client";
+import IAddressData from "../types/IAddressData";
+import DomainEntity from "../../generic/domain/DomainEntity";
+import IUpdateAddressData from "../types/IUpdateAddressData";
 
-export default class Address {
+export default class Address extends DomainEntity {
 	_shortPhrase!: string;
 	_zipCode!: string;
 	_streetType!: string;
@@ -17,7 +19,6 @@ export default class Address {
 	_country!: Country;
 	_type!: AddressType;
 	_observation?: string;
-	_client!: Client;
 
 	constructor(
 		zipCode: string,
@@ -33,18 +34,19 @@ export default class Address {
 		country: Country,
 		type: AddressType
 	) {
-		this._zipCode = zipCode;
-		this._number = number;
-		this._residenceType = residenceType;
-		this._streetName = streetName;
-		this._streetType = streetType;
-		this._neighborhood = neighborhood;
-		this._shortPhrase = shortPhrase;
-		this._observation = observation;
-		this._city = city;
-		this._state = state;
-		this._country = country;
-		this._type = type;
+		super();
+		this.zipCode = zipCode;
+		this.number = number;
+		this.residenceType = residenceType;
+		this.streetName = streetName;
+		this.streetType = streetType;
+		this.neighborhood = neighborhood;
+		this.shortPhrase = shortPhrase;
+		this.observation = observation;
+		this.city = city;
+		this.state = state;
+		this.country = country;
+		this.type = type;
 	}
 
 	get shortPhrase(): string {
@@ -113,6 +115,9 @@ export default class Address {
 	}
 
 	set residenceType(value: string) {
+		if (!value || value.trim().length === 0) {
+			throw new MandatoryParameter("residenceType");
+		}
 		this._residenceType = value;
 	}
 
@@ -165,7 +170,7 @@ export default class Address {
 	}
 
 	set type(value: AddressType) {
-		if (!this._type) {
+		if (!value) {
 			throw new MandatoryParameter("addressType");
 		}
 		this._type = value;
@@ -179,11 +184,71 @@ export default class Address {
 		this._observation = value;
 	}
 
-	get client(): Client {
-		return this._client;
+	public static fromRequestData(requestData: IAddressData) {
+		Address.validateNonPrimitiveFields(requestData);
+
+		return new Address(
+			requestData.zipCode,
+			requestData.number,
+			requestData.residenceType,
+			requestData.streetName,
+			requestData.streetType,
+			requestData.neighborhood,
+			requestData.shortPhrase,
+			requestData.observation,
+			requestData.city,
+			requestData.state,
+			Country.fromRequestData(requestData.country),
+			requestData.type
+		);
 	}
 
-	set client(value: Client) {
-		this._client = value;
+	private static validateNonPrimitiveFields(requestData: IAddressData) {
+		if (!requestData.country) {
+			throw new MandatoryParameter("country");
+		}
+	}
+
+	public updateData(updatedAddresData: IUpdateAddressData) {
+		if (updatedAddresData.shortPhrase) {
+			this.shortPhrase = updatedAddresData.shortPhrase;
+		}
+		if (updatedAddresData.zipCode) {
+			this.zipCode = updatedAddresData.zipCode;
+		}
+		if (updatedAddresData.streetType) {
+			this.streetType = updatedAddresData.streetType;
+		}
+		if (updatedAddresData.streetName) {
+			this.streetName = updatedAddresData.streetName;
+		}
+		if (updatedAddresData.number) {
+			this.number = updatedAddresData.number;
+		}
+		if (updatedAddresData.residenceType) {
+			this.residenceType = updatedAddresData.residenceType;
+		}
+		if (updatedAddresData.neighborhood) {
+			this.neighborhood = updatedAddresData.neighborhood;
+		}
+		if (updatedAddresData.city) {
+			this.city = updatedAddresData.city;
+		}
+		if (updatedAddresData.state) {
+			this.state = updatedAddresData.state;
+		}
+		if (updatedAddresData.type) {
+			this.type = updatedAddresData.type;
+		}
+		if (updatedAddresData.observation) {
+			this.observation = updatedAddresData.observation;
+		}
+		if (updatedAddresData.country) {
+			this.country.updateData(updatedAddresData.country);
+		}
+	}
+
+	public inactivate() {
+		this.isActive = false;
 	}
 }

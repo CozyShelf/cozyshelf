@@ -3,16 +3,29 @@ import InvalidEmailFormat from "./exceptions/InvalidEmailFormat";
 import MandatoryParameter from "../../generic/domain/exceptions/MandatoryParameter";
 import Password from "../../password/domain/Password";
 import Telephone from "../../telephone/domain/Telephone";
+import Address from "../../address/domain/Address";
+import CreditCard from "../../card/domain/CreditCard";
+import AddressType from "../../address/domain/enums/AddressType";
+import InvalidAddressesProvided from "./exceptions/InvalidAddressesProvided";
+import InvalidCardsProvided from "./exceptions/InvalidCardsProvided";
+import INewClientInputData from "../types/INewClientRequestData";
+import DomainEntity from "../../generic/domain/DomainEntity";
+import IUpdateClientData from "../types/IUpdateClientData";
+import InvalidCPFFormat from "./exceptions/InvalidCPFFormat";
+import InvalidPreferredCardsProvided from "./exceptions/InvalidPreferredCardsProvided";
+import { AddressCantBeRemoved } from "./exceptions/AddressCantBeRemoved";
 
-export default class Client {
-	_name: string;
-	_birthDate: Date;
-	_cpf: string;
-	_email: string;
-	_password: Password;
-	_ranking: number;
-	_telephone: Telephone;
+export default class Client extends DomainEntity {
+	_name!: string;
+	_birthDate!: Date;
+	_cpf!: string;
+	_email!: string;
+	_password!: Password;
+	_ranking!: number;
+	_telephone!: Telephone;
 	_gender!: Gender;
+	_addresses!: Address[];
+	_cards!: CreditCard[];
 
 	constructor(
 		name: string,
@@ -21,18 +34,20 @@ export default class Client {
 		telephone: Telephone,
 		email: string,
 		password: Password,
-		ranking: number,
-		gender: Gender
-		// address e cards
+		gender: Gender,
+		addresses: Address[],
+		cards: CreditCard[]
 	) {
-		this._name = name;
-		this._birthDate = birthDate;
-		this._cpf = cpf;
-		this._telephone = telephone;
-		this._email = email;
-		this._password = password;
-		this._ranking = ranking;
-		this._gender = gender;
+		super();
+		this.name = name;
+		this.birthDate = birthDate;
+		this.cpf = cpf;
+		this.telephone = telephone;
+		this.email = email;
+		this.password = password;
+		this.gender = gender;
+		this.addresses = addresses;
+		this.cards = cards;
 	}
 
 	get name(): string {
@@ -62,6 +77,11 @@ export default class Client {
 	}
 
 	set cpf(value: string) {
+		const cpfRegex: RegExp = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+		if (!cpfRegex.test(value)) {
+			throw new InvalidCPFFormat(value);
+		}
+
 		this._cpf = value;
 	}
 
@@ -73,7 +93,8 @@ export default class Client {
 		if (!value || value.trim().length === 0) {
 			throw new MandatoryParameter("email");
 		}
-		const emailRegex: RegExp = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
+		const emailRegex: RegExp =
+			/^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
 		if (!emailRegex.test(value)) {
 			throw new InvalidEmailFormat(value);
 		}
@@ -122,5 +143,159 @@ export default class Client {
 			throw new MandatoryParameter("gender");
 		}
 		this._gender = value;
+	}
+
+	get addresses(): Address[] {
+		return this._addresses;
+	}
+
+	set addresses(addresses: Address[]) {
+		let billing = 0;
+		let delivery = 0;
+
+		addresses.forEach((address) => {
+			if (address.type === AddressType.BILLING) {
+				billing++;
+			}
+			if (address.type === AddressType.DELIVERY) {
+				delivery++;
+			}
+			if (address.type === AddressType.DELIVERY_AND_BILLING) {
+				billing++;
+				delivery++;
+			}
+		});
+
+		if (billing === 0) {
+			throw new InvalidAddressesProvided(AddressType.BILLING);
+		}
+
+		if (delivery === 0) {
+			throw new InvalidAddressesProvided(AddressType.DELIVERY);
+		}
+
+		this._addresses = addresses;
+	}
+
+	public verifyAddressDeletion(addressToBeDeletedId: string) {
+		if (this.addresses.length <= 1) {
+			throw new AddressCantBeRemoved();
+		}
+
+		const hasDeliveryAddress = this.addresses.some(
+			(addr) =>
+				addr.id !== addressToBeDeletedId &&
+				(addr.type === AddressType.DELIVERY ||
+					addr.type === AddressType.DELIVERY_AND_BILLING)
+		);
+		const hasBillingAddress = this.addresses.some(
+			(addr) =>
+				addr.id !== addressToBeDeletedId &&
+				(addr.type === AddressType.BILLING ||
+					addr.type === AddressType.DELIVERY_AND_BILLING)
+		);
+
+		if (!hasDeliveryAddress) {
+			throw new InvalidAddressesProvided(AddressType.DELIVERY);
+		}
+
+		if (!hasBillingAddress) {
+			throw new InvalidAddressesProvided(AddressType.BILLING);
+		}
+	}
+
+	get cards(): CreditCard[] {
+		return this._cards;
+	}
+
+	set cards(cards: CreditCard[]) {
+		let preferred = 0;
+
+		cards.forEach((card) => {
+			if (card.isPreferred) {
+				preferred++;
+			}
+		});
+
+		if (preferred === 0) {
+			throw new InvalidCardsProvided();
+		}
+
+		if (preferred > 1) {
+			throw new InvalidPreferredCardsProvided();
+		}
+
+		this._cards = cards;
+	}
+
+	public static fromRequestData(requestData: INewClientInputData) {
+		Client.validateNonPrimitiveFields(requestData);
+
+		return new Client(
+			requestData.clientData.name,
+			requestData.clientData.birthDate,
+			requestData.clientData.cpf,
+			Telephone.fromRequestData(requestData.clientData.telephone),
+			requestData.clientData.email,
+			Password.fromRequestData(requestData.clientData.password),
+			requestData.clientData.gender,
+			requestData.addresses.map((addressData) =>
+				Address.fromRequestData(addressData)
+			),
+			requestData.cards.map((cardData) => CreditCard.fromRequestData(cardData))
+		);
+	}
+
+	private static validateNonPrimitiveFields(requestData: INewClientInputData) {
+		if (!requestData.addresses) {
+			throw new MandatoryParameter("addresses");
+		}
+
+		if (!requestData.cards) {
+			throw new MandatoryParameter("cards");
+		}
+
+		if (!requestData.clientData.password) {
+			throw new MandatoryParameter("password");
+		}
+
+		if (!requestData.clientData.telephone) {
+			throw new MandatoryParameter("telephone");
+		}
+	}
+
+	public updateData(updatedData: IUpdateClientData) {
+		if (updatedData.name) {
+			this.name = updatedData.name;
+		}
+		if (updatedData.birthDate) {
+			this.birthDate = updatedData.birthDate;
+		}
+		if (updatedData.cpf) {
+			this.cpf = updatedData.cpf;
+		}
+		if (updatedData.email) {
+			this.email = updatedData.email;
+		}
+		if (updatedData.gender) {
+			this.gender = updatedData.gender;
+		}
+		if (updatedData.telephone) {
+			this.telephone.updateData(updatedData.telephone);
+		}
+	}
+
+	public inactivate() {
+		this.isActive = false;
+		this.password.inactivate();
+		this.telephone.inactivate();
+
+		for (const card of this.cards) {
+			card.inactivate();
+		}
+
+		for (const address of this.addresses) {
+			address.inactivate();
+		}
 	}
 }

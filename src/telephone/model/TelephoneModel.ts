@@ -2,46 +2,60 @@ import { Column, Entity, OneToOne } from "typeorm";
 import TelephoneType from "../domain/enums/TelephoneType";
 import GenericModel from "../../generic/model/GenericModel";
 import ClientModel from "../../client/model/ClientModel";
+import Telephone from "../domain/Telephone";
 
 @Entity()
 export default class TelephoneModel extends GenericModel {
-	@Column({ type: "varchar" }) private _ddd: string;
+	@Column({ type: "varchar" }) ddd: string;
 
-	@Column({ type: "varchar" }) private _number: string;
+	@Column({ type: "varchar" }) number: string;
 
-	@Column({ type: "enum", enum: TelephoneType }) private _type: TelephoneType;
+	@Column({ type: "enum", enum: TelephoneType }) type: TelephoneType;
 
-	@OneToOne(() => ClientModel, (client) => client._telephone)
-	_client?: ClientModel;
+	@OneToOne(() => ClientModel, (client) => client.telephone)
+	client!: ClientModel;
 
-	constructor(ddd: string, number: string, type: TelephoneType) {
+	constructor(
+		ddd: string,
+		number: string,
+		type: TelephoneType,
+		isActive: boolean
+	) {
 		super();
-		this._ddd = ddd;
-		this._number = number;
-		this._type = type;
+		this.ddd = ddd;
+		this.number = number;
+		this.type = type;
+		this.isActive = isActive;
 	}
 
-	get ddd(): string {
-		return this._ddd;
+	public toEntity(): Telephone {
+		const telephone = new Telephone(this.ddd, this.number, this.type);
+		telephone.id = this.id;
+		telephone.isActive = this.isActive;
+		return telephone;
 	}
 
-	set ddd(value: string) {
-		this._ddd = value;
+	public static fromEntity(telephone: Telephone): TelephoneModel {
+		return new TelephoneModel(
+			telephone.ddd,
+			telephone.number,
+			telephone.type,
+			telephone.isActive
+		);
 	}
 
-	get number(): string {
-		return this._number;
-	}
-
-	set number(value: string) {
-		this._number = value;
-	}
-
-	get type(): TelephoneType {
-		return this._type;
-	}
-
-	set type(value: TelephoneType) {
-		this._type = value;
+	public updateFromEntity(updatedTelephone: Telephone) {
+		if (this.number != updatedTelephone.number) {
+			this.number = updatedTelephone.number;
+		}
+		if (this.ddd != updatedTelephone.ddd) {
+			this.ddd = updatedTelephone.ddd;
+		}
+		if (this.type != updatedTelephone.type) {
+			this.type = updatedTelephone.type;
+		}
+		if (this.isActive != updatedTelephone.isActive) {
+			this.isActive = updatedTelephone.isActive;
+		}
 	}
 }
