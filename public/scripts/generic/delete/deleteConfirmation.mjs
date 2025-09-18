@@ -1,4 +1,4 @@
-import { deleteFormSubmit } from "./deleteForm.mjs";
+import { deleteFormSubmit } from "./deleteFormSubmit.mjs";
 
 /**
  * Shows a confirmation popup for deleting an item using SweetAlert2
@@ -7,7 +7,7 @@ import { deleteFormSubmit } from "./deleteForm.mjs";
  * @param {string|number} itemId - ID of the item to be deleted
  * @returns {Promise<void>} Promise that resolves when the popup is displayed
  */
-export async function deleteConfirmationPopup( itemType, deletePath, itemId ) {
+export async function deleteConfirmation( itemType, deletePath, itemId ) {
     Swal.fire({
         title: 'Você tem certeza?',
         text: `Esta ação irá deletar o ${itemType} permanentemente.`,

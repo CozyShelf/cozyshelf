@@ -124,6 +124,7 @@ export default class ClientModel extends GenericModel {
 		fullUpdate: boolean = false
 	) {
 		if (this.name != updatedClient.name) {
+			console.log(`Atualizando nome de ${this.name} para ${updatedClient.name}`);
 			this.name = updatedClient.name;
 		}
 		if (this.birthDate != updatedClient.birthDate) {

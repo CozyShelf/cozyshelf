@@ -1,5 +1,5 @@
-import { setupCardInputMasks } from "../../card/validations/inputMask.mjs";
-import { setupCepMask } from "../../address/inputMasks.mjs";
+import { setupCardInputMasks } from "../../card/validations/inputMasks.mjs";
+import { setupCepMask } from "../../address/validations/inputMasks.mjs";
 
 export function setupInputMasks() {
     setupCepMask();

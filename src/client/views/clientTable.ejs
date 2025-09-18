@@ -3,9 +3,55 @@
         <h1 class="font-semibold text-[20px]">Clientes (<%= clients.length %>)</h1>
         <a href="/clients/register" class="flex items-center gap-1 px-4 py-1 bg-brown text-white rounded hover:bg-dark-brown text-[14px] h-8">
             <span class="material-symbols-outlined text-[18px]">add</span>
-            <span class="font-semibold">Adicionar</span>
+            <span class="font-semibold">Criar cliente</span>
         </a>
     </div>
+    <div class="flex align-middle items-center gap-2">
+        <h2 class="text-gray text-[14px]">Filtrar por: </h2>
+        <form id="filterForm" class="flex items-center gap-2" method="GET">
+            <div>
+                <label class="sr-only">Nome</label>
+                <input 
+                    type="text" name="name" placeholder="Nome..."
+                    value="<%= filters?.name || '' %>"
+                    class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
+                >
+            </div>
+            <div>
+                <label class="sr-only">CPF</label>
+                <input 
+                    type="text" name="cpf" placeholder="CPF..."
+                    value="<%= filters?.cpf || '' %>"
+                    class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
+                >
+            </div>
+            <div>
+                <label class="sr-only">Email</label>
+                <input 
+                    type="text" name="email" placeholder="Email..."
+                    value="<%= filters?.email || '' %>"
+                    class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
+                >
+            </div>
+            <div>
+                <label class="sr-only">Telefone</label>
+                <input 
+                    type="text" name="phone" placeholder="Telefone..."
+                    value="<%= filters?.phone || '' %>"
+                    class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
+                >
+            </div>
+            <button type="submit" class="flex items-center gap-1 px-2 py-1 bg-brown text-white rounded hover:bg-dark-brown text-[14px] h-8">
+                <span class="material-symbols-outlined text-[15px]">search</span>
+            </button>
+            <% if (filters && (filters.name || filters.cpf || filters.email || filters.phone)) { %>
+                <a href="/admin/clients" class="flex items-center gap-1 px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 text-[14px] h-8">
+                    <span class="material-symbols-outlined text-[15px]">clear</span>
+                </a>
+            <% } %>
+        </form>
+    </div>
+
     <table class="min-w-full border-none rounded-lg overflow-hidden shadow-md">
         <thead class="bg-dark-brown text-white text-sm uppercase">
             <tr>
@@ -41,3 +87,4 @@
     </table>
 </div>
 <script src="/scripts/client/delete/inactiveClient.mjs" type="module"></script>
+<script src="/scripts/client/filter/filterClientAdminTable.mjs" type="module"></script>

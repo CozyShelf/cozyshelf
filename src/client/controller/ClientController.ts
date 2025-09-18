@@ -8,6 +8,7 @@ import IUpdateClientData from "../types/IUpdateClientData";
 import IUpdatePasswordData from "../../password/types/IUpdatePasswordData";
 import PasswordService from "../../password/service/PasswordService";
 import { brazilStates } from "../../generic/config/database/seeders/address/states";
+import IClientFilters from "../types/IClientFilters";
 
 export default class ClientController {
 	public constructor(
@@ -72,7 +73,7 @@ export default class ClientController {
 				id,
 				req.body as IUpdateClientData
 			);
-
+			console.log("Cliente atualizado:", updatedClient);
 			res.status(200).json({
 				message: `Dados do cliente ${updatedClient.name} atualizados com sucesso!`,
 				clientId: updatedClient.id,
@@ -122,14 +123,23 @@ export default class ClientController {
 		}
 	}
 
-	public async renderClientTable(_: Request, res: Response): Promise<void> {
-		const clients = await this.service.getAll();
+	public async renderClientTable(req: Request, res: Response): Promise<void> {
+		const filters: IClientFilters = {
+			name: req.query.name as string,
+			cpf: req.query.cpf as string,
+			email: req.query.email as string,
+			phone: req.query.phone as string,
+		};
+
+		const clients = await this.service.getAll(filters);
+
 		res.render("clientTable", {
 			title: "Lista de Clientes",
 			currentHeaderTab: "profile",
 			layout: "defaultLayoutAdmin",
 			currentUrl: "clients",
 			clients,
+			filters,
 		});
 	}
 
