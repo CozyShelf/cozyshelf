@@ -49,7 +49,7 @@ export class CardService {
 		}
 	}
 
-	private async validateCardNumberIsUnique(cardNumber: string): Promise<void> {
+	public async validateCardNumberIsUnique(cardNumber: string): Promise<void> {
 		const existingCard = await this.cardDAO.findByCardNumber(cardNumber);
 		if (existingCard) {
 			throw new CardAlreadyExists();

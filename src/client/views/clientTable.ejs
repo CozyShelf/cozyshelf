@@ -6,12 +6,12 @@
             <span class="font-semibold">Criar cliente</span>
         </a>
     </div>
-    <div class="flex align-middle items-center gap-2">
+    <div class="flex flex- align-center items-center gap-2 ">
         <h2 class="text-gray text-[14px]">Filtrar por: </h2>
         <form id="filterForm" class="flex items-center gap-2" method="GET">
             <div>
                 <label class="sr-only">Nome</label>
-                <input 
+                <input
                     type="text" name="name" placeholder="Nome..."
                     value="<%= filters?.name || '' %>"
                     class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
@@ -19,7 +19,7 @@
             </div>
             <div>
                 <label class="sr-only">CPF</label>
-                <input 
+                <input
                     type="text" name="cpf" placeholder="CPF..."
                     value="<%= filters?.cpf || '' %>"
                     class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
@@ -27,7 +27,7 @@
             </div>
             <div>
                 <label class="sr-only">Email</label>
-                <input 
+                <input
                     type="text" name="email" placeholder="Email..."
                     value="<%= filters?.email || '' %>"
                     class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
@@ -35,7 +35,7 @@
             </div>
             <div>
                 <label class="sr-only">Telefone</label>
-                <input 
+                <input
                     type="text" name="phone" placeholder="Telefone..."
                     value="<%= filters?.phone || '' %>"
                     class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"

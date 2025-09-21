@@ -58,7 +58,7 @@ export default class ClientController {
 
 			res.status(200).json({
 				message: `Dados do cliente carregados com sucesso!`,
-				data: client,
+				data: clientDetailsDTO,
 			});
 		} catch (e) {
 			this.createErrorResponse(res, e as Error);
@@ -73,7 +73,6 @@ export default class ClientController {
 				id,
 				req.body as IUpdateClientData
 			);
-			console.log("Cliente atualizado:", updatedClient);
 			res.status(200).json({
 				message: `Dados do cliente ${updatedClient.name} atualizados com sucesso!`,
 				clientId: updatedClient.id,
