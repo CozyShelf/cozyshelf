@@ -32,3 +32,9 @@ export interface ICardTestData {
 	flag: string,
 	isPreferred: boolean
 }
+
+export interface IUpdatePasswordTestData {
+	currentPassword: string;
+	newPassword: string;
+	confirmNewPassword: string;
+}

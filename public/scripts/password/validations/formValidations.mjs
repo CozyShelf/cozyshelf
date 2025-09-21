@@ -7,20 +7,38 @@ export function validateForm(form) {
     // Verificar se as novas senhas coincidem
     if (newPassword !== confirmNewPassword) {
         Swal.fire({
-            icon: 'warning',
-            title: 'Senhas não coincidem',
-            text: 'A nova senha e a confirmação devem ser iguais.'
-        });
+					icon: "warning",
+					title: "Senhas não coincidem",
+					text: "A nova senha e a confirmação devem ser iguais.",
+					customClass: {
+						container: "invalid-password-confirmation",
+					},
+					didOpen: () => {
+						const modal = document.querySelector(".swal2-container");
+						if (modal) {
+							modal.setAttribute("id", "invalid-password-confirmation");
+						}
+					},
+				});
         return false;
     }
 
     // Verificar se a nova senha não é igual à atual
     if (currentPassword === newPassword) {
         Swal.fire({
-            icon: 'warning',
-            title: 'Nova senha inválida',
-            text: 'A nova senha deve ser diferente da senha atual.'
-        });
+					icon: "warning",
+					title: "Nova senha inválida",
+					text: "A nova senha deve ser diferente da senha atual.",
+					customClass: {
+						container: "invalid-new-password",
+					},
+					didOpen: () => {
+						const modal = document.querySelector(".swal2-container");
+						if (modal) {
+							modal.setAttribute("id", "invalid-new-password");
+						}
+					},
+				});
         return false;
     }
 
