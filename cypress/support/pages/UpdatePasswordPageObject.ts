@@ -3,8 +3,6 @@ import { IUpdatePasswordTestData } from "./types/TestData";
 
 export default class UpdatePasswordPageObject extends GenericPageObject {
 	private readonly UPDATE_PASSWORD_PAGE: string;
-	private readonly ALREADY_REGISTERED_CLIENT_ID: string =
-		"f4a4ecf2-e31e-41b2-8c9f-a36898e23d81";
 
 	constructor() {
 		super();
