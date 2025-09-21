@@ -8,7 +8,13 @@ export function validateForm(form) {
             Swal.fire({
                 icon: 'warning',
                 title: 'CEP inválido',
-                text: 'Por favor, insira um CEP válido no formato XXXXX-XXX.'
+                text: 'Por favor, insira um CEP válido no formato XXXXX-XXX.',
+                didOpen: () => {
+                    const modal = document.querySelector(".swal2-container");
+                    if (modal) {
+                        modal.setAttribute("id", "invalid-zip-code-modal");
+                    }
+                },
             });
             return false;
         }

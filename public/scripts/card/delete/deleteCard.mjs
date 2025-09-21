@@ -27,6 +27,13 @@ function warnNotAllowedToDeletePreferredCard() {
         icon: 'warning',
         title: 'Não permitido',
         text: 'Você não pode excluir o cartão preferencial. Defina outro cartão como preferencial antes de excluir este.',
-        confirmButtonText: 'OK'
+        confirmButtonText: 'OK',
+        didOpen: () => {
+            const modal = document.querySelector(".swal2-container");
+
+            if (modal) {
+                modal.setAttribute("id", "preferred-card-warning-modal");
+            }
+        }
     });
 }

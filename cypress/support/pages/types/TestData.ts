@@ -23,6 +23,7 @@ export interface IAddressTestData {
 	neighborhood: string;
 	residenceType: string;
 	type: string;
+	observation?: string;
 }
 
 export interface ICardTestData {

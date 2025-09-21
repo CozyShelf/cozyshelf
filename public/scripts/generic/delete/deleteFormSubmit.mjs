@@ -18,7 +18,13 @@ export async function deleteFormSubmit(deletePath, itemId) {
                 icon: 'success',
                 title: 'Sucesso!',
                 text: 'Deletado com sucesso.',
-                confirmButtonText: 'OK'
+                confirmButtonText: 'OK',
+                didOpen: () => {
+                    const modal = document.querySelector(".swal2-container");
+                    if (modal) {
+                        modal.setAttribute("id", "delete-success-modal");
+                    }
+                }
             }).then(() => {
                 location.reload();
             });
@@ -31,7 +37,13 @@ export async function deleteFormSubmit(deletePath, itemId) {
             icon: 'error',
             title: 'Erro ao deletar.',
             text: error.message,
-            confirmButtonText: 'OK'
+            confirmButtonText: 'OK',
+            didOpen: () => {
+                const modal = document.querySelector(".swal2-container");
+                if (modal) {
+                    modal.setAttribute("id", "delete-error-modal");
+                }
+            }
         });
     }
 }

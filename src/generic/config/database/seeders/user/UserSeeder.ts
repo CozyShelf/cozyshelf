@@ -65,6 +65,7 @@ export default class UserSeeder {
 					}
 
 					card.cardFlag = flagModel;
+					card.id = cardInfo.id;
 					cards.push(card);
 				}
 
@@ -92,6 +93,7 @@ export default class UserSeeder {
 						true
 					);
 
+					address.id = addr.id;
 					addresses.push(address);
 				}
 
@@ -110,7 +112,6 @@ export default class UserSeeder {
 				);
 
 				client.id = user.id;
-
 				await clientDao.save(client);
 			}
 		} catch (error) {

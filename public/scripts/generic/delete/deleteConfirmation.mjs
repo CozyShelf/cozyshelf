@@ -16,7 +16,13 @@ export async function deleteConfirmation( itemType, deletePath, itemId ) {
         confirmButtonColor: '#d33',
         cancelButtonColor: '#9F9F9F',
         cancelButtonText: 'Cancelar',
-        confirmButtonText: 'Sim, deletar!'
+        confirmButtonText: 'Sim, deletar!',
+        didOpen: () => {
+            const modal = document.querySelector(".swal2-container");
+            if (modal) {
+                modal.setAttribute("id", "delete-confirmation-modal");
+            }
+        }
     }).then((result) => {
         if (result.isConfirmed) {
             deleteFormSubmit(deletePath, itemId);
