@@ -9,23 +9,26 @@ import { deleteFormSubmit } from "./deleteFormSubmit.mjs";
  */
 export async function deleteConfirmation( itemType, deletePath, itemId ) {
     Swal.fire({
-        title: 'Você tem certeza?',
-        text: `Esta ação irá deletar o ${itemType} permanentemente.`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#9F9F9F',
-        cancelButtonText: 'Cancelar',
-        confirmButtonText: 'Sim, deletar!',
-        didOpen: () => {
-            const modal = document.querySelector(".swal2-container");
-            if (modal) {
-                modal.setAttribute("id", "delete-confirmation-modal");
-            }
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            deleteFormSubmit(deletePath, itemId);
-        }
-    });
+			title: "Você tem certeza?",
+			text: `Esta ação irá deletar o ${itemType} permanentemente.`,
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#d33",
+			cancelButtonColor: "#9F9F9F",
+			cancelButtonText: "Cancelar",
+			confirmButtonText: "Sim, deletar!",
+			customClass: {
+				container: "delete-confirmation",
+			},
+			didOpen: () => {
+				const modal = document.querySelector(".swal2-container");
+				if (modal) {
+					modal.setAttribute("id", "delete-confimation")
+				}
+			},
+		}).then((result) => {
+			if (result.isConfirmed) {
+				deleteFormSubmit(deletePath, itemId);
+			}
+		});
 }

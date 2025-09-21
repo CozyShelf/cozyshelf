@@ -1,0 +1,118 @@
+[
+	{
+		"name": "Maria Oliveira",
+		"birthDate": "1985-08-23",
+		"cpf": "98765432100",
+		"email": "maria.oliveira@email.com",
+		"password": "Senha456@@",
+		"gender": "FEMALE",
+		"phone": "21988888888",
+		"phoneType": "MOBILE",
+		"address": {
+			"shortPhrase": "Em frente à padaria",
+			"cep": "87654321",
+			"state": "RJ",
+			"city": "Rio de Janeiro",
+			"streetType": "Avenida",
+			"streetName": "Avenida Atlântica",
+			"number": "200",
+			"neighborhood": "Copacabana",
+			"residenceType": "Casa",
+			"type": "DELIVERY_AND_BILLING"
+		},
+		"card": {
+			"number": "4222222222222222",
+			"cvv": "456",
+			"impressName": "MARIA OLIVEIRA",
+			"flag": "Mastercard",
+			"isPreferred": true
+		}
+	},
+	{
+		"name": "Carlos Souza",
+		"birthDate": "1978-11-30",
+		"cpf": "32165498712",
+		"email": "carlos.souza@email.com",
+		"password": "Senha789@@",
+		"gender": "MALE",
+		"phone": "31977777777",
+		"phoneType": "FIXED",
+		"address": {
+			"shortPhrase": "Ao lado do parque",
+			"cep": "13579246",
+			"state": "MG",
+			"city": "Belo Horizonte",
+			"streetType": "Rodovia",
+			"streetName": "Rua das Palmeiras",
+			"number": "300",
+			"neighborhood": "Savassi",
+			"residenceType": "Apartamento",
+			"type": "DELIVERY_AND_BILLING"
+		},
+		"card": {
+			"number": "4333333333333333",
+			"cvv": "789",
+			"impressName": "CARLOS SOUZA",
+			"flag": "Elo",
+			"isPreferred": true
+		}
+	},
+	{
+		"name": "Ana Paula Lima",
+		"birthDate": "1995-02-14",
+		"cpf": "45678912309",
+		"email": "ana.paula@email.com",
+		"password": "Senha321@@",
+		"gender": "FEMALE",
+		"phone": "11966666666",
+		"phoneType": "MOBILE",
+		"address": {
+			"shortPhrase": "Próximo ao shopping",
+			"cep": "24681357",
+			"state": "SP",
+			"city": "Campinas",
+			"streetType": "Beco",
+			"streetName": "Travessa das Acácias",
+			"number": "400",
+			"neighborhood": "Jardim das Flores",
+			"residenceType": "Casa",
+			"type": "DELIVERY_AND_BILLING"
+		},
+		"card": {
+			"number": "4444444444444444",
+			"cvv": "321",
+			"impressName": "ANA PAULA LIMA",
+			"flag": "Visa",
+			"isPreferred": true
+		}
+	},
+	{
+		"name": "Pedro Henrique",
+		"birthDate": "1982-07-19",
+		"cpf": "65412398701",
+		"email": "pedro.henrique@email.com",
+		"password": "Senha654@@",
+		"gender": "MALE",
+		"phone": "21955555555",
+		"phoneType": "MOBILE",
+		"address": {
+			"shortPhrase": "Perto da escola",
+			"cep": "11223344",
+			"state": "RJ",
+			"city": "Niterói",
+			"streetType": "Avenida",
+			"streetName": "Alameda das Orquídeas",
+			"number": "500",
+			"neighborhood": "Icaraí",
+			"residenceType": "Apartamento",
+			"type": "DELIVERY_AND_BILLING"
+		},
+		"card": {
+			"number": "4555555555555555",
+			"cvv": "654",
+			"impressName": "PEDRO HENRIQUE",
+			"flag": "Mastercard",
+			"isPreferred": true
+		}
+	}
+]

@@ -1,7 +1,7 @@
 import ClientRegistrationPageObject from "../../support/pages/ClientRegistrationPageObject";
 import { IClientTestData } from "../../support/pages/types/TestData";
 
-describe("client registration", () => {
+describe("client registration tests", () => {
 	let clientPageObject: ClientRegistrationPageObject;
 
 	const makeSUT = () => {
@@ -102,7 +102,7 @@ describe("client registration", () => {
 				clientPageObject.registerNewClient(modifiedClient);
 
 				clientPageObject.verifyIfErrorModalAppear(
-					"É necessário o cadastro de ao menos um endereço de cobrança."
+					"É necessário o cadastro de ao menos um endereço de entrega."
 				);
 
 				clientPageObject.closeErrorModal();
@@ -122,7 +122,7 @@ describe("client registration", () => {
 				clientPageObject.registerNewClient(modifiedClient);
 
 				clientPageObject.verifyIfErrorModalAppear(
-					"É necessário o cadastro de ao menos um endereço de entrega."
+					"É necessário o cadastro de ao menos um endereço de cobrança."
 				);
 
 				clientPageObject.closeErrorModal();
