@@ -1,41 +1,191 @@
+import ClientRegistrationPageObject from "../../support/pages/ClientRegistrationPageObject";
+import { IClientTestData } from "../../support/pages/types/TestData";
+
 describe("client registration", () => {
-	it("should register a client", () => {
-		cy.fixture("clientData").then((client: any) => {
-			cy.defaultConfiguration();
+	let clientPageObject: ClientRegistrationPageObject;
 
-			cy.visit("http://localhost:3000/clients/register");
+	const makeSUT = () => {
+		clientPageObject = new ClientRegistrationPageObject();
+	};
 
-			cy.getById("client-name").type(client.name);
-			cy.getById("client-birth-date").type(client.birthDate);
-			cy.getById("client-email").type(client.email);
-			cy.getById("client-cpf").type(client.cpf);
-			cy.getById("client-phone").type(client.phone);
-			cy.getById("client-password").type(client.password);
-			cy.getById("client-gender").select(client.gender);
-			cy.getById("client-phone-type").select(client.phoneType);
-			cy.getById("client-password-repeat").type(client.password);
+	beforeEach(() => {
+		makeSUT();
+	});
 
-			cy.getById("address-short-phrase").type(client.address.shortPhrase);
-			cy.getById("address-cep").type(client.address.cep);
-			cy.getById("address-state").select(client.address.state);
-			cy.getById("address-city").type(client.address.city);
-			cy.getById("address-street-type").select(client.address.streetType);
-			cy.getById("address-street-name").type(client.address.streetName);
-			cy.getById("address-number").type(client.address.number);
-			cy.getById("address-neighborhood").type(client.address.neighborhood);
-			cy.getById("address-residence-type").select(client.address.residenceType);
-			cy.getById("address-type").select(client.address.type);
+	it("should correctly register a client", () => {
+		cy.fixture("clientData").then((client: IClientTestData) => {
+			clientPageObject.visitClientsPage();
 
-			cy.getById("card-number").type(client.card.number);
-			cy.getById("card-cvv").type(client.card.cvv);
-			cy.getById("card-impress-name").type(client.card.impressName);
-			cy.getById("card-flag").select(client.card.flag);
+			clientPageObject.typeClientInformation(client);
+			clientPageObject.typeClientAddressInformation(client.address);
+			clientPageObject.typeClientCardInformation(client.card);
 
-			cy.toggleCheckbox("card-is-preferred", client.card.isPreferred);
+			clientPageObject.sendClientData();
 
-			cy.contains("button", "Enviar").click();
+			clientPageObject.verifyIfSuccessModalAppear();
 
-			cy.checkSuccessModal("Dados enviados com sucesso").click();
+			clientPageObject.closeSuccessModal();
+		});
+	});
+
+	describe("validation tests", () => {
+		it("should show validation error for invalid CPF format", () => {
+			cy.fixture("clientData").then((data: IClientTestData) => {
+				const invalidCpf = "123";
+				let invalidClient = { ...data, cpf: invalidCpf };
+
+				clientPageObject.visitClientsPage();
+				clientPageObject.typeClientInformation(invalidClient);
+				clientPageObject.typeClientAddressInformation(invalidClient.address);
+				clientPageObject.typeClientCardInformation(invalidClient.card);
+
+				clientPageObject.sendClientData();
+
+				clientPageObject.verifyIfErrorModalAppear(
+					`CPF inválido! O CPF '${invalidCpf}' não é válido. Utilize o formato: 000.000.000-00.`
+				);
+
+				clientPageObject.closeErrorModal();
+			});
+		});
+
+		it("should show validation error for invalid email format", () => {
+			cy.fixture("clientData").then((data: IClientTestData) => {
+				const invalidEmail = "invalidEmail";
+				const invalidClient = { ...data, email: invalidEmail };
+
+				clientPageObject.visitClientsPage();
+				clientPageObject.typeClientInformation(invalidClient);
+				clientPageObject.typeClientAddressInformation(invalidClient.address);
+				clientPageObject.typeClientCardInformation(invalidClient.card);
+
+				clientPageObject.changeEmailFieldTypeToText();
+
+				clientPageObject.sendClientData();
+
+				clientPageObject.verifyIfErrorModalAppear(
+					`Email inválido! O email '${invalidEmail}' não possui um formato válido. Utilize o formato: exemplo@dominio.com`
+				);
+				clientPageObject.closeErrorModal();
+			});
+		});
+
+		it("should show validation error for invalid CEP format", () => {
+			cy.fixture("clientData").then((data: IClientTestData) => {
+				const invalidCep = "000";
+				data.address.cep = invalidCep;
+
+				clientPageObject.visitClientsPage();
+				clientPageObject.typeClientInformation(data);
+				clientPageObject.typeClientAddressInformation(data.address);
+				clientPageObject.typeClientCardInformation(data.card);
+
+				clientPageObject.sendClientData();
+
+				clientPageObject.verifyIfErrorModalAppear(
+					`CEP inválido! O CEP '${invalidCep}' não é válido. Utilize o formato: 00000-000.`
+				);
+
+				clientPageObject.closeErrorModal();
+			});
+		});
+
+		it("should validate password confirmation match", () => {
+			cy.fixture("clientData").then((client: IClientTestData) => {
+				const invalidRepeatPassword = "aaaaa";
+				const invalidClient = {
+					...client,
+					repeatPassword: invalidRepeatPassword,
+				};
+				clientPageObject.visitClientsPage();
+
+				clientPageObject.typeClientInformation(invalidClient);
+				clientPageObject.typeClientAddressInformation(invalidClient.address);
+				clientPageObject.typeClientCardInformation(invalidClient.card);
+
+				clientPageObject.sendClientData();
+
+				clientPageObject.verifyIfInvalidPasswordRepeatModalAppear();
+
+				clientPageObject.closeInvalidPasswordRepeatModal();
+			});
+		});
+	});
+
+	describe("business rules tests", () => {
+		it("should require at least one delivery address", () => {
+			cy.fixture("clientData").then((client: IClientTestData) => {
+				const modifiedClient = {
+					...client,
+					address: {
+						...client.address,
+						type: "BILLING",
+					},
+				};
+
+				clientPageObject.visitClientsPage();
+				clientPageObject.typeClientInformation(modifiedClient);
+				clientPageObject.typeClientAddressInformation(modifiedClient.address);
+				clientPageObject.typeClientCardInformation(modifiedClient.card);
+
+				clientPageObject.sendClientData();
+
+				clientPageObject.verifyIfErrorModalAppear(
+					"É necessário o cadastro de ao menos um endereço de cobrança."
+				);
+
+				clientPageObject.closeErrorModal();
+			});
+		});
+
+		it("should require at least one billing address", () => {
+			cy.fixture("clientData").then((client: IClientTestData) => {
+				const modifiedClient = {
+					...client,
+					address: {
+						...client.address,
+						type: "DELIVERY",
+					},
+				};
+
+				clientPageObject.visitClientsPage();
+				clientPageObject.typeClientInformation(modifiedClient);
+				clientPageObject.typeClientAddressInformation(modifiedClient.address);
+				clientPageObject.typeClientCardInformation(modifiedClient.card);
+
+				clientPageObject.sendClientData();
+
+				clientPageObject.verifyIfErrorModalAppear(
+					"É necessário o cadastro de ao menos um endereço de entrega."
+				);
+
+				clientPageObject.closeErrorModal();
+			});
+		});
+
+		it("should require exactly one preferred card", () => {
+			cy.fixture("clientData").then((client: IClientTestData) => {
+				const modifiedClient = {
+					...client,
+					card: {
+						...client.card,
+						isPreferred: false,
+					},
+				};
+
+				clientPageObject.visitClientsPage();
+				clientPageObject.typeClientInformation(modifiedClient);
+				clientPageObject.typeClientAddressInformation(modifiedClient.address);
+				clientPageObject.typeClientCardInformation(modifiedClient.card);
+
+				clientPageObject.sendClientData();
+
+				clientPageObject.verifyIfErrorModalAppear(
+					"Cartão preferencial obrigatório! É necessário selecionar pelo menos um cartão como preferencial."
+				);
+
+				clientPageObject.closeErrorModal();
+			});
 		});
 	});
 });

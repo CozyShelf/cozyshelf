@@ -1,12 +1,12 @@
 {
 	"name": "João Silva",
-	"birthDate": "1990-05-15",
-	"cpf": "12345678901",
-	"email": "joao.silva@email.com",
-	"password": "senha123@@",
-	"gender": "Male",
+	"birthDate": "1990-05-12",
+	"cpf": "12345678915",
+	"email": "joao.teste2@email.com",
+	"password": "Senha123@@",
+	"gender": "MALE",
 	"phone": "11999999999",
-	"phoneType": "Mobile",
+	"phoneType": "MOBILE",
 	"address": {
 		"shortPhrase": "Próximo ao mercado",
 		"cep": "01234567",
