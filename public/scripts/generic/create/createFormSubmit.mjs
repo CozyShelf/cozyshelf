@@ -5,50 +5,69 @@
  * @param {string} redirectPath - Path to redirect after successful creation
  * @returns {Promise<void>} - Promise that resolves when the creation is complete
  */
-export async function submitCreationForm(createPath, requestBody, redirectPath) {
-    try {
-   
-        const response = await fetch(createPath, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody)
-        });
+export async function submitCreationForm(
+	createPath,
+	requestBody,
+	redirectPath
+) {
+	try {
+		const response = await fetch(createPath, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(requestBody),
+		});
 
-        const result = await response.json();
+		const result = await response.json();
 
-        if (response.ok) {
-            
-            Swal.fire({
-                icon: 'success',
-                title: 'Sucesso!',
-                text: 'Cadastrado com sucesso!',
-                confirmButtonText: 'OK'
-            }).then((result) => {
-                if (result.isConfirmed) window.location.href = redirectPath;
-            });
+		if (response.ok) {
+			Swal.fire({
+				icon: "success",
+				title: "Sucesso!",
+				text: "Cadastrado com sucesso!",
+				confirmButtonText: "OK",
+				customClass: {
+					container: "success-modal-container",
+				},
+				didOpen: () => {
+					const modal = document.querySelector(".swal2-container");
+					if (modal) {
+						modal.setAttribute("id", "success-modal");
+					}
+				},
+			}).then((result) => {
+				// if (result.isConfirmed) window.location.href = redirectPath;
+			});
+		} else {
+			throw new Error(result.message || "Erro no servidor");
+		}
+	} catch (error) {
+		console.error("Erro na requisição:", error);
 
-        } else {
-            throw new Error(result.message || 'Erro no servidor');
-        }
+		let errorMessage = "Ocorreu um erro inesperado. Tente novamente.";
 
-    } catch (error) {
-        console.error('Erro na requisição:', error);
+		if (error.message.includes("Failed to fetch")) {
+			errorMessage =
+				"Erro de conexão. Verifique sua internet e tente novamente.";
+		} else if (error.message) {
+			errorMessage = error.message;
+		}
 
-        let errorMessage = 'Ocorreu um erro inesperado. Tente novamente.';
-
-        if (error.message.includes('Failed to fetch')) {
-            errorMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
-        } else if (error.message) {
-            errorMessage = error.message;
-        }
-
-        Swal.fire({
-            icon: 'error',
-            title: 'Erro no Cadastro',
-            text: errorMessage,
-            confirmButtonText: 'Tentar Novamente'
-        });
-    }
+		Swal.fire({
+			icon: "error",
+			title: "Erro no Cadastro",
+			text: errorMessage,
+			confirmButtonText: "Tentar Novamente",
+			customClass: {
+				container: "error-modal-container",
+			},
+			didOpen: () => {
+				const modal = document.querySelector(".swal2-container");
+				if (modal) {
+					modal.setAttribute("id", "error-modal");
+				}
+			},
+		});
+	}
 }
