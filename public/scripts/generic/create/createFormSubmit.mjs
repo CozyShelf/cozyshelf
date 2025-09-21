@@ -37,7 +37,7 @@ export async function submitCreationForm(
 					}
 				},
 			}).then((result) => {
-				// if (result.isConfirmed) window.location.href = redirectPath;
+				if (result.isConfirmed) window.location.href = redirectPath;
 			});
 		} else {
 			throw new Error(result.message || "Erro no servidor");

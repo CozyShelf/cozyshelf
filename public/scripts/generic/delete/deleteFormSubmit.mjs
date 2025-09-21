@@ -15,13 +15,22 @@ export async function deleteFormSubmit(deletePath, itemId) {
 
         if (response.ok) {
             Swal.fire({
-                icon: 'success',
-                title: 'Sucesso!',
-                text: 'Deletado com sucesso.',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                location.reload();
-            });
+							icon: "success",
+							title: "Sucesso!",
+							text: "Deletado com sucesso.",
+							confirmButtonText: "OK",
+							customClass: {
+								container: "delete-success",
+							},
+							didOpen: () => {
+								const modal = document.querySelector(".swal2-container");
+								if (modal) {
+									modal.setAttribute("id", "delete-success");
+								}
+							},
+						}).then(() => {
+							location.reload();
+						});
         } else {
             const errorData = await response.json();
             throw new Error(errorData.message || 'Erro ao deletar.');

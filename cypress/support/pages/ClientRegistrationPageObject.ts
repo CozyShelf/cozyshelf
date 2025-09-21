@@ -30,6 +30,16 @@ export default class ClientRegistrationPageObject extends GenericPage {
 		this.sendClientData();
 	}
 
+	registerMultipleClients(clients: IClientTestData[]) {
+		clients.forEach((client) => {
+			cy.then(() => {
+				this.registerNewClient(client);
+				this.verifyIfSuccessModalAppear();
+				this.closeSuccessModal();
+			});
+		});
+	}
+
 	typeClientInformation(client: IClientTestData) {
 		this.typeInInput("client-name", client.name);
 		this.typeInInput("client-birth-date", client.birthDate);
