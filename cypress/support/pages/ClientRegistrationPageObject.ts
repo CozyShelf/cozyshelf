@@ -17,6 +17,19 @@ export default class ClientRegistrationPageObject extends GenericPage {
 		this.visitPage(this.CLIENT_REGISTER_PAGE);
 	}
 
+	registerNewClient(client: IClientTestData, preSendDataRule?: (...args: any) => void) {
+		this.visitClientsPage();
+		this.typeClientInformation(client);
+		this.typeClientAddressInformation(client.address);
+		this.typeClientCardInformation(client.card);
+
+		if (preSendDataRule) {
+			preSendDataRule();
+		}
+
+		this.sendClientData();
+	}
+
 	typeClientInformation(client: IClientTestData) {
 		this.typeInInput("client-name", client.name);
 		this.typeInInput("client-birth-date", client.birthDate);

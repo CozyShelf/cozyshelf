@@ -14,13 +14,7 @@ describe("client registration", () => {
 
 	it("should correctly register a client", () => {
 		cy.fixture("clientData").then((client: IClientTestData) => {
-			clientPageObject.visitClientsPage();
-
-			clientPageObject.typeClientInformation(client);
-			clientPageObject.typeClientAddressInformation(client.address);
-			clientPageObject.typeClientCardInformation(client.card);
-
-			clientPageObject.sendClientData();
+			clientPageObject.registerNewClient(client);
 
 			clientPageObject.verifyIfSuccessModalAppear();
 
@@ -34,12 +28,7 @@ describe("client registration", () => {
 				const invalidCpf = "123";
 				let invalidClient = { ...data, cpf: invalidCpf };
 
-				clientPageObject.visitClientsPage();
-				clientPageObject.typeClientInformation(invalidClient);
-				clientPageObject.typeClientAddressInformation(invalidClient.address);
-				clientPageObject.typeClientCardInformation(invalidClient.card);
-
-				clientPageObject.sendClientData();
+				clientPageObject.registerNewClient(invalidClient);
 
 				clientPageObject.verifyIfErrorModalAppear(
 					`CPF inválido! O CPF '${invalidCpf}' não é válido. Utilize o formato: 000.000.000-00.`
@@ -54,14 +43,10 @@ describe("client registration", () => {
 				const invalidEmail = "invalidEmail";
 				const invalidClient = { ...data, email: invalidEmail };
 
-				clientPageObject.visitClientsPage();
-				clientPageObject.typeClientInformation(invalidClient);
-				clientPageObject.typeClientAddressInformation(invalidClient.address);
-				clientPageObject.typeClientCardInformation(invalidClient.card);
-
-				clientPageObject.changeEmailFieldTypeToText();
-
-				clientPageObject.sendClientData();
+				clientPageObject.registerNewClient(
+					invalidClient,
+					() => clientPageObject.changeEmailFieldTypeToText()
+				);
 
 				clientPageObject.verifyIfErrorModalAppear(
 					`Email inválido! O email '${invalidEmail}' não possui um formato válido. Utilize o formato: exemplo@dominio.com`
@@ -75,12 +60,7 @@ describe("client registration", () => {
 				const invalidCep = "000";
 				data.address.cep = invalidCep;
 
-				clientPageObject.visitClientsPage();
-				clientPageObject.typeClientInformation(data);
-				clientPageObject.typeClientAddressInformation(data.address);
-				clientPageObject.typeClientCardInformation(data.card);
-
-				clientPageObject.sendClientData();
+				clientPageObject.registerNewClient(data);
 
 				clientPageObject.verifyIfErrorModalAppear(
 					`CEP inválido! O CEP '${invalidCep}' não é válido. Utilize o formato: 00000-000.`
@@ -99,11 +79,7 @@ describe("client registration", () => {
 				};
 				clientPageObject.visitClientsPage();
 
-				clientPageObject.typeClientInformation(invalidClient);
-				clientPageObject.typeClientAddressInformation(invalidClient.address);
-				clientPageObject.typeClientCardInformation(invalidClient.card);
-
-				clientPageObject.sendClientData();
+				clientPageObject.registerNewClient(invalidClient);
 
 				clientPageObject.verifyIfInvalidPasswordRepeatModalAppear();
 
@@ -123,12 +99,7 @@ describe("client registration", () => {
 					},
 				};
 
-				clientPageObject.visitClientsPage();
-				clientPageObject.typeClientInformation(modifiedClient);
-				clientPageObject.typeClientAddressInformation(modifiedClient.address);
-				clientPageObject.typeClientCardInformation(modifiedClient.card);
-
-				clientPageObject.sendClientData();
+				clientPageObject.registerNewClient(modifiedClient);
 
 				clientPageObject.verifyIfErrorModalAppear(
 					"É necessário o cadastro de ao menos um endereço de cobrança."
@@ -148,12 +119,7 @@ describe("client registration", () => {
 					},
 				};
 
-				clientPageObject.visitClientsPage();
-				clientPageObject.typeClientInformation(modifiedClient);
-				clientPageObject.typeClientAddressInformation(modifiedClient.address);
-				clientPageObject.typeClientCardInformation(modifiedClient.card);
-
-				clientPageObject.sendClientData();
+				clientPageObject.registerNewClient(modifiedClient);
 
 				clientPageObject.verifyIfErrorModalAppear(
 					"É necessário o cadastro de ao menos um endereço de entrega."
@@ -173,12 +139,7 @@ describe("client registration", () => {
 					},
 				};
 
-				clientPageObject.visitClientsPage();
-				clientPageObject.typeClientInformation(modifiedClient);
-				clientPageObject.typeClientAddressInformation(modifiedClient.address);
-				clientPageObject.typeClientCardInformation(modifiedClient.card);
-
-				clientPageObject.sendClientData();
+				clientPageObject.registerNewClient(modifiedClient);
 
 				clientPageObject.verifyIfErrorModalAppear(
 					"Cartão preferencial obrigatório! É necessário selecionar pelo menos um cartão como preferencial."
