@@ -32,7 +32,7 @@ describe("delete an address", () => {
         addressTablePageObject.verifyIfDeleteConfirmationModalAppear();
         addressTablePageObject.closeDeleteConfirmationModal();
 
-        addressTablePageObject.verifyIfDeleteErrorModalAppear("É necessário o cadastro de ao menos um endereço de entrega.");
+        addressTablePageObject.verifyIfDeleteErrorModalAppear("É necessário o cadastro de ao menos um endereço de cobrança.");
         addressTablePageObject.closeDeleteErrorModal();
     });
 

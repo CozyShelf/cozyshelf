@@ -112,7 +112,7 @@ export default class AddressTablePageObject extends GenericPageObject {
     }
 
     verifyIfDeleteConfirmationModalAppear(message?: string) {
-        const confirmationModal = this.getModalById("delete-confirmation-modal");
+        const confirmationModal = this.getModalById("delete-confimation");
         confirmationModal.should("exist");
         if (message) {
             confirmationModal.should("contain", message);
@@ -127,7 +127,7 @@ export default class AddressTablePageObject extends GenericPageObject {
         }
     }
     verifyIfSuccessModalAppear() {
-        const successModal = this.getModalById("delete-success-modal");
+        const successModal = this.getModalById("delete-success");
         successModal.should("exist");
     }
 
@@ -145,7 +145,7 @@ export default class AddressTablePageObject extends GenericPageObject {
     }
 
     verifySuccessDeleteModal() {
-        cy.get("#delete-success-modal", { timeout: 10000 })
+        cy.get("#delete-success", { timeout: 10000 })
             .should("exist")
             .should("contain", "Endereço inativado!");
     }
@@ -153,7 +153,7 @@ export default class AddressTablePageObject extends GenericPageObject {
     /* ========== Modals Close Methods ========== */
 
     closeSuccessModal() {
-        this.getModalConfirmButtonByModalId("delete-success-modal").click();
+        this.getModalConfirmButtonByModalId("delete-success").click();
     }
 
     closeErrorModal() {
@@ -161,7 +161,7 @@ export default class AddressTablePageObject extends GenericPageObject {
     }
     
     closeDeleteConfirmationModal() {
-        this.getModalConfirmButtonByModalId("delete-confirmation-modal").click();
+        this.getModalConfirmButtonByModalId("delete-confimation").click();
     }
 
     closeDeleteErrorModal() {

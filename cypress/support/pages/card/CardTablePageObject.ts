@@ -73,7 +73,7 @@ export default class CardTablePageObject extends GenericPageObject {
     }
 
     verifyIfDeleteConfirmationModalAppear(message?: string) {
-        const confirmationModal = this.getModalById("delete-confirmation-modal");
+        const confirmationModal = this.getModalById("delete-confimation");
         confirmationModal.should("exist");
         if (message) {
             confirmationModal.should("contain", message);
@@ -81,14 +81,14 @@ export default class CardTablePageObject extends GenericPageObject {
     }
 
     verifyIfSuccessModalAppear() {
-        const successModal = this.getModalById("delete-success-modal");
+        const successModal = this.getModalById("delete-success");
         successModal.should("exist");
     }
 
     /* ========== Modals Close Methods ========== */
 
     closeSuccessModal() {
-        this.getModalConfirmButtonByModalId("delete-success-modal").click();
+        this.getModalConfirmButtonByModalId("delete-success").click();
     }
 
     closeErrorModal() {
@@ -96,7 +96,7 @@ export default class CardTablePageObject extends GenericPageObject {
     }
     
     closeDeleteConfirmationModal() {
-        this.getModalConfirmButtonByModalId("delete-confirmation-modal").click();
+        this.getModalConfirmButtonByModalId("delete-confimation").click();
     }
 
     closeWarningPreferredCardModal() {
