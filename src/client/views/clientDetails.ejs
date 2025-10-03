@@ -6,12 +6,12 @@
                 <label class="flex flex-col text-[12px] gap-3">
                     Nome Completo *
                     <input placeholder="Ex: José da Silva" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-                        name="client-name" required value="<%= user?.name || '' %>">
+                        name="client-name" id="client-name" required value="<%= user?.name || '' %>">
                 </label>
                 <label class="flex flex-col text-[12px]  gap-3">
                     Data de Nascimento *
                     <input placeholder="DD/MM/AAAA" class="border rounded-[5px] border-gray h-10 p-2.5" type="date"
-                        name="client-birth-date" required value="<%= user?.birthDate || '' %>">
+                        name="client-birth-date" id="client-birth-date" required value="<%= user?.birthDate || '' %>">
                 </label>
             </div>
 
@@ -19,19 +19,19 @@
                 <label class="flex flex-col text-[12px] gap-3">
                     CPF *
                     <input placeholder="XXX XXX XXX XX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
-                        name="client-cpf" required value="<%= user?.cpf || '' %>" maxlength="14">
+                        name="client-cpf" id="client-cpf" required value="<%= user?.cpf || '' %>" maxlength="14">
                 </label>
                 <label class="flex flex-col text-[12px] gap-3">
                     Telefone *
                     <input placeholder="(DD) NNNN-NNNN" class="border rounded-[5px] border-gray h-10 p-2.5" type="tel"
-                        name="client-phone" required value="<%= user?.formattedTelephone || '' %>" maxlength="15">
+                        name="client-phone" id="client-phone" required value="<%= user?.formattedTelephone || '' %>" maxlength="15">
                 </label>
             </div>
 
             <div class="flex flex-col w-full gap-5">
                 <label class="flex flex-col text-[12px] gap-3">
                     Gênero *
-                    <select name="client-gender" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+                    <select name="client-gender" id="client-gender" class="border rounded-[5px] border-gray h-10 p-2.5" required>
                         <option value="">Selecione...</option>
                         <option value="MALE" <%= user?.gender === 'MALE' ? 'selected' : '' %>>Masculino</option>
                         <option value="FEMALE" <%= user?.gender === 'FEMALE' ? 'selected' : '' %>>Feminino</option>
@@ -40,7 +40,7 @@
                 </label>
                 <label class="flex flex-col text-[12px] gap-3">
                     Tipo de Telefone *
-                    <select name="client-phone-type" class="border rounded-[5px] border-gray h-10 p-2.5" required >
+                    <select name="client-phone-type" id="client-phone-type" class="border rounded-[5px] border-gray h-10 p-2.5" required >
                         <option value="">Selecione...</option>
                         <option value="FIXED" <%= user?.telephoneType === 'FIXED' ? 'selected' : '' %>>Fixo</option>
                         <option value="MOBILE" <%= user?.telephoneType === 'MOBILE' ? 'selected' : '' %>>Móvel</option>
@@ -52,11 +52,11 @@
             <label class="flex flex-col text-[12px] gap-3">
                 Email *
                 <input placeholder="Ex: exemplo@hotmail.com" class="border rounded-[5px] border-gray h-10 p-2.5 w-full"
-                    type="email" name="client-email" required value="<%= user?.email || '' %>">
+                    type="email" name="client-email" id="client-email" required value="<%= user?.email || '' %>">
             </label>
         </div>
         <div class="flex justify-end">
-            <button type="submit" class="font-medium text-sm text-white bg-light-green w-[150px] h-10 rounded-[5px] cursor-pointer hover:bg-dark-green flex items-center justify-center">
+            <button type="submit" class="font-medium text-sm text-white bg-light-green w-[150px] h-10 rounded-[5px] cursor-pointer hover:bg-dark-green flex items-center justify-center" id="submit-client-data">
                 Salvar
             </button>
         </div>

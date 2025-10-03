@@ -38,9 +38,7 @@ export default class Password extends DomainEntity {
 	}
 
 	public updateData(updatedPassData: IUpdatePasswordData) {
-		if (!this.comparePasswords(updatedPassData.currentPassword)) {
-			throw new PasswordsNotMatch(updatedPassData.currentPassword);
-		}
+		Password.validatePassword(updatedPassData.newPassword);
 
 		if (
 			!Password.validatePasswordConfirmation(
@@ -51,7 +49,9 @@ export default class Password extends DomainEntity {
 			throw new InvalidPasswordConfirmation();
 		}
 
-		Password.validatePassword(updatedPassData.newPassword);
+		if (!this.comparePasswords(updatedPassData.currentPassword)) {
+			throw new PasswordsNotMatch(updatedPassData.currentPassword);
+		}
 
 		this.value = Password.encrytPassword(updatedPassData.newPassword);
 	}

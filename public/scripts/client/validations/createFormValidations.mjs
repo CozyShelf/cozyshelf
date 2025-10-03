@@ -6,10 +6,19 @@ export function validateForm(form) {
 
     if (passwords.password !== passwords.confirmation) {
         Swal.fire({
-            icon: 'warning',
-            title: 'Senhas não coincidem',
-            text: 'Por favor, verifique se as senhas são iguais.'
-        });
+					icon: "warning",
+					title: "Senhas não coincidem",
+					text: "Por favor, verifique se as senhas são iguais.",
+					customClass: {
+						container: "invalid-password-repeat-modal-container",
+					},
+					didOpen: () => {
+						const modal = document.querySelector(".swal2-container");
+						if (modal) {
+							modal.setAttribute("id", "invalid-password-repeat-modal");
+						}
+					},
+				});
         return false;
     }
 

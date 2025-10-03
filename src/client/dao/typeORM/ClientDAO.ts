@@ -15,53 +15,57 @@ export default class ClientDAO implements IDAO<ClientModel> {
 	}
 
 	public async findByCPF(cpf: string) {
-		return await this.repository.findOneBy({ cpf });
+		return await this.repository.findOneBy({ cpf, isActive: true });
 	}
 
 	public async findByEmail(email: string) {
-		return await this.repository.findOneBy({ email });
+		return await this.repository.findOneBy({ email, isActive: true });
 	}
 
-	public async findAll(filters?: IClientFilters): Promise<ClientModel[] | null> {
-        const queryBuilder = this.repository
-            .createQueryBuilder("client")
-            .leftJoinAndSelect("client.telephone", "telephone")
+	public async findAll(
+		filters?: IClientFilters
+	): Promise<ClientModel[] | null> {
+		const queryBuilder = this.repository
+			.createQueryBuilder("client")
+			.leftJoinAndSelect("client.telephone", "telephone")
 			.leftJoinAndSelect("client.addresses", "address")
 			.leftJoinAndSelect("client.cards", "card")
 			.leftJoinAndSelect("address.country", "country")
 			.leftJoinAndSelect("card.cardFlag", "cardFlag")
 			.leftJoinAndSelect("client.password", "password")
-            .where("client.isActive = :isActive", { isActive: true });
+			.where("client.isActive = :isActive", { isActive: true });
 
-        if (filters) {
-            if (filters.name) {
-                queryBuilder.andWhere("LOWER(client.name) LIKE LOWER(:name)", {
-                    name: `%${filters.name}%`
-                });
-            }
+		if (filters) {
+			if (filters.name) {
+				queryBuilder.andWhere("LOWER(client.name) LIKE LOWER(:name)", {
+					name: `%${filters.name}%`,
+				});
+			}
 
-            if (filters.cpf) {
-                queryBuilder.andWhere("client.cpf LIKE :cpf", {
-                    cpf: `%${filters.cpf}%`
-                });
-            }
+			if (filters.cpf) {
+				queryBuilder.andWhere("client.cpf LIKE :cpf", {
+					cpf: `%${filters.cpf}%`,
+				});
+			}
 
-            if (filters.email) {
-                queryBuilder.andWhere("LOWER(client.email) LIKE LOWER(:email)", {
-                    email: `%${filters.email}%`
-                });
-            }
+			if (filters.email) {
+				queryBuilder.andWhere("LOWER(client.email) LIKE LOWER(:email)", {
+					email: `%${filters.email}%`,
+				});
+			}
 
-            if (filters.phone) {
-                queryBuilder.andWhere(
-                    "(telephone.ddd LIKE :phone OR telephone.number LIKE :phone)", {
-                    phone: `%${filters.phone}%`
-                });
-            }
-        }
+			if (filters.phone) {
+				queryBuilder.andWhere(
+					"(telephone.ddd LIKE :phone OR telephone.number LIKE :phone)",
+					{
+						phone: `%${filters.phone}%`,
+					}
+				);
+			}
+		}
 
-        return await queryBuilder.getMany();
-    }
+		return await queryBuilder.getMany();
+	}
 
 	public async findById(id: string): Promise<ClientModel | null> {
 		return await this.repository

@@ -20,8 +20,9 @@ const users = [
 		} as unknown as TelephoneModel,
 		addresses: [
 			{
-			zipCode: "08900-000",
-			number: "100",
+				id: "d5b4ecf2-e31e-41b2-8c9f-a36898e23d81",
+				zipCode: "08900-000",
+				number: "100",
 				residenceType: "Apartment",
 				streetName: "Rua das Flores",
 				streetType: "Rua",
@@ -35,7 +36,8 @@ const users = [
 			},
 		],
 		cards: [
-			{
+			{	
+				id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
 				number: "4111111111111111",
 				nameOnCard: "João Silva",
 				cvv: "123",

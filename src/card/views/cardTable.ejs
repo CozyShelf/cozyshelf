@@ -34,12 +34,13 @@
                     <% } %>
                 </td>
                 <td class="px-6 py-3 flex gap-2">
-                    <a href="/cards/<%= card.id %>" class="hover:text-gray flex justify-center items-center">
+                    <a href="/cards/<%= card.id %>" class="hover:text-gray flex justify-center items-center detail-btn">
                         <span class="material-symbols-outlined text-base">visibility</span>
                     </a>
                     <a href="/api/cards/<%= card.id %>" 
                         class="hover:text-gray flex justify-center items-center delete-btn"
-                        data-preferred="<%= card.isPreferred %>">
+                        data-preferred="<%= card.isPreferred %>"
+                        >
                         <span class="material-symbols-outlined text-base">delete</span>
                     </a>
                 </td>
