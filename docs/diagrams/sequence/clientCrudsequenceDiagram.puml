@@ -1,0 +1,258 @@
+@startuml Client CRUD Sequence Diagram - CozyShelf
+
+!theme plain
+skinparam backgroundColor white
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 20
+skinparam maxMessageSize 60
+skinparam sequenceParticipant underline
+skinparam dpi 300
+
+actor Client as "Cliente"
+participant Router as "Express Router"
+participant Controller as "ClientController"
+participant Service as "ClientService"
+participant DAO as "ClientDAO"
+participant CardService as "CardService"
+participant AddressService as "AddressService"
+participant DTO as "ClientDTO"
+participant Database as "PostgreSQL"
+
+== Criação de Cliente (CREATE) ==
+
+Client -> Router: POST /clients
+activate Router
+Router -> Controller: create(req, res)
+activate Controller
+
+Controller -> Controller: Client.fromRequestData(body)
+Controller -> Service: create(client)
+activate Service
+
+Service -> Service: verifyIfClientAlreadyExists(client)
+Service -> DAO: findByEmail(email)
+activate DAO
+DAO -> Database: SELECT * FROM clients WHERE email = ?
+activate Database
+Database --> DAO: ClientModel | null
+deactivate Database
+DAO --> Service: ClientModel | null
+deactivate DAO
+
+Service -> DAO: findByCPF(cpf)
+activate DAO
+DAO -> Database: SELECT * FROM clients WHERE cpf = ?
+activate Database
+Database --> DAO: ClientModel | null
+deactivate Database
+DAO --> Service: ClientModel | null
+deactivate DAO
+
+alt Cliente já existe
+    Service -> Controller: throw ClientAlreadyExists()
+    Controller -> Router: res.status(409).json(error)
+    Router -> Client: 409 - Conflict
+else Cliente não existe
+    Service -> CardService: getExistentCardFlag(flagDescription)
+    activate CardService
+    CardService --> Service: CardFlagModel
+    deactivate CardService
+
+    Service -> AddressService: getExistingCountryByAcronym(country)
+    activate AddressService
+    AddressService --> Service: void
+    deactivate AddressService
+
+    Service -> DAO: save(clientModel)
+    activate DAO
+    DAO -> Database: INSERT INTO clients (...)
+    activate Database
+    Database --> DAO: ClientModel
+    deactivate Database
+    DAO --> Service: ClientModel
+    deactivate DAO
+
+    Service --> Controller: Client
+    deactivate Service
+
+    Controller -> Router: res.status(201).json(success)
+    Router -> Client: 201 - Cliente criado com sucesso
+end
+deactivate Controller
+deactivate Router
+
+== Consulta de Todos os Clientes (READ ALL) ==
+
+Client -> Router: GET /clients
+activate Router
+Router -> Controller: getAll(req, res)
+activate Controller
+
+Controller -> Service: getAll(filters?)
+activate Service
+
+Service -> DAO: findAll(filters?)
+activate DAO
+DAO -> Database: SELECT * FROM clients WHERE ...
+activate Database
+Database --> DAO: ClientModel[]
+deactivate Database
+DAO --> Service: ClientModel[] | null
+deactivate DAO
+
+alt Nenhum cliente encontrado
+    Service -> Controller: throw NoClientsFound()
+    Controller -> Router: res.status(404).json(error)
+    Router -> Client: 404 - Nenhum cliente encontrado
+else Clientes encontrados
+    Service -> Service: clientsFound.map(model => model.toEntity())
+    Service --> Controller: Client[]
+    deactivate Service
+
+    Controller -> DTO: ClientListDTO.fromEntity(client)
+    activate DTO
+    DTO --> Controller: ClientListDTO[]
+    deactivate DTO
+
+    Controller -> Router: res.status(200).json(clientListDTOs)
+    Router -> Client: 200 - Lista de clientes
+end
+deactivate Controller
+deactivate Router
+
+== Consulta de Cliente por ID (READ ONE) ==
+
+Client -> Router: GET /clients/:id
+activate Router
+Router -> Controller: getById(req, res)
+activate Controller
+
+Controller -> Service: getById(id)
+activate Service
+
+Service -> DAO: findById(id)
+activate DAO
+DAO -> Database: SELECT * FROM clients WHERE id = ?
+activate Database
+Database --> DAO: ClientModel | null
+deactivate Database
+DAO --> Service: ClientModel | null
+deactivate DAO
+
+alt Cliente não encontrado
+    Service -> Controller: throw NoClientsFound(id)
+    Controller -> Router: res.status(404).json(error)
+    Router -> Client: 404 - Cliente não encontrado
+else Cliente encontrado
+    Service --> Controller: Client
+    deactivate Service
+
+    Controller -> DTO: ClientDetailsDTO.fromEntity(client)
+    activate DTO
+    DTO --> Controller: ClientDetailsDTO
+    deactivate DTO
+
+    Controller -> Router: res.status(200).json(clientDetailsDTO)
+    Router -> Client: 200 - Dados do cliente
+end
+deactivate Controller
+deactivate Router
+
+== Atualização de Cliente (UPDATE) ==
+
+Client -> Router: PUT /clients/:id
+activate Router
+Router -> Controller: update(req, res)
+activate Controller
+
+Controller -> Service: update(id, updateData)
+activate Service
+
+Service -> DAO: findById(id)
+activate DAO
+DAO -> Database: SELECT * FROM clients WHERE id = ?
+activate Database
+Database --> DAO: ClientModel | null
+deactivate Database
+DAO --> Service: ClientModel | null
+deactivate DAO
+
+alt Cliente não encontrado
+    Service -> Controller: throw NoClientsFound(id)
+    Controller -> Router: res.status(404).json(error)
+    Router -> Client: 404 - Cliente não encontrado
+else Cliente encontrado
+    Service -> Service: existingClient.toEntity()
+    Service -> Service: updatedEntity.updateData(updatedData)
+    Service -> Service: existingClient.updateFromEntity(updatedEntity)
+
+    Service -> DAO: save(existingClientModel)
+    activate DAO
+    DAO -> Database: UPDATE clients SET ... WHERE id = ?
+    activate Database
+    Database --> DAO: ClientModel
+    deactivate Database
+    DAO --> Service: ClientModel
+    deactivate DAO
+
+    Service --> Controller: Client
+    deactivate Service
+
+    Controller -> Router: res.status(200).json(success)
+    Router -> Client: 200 - Cliente atualizado com sucesso
+end
+deactivate Controller
+deactivate Router
+
+== Exclusão de Cliente (DELETE) ==
+
+Client -> Router: DELETE /clients/:id
+activate Router
+Router -> Controller: delete(req, res)
+activate Controller
+
+alt ID inválido ou vazio
+    Controller -> Router: res.status(400).json(error)
+    Router -> Client: 400 - ID obrigatório
+else ID válido
+    Controller -> Service: delete(id)
+    activate Service
+
+    Service -> DAO: findById(id)
+    activate DAO
+    DAO -> Database: SELECT * FROM clients WHERE id = ?
+    activate Database
+    Database --> DAO: ClientModel | null
+    deactivate Database
+    DAO --> Service: ClientModel | null
+    deactivate DAO
+
+    alt Cliente não encontrado
+        Service -> Controller: throw NoClientsFound(id)
+        Controller -> Router: res.status(404).json(error)
+        Router -> Client: 404 - Cliente não encontrado
+    else Cliente encontrado
+        Service -> Service: existingClient.toEntity()
+        Service -> Service: updatedEntity.inactivate()
+        Service -> Service: existingClient.updateFromEntity(updatedEntity, true)
+
+        Service -> DAO: save(existingClient)
+        activate DAO
+        DAO -> Database: UPDATE clients SET isActive = false WHERE id = ?
+        activate Database
+        Database --> DAO: ClientModel
+        deactivate Database
+        DAO --> Service: ClientModel
+        deactivate DAO
+
+        Service --> Controller: void
+        deactivate Service
+
+        Controller -> Router: res.status(200).json(success)
+        Router -> Client: 200 - Cliente removido com sucesso
+    end
+end
+deactivate Controller
+deactivate Router
+
+@enduml

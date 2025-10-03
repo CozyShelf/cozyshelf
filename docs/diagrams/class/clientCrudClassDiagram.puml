@@ -1,0 +1,278 @@
+@startuml Control Classes CRUD - CozyShelf
+
+!theme plain
+skinparam backgroundColor white
+skinparam classBackgroundColor white
+skinparam classBorderColor black
+skinparam stereotypeCBackgroundColor lightGray
+skinparam arrowColor black
+skinparam dpi 300
+skinparam outputFormat svg
+skinparam linetype ortho
+skinparam nodesep 20
+skinparam ranksep 30
+
+!define LAYOUT top to bottom direction
+
+interface IDAO<<T>> <<Interface>> {
+    + save(entity: T): Promise<T>
+    + findAll(): Promise<T[] | null>
+    + findById(id: string): Promise<T | null>
+    + delete(id: string): Promise<void>
+}
+
+interface IFactory<<T>> <<Interface>> {
+    + make(): T
+}
+
+class ClientController {
+    - service: ClientService
+    - passwordService: PasswordService
+    + create(req: Request, res: Response): Promise<void>
+    + getAll(req: Request, res: Response): Promise<void>
+    + getById(req: Request, res: Response): Promise<void>
+    + update(req: Request, res: Response): Promise<void>
+    + delete(req: Request, res: Response): Promise<void>
+    + updatePassword(req: Request, res: Response): Promise<void>
+    + renderClientTable(req: Request, res: Response): Promise<void>
+    + renderClientDetails(req: Request, res: Response): Promise<void>
+    + renderClientDetailsAdmin(req: Request, res: Response): Promise<void>
+    - createErrorResponse(res: Response, error: Error): void
+    - verifyRequestBody(req: Request, res: Response): void
+}
+
+class ClientService {
+    - clientDAO: ClientDAO
+    - cardService: CardService
+    - addressService: AddressService
+    + create(client: Client): Promise<Client>
+    + getAll(filters?: IClientFilters): Promise<Client[]>
+    + getById(id: string): Promise<Client>
+    + update(id: string, data: IUpdateClientData): Promise<Client>
+    + delete(id: string): Promise<void>
+    - verifyIfClientAlreadyExists(client: Client): Promise<boolean>
+}
+
+class ClientDAO {
+    - repository: Repository<ClientModel>
+    + findByCPF(cpf: string): Promise<ClientModel | null>
+    + findByEmail(email: string): Promise<ClientModel | null>
+    + findAll(filters?: IClientFilters): Promise<ClientModel[] | null>
+}
+
+class ClientListDTO {
+    + id: string
+    + name: string
+    + email: string
+    + telephoneNumber: string
+    + {static} fromEntity(client: Client): ClientListDTO
+}
+
+class ClientDetailsDTO {
+    + id: string
+    + name: string
+    + email: string
+    + cpf: string
+    + birthDate: Date
+    + isActive: boolean
+    + telephone: TelephoneDTO
+    + addresses: AddressListDTO[]
+    + cards: CardListDTO[]
+    + {static} fromEntity(client: Client): ClientDetailsDTO
+}
+
+class ClientControllerFactory {
+    - cardFactory: CardControllerFactory
+    - addressFactory: AddressControllerFactory
+    + make(): ClientController
+}
+
+class CardController {
+    - service: CardService
+    + create(req: Request, res: Response): Promise<void>
+    + getAllFlags(req: Request, res: Response): Promise<void>
+    + getById(req: Request, res: Response): Promise<void>
+    + getByClientId(req: Request, res: Response): Promise<void>
+    + update(req: Request, res: Response): Promise<void>
+    + delete(req: Request, res: Response): Promise<void>
+    + renderCardsTable(req: Request, res: Response): Promise<void>
+    + renderCardDetails(req: Request, res: Response): Promise<void>
+    - createErrorResponse(res: Response, error: Error): void
+    - verifyRequestBody(req: Request, res: Response): void
+}
+
+class CardService {
+    - cardDAO: CardDAO
+    - cardFlagDAO: CardFlagDAO
+    + create(clientId: string, card: CreditCard): Promise<CreditCard>
+    + getAllByClientId(clientId: string): Promise<CreditCard[]>
+    + getById(id: string): Promise<CreditCard>
+    + update(id: string, data: IUpdateCardData): Promise<CreditCard>
+    + delete(id: string): Promise<void>
+    + getAllCardFlags(): Promise<CardFlag[]>
+    + setAsPreferred(cardId: string, clientId: string): Promise<void>
+    + getExistentCardFlag(description: string): Promise<CardFlagModel>
+}
+
+class CardDAO {
+    - repository: Repository<CreditCardModel>
+    + findByClientId(clientId: string): Promise<CreditCardModel[]>
+    + findByCardNumber(number: string): Promise<CreditCardModel | null>
+}
+
+class CardFlagDAO {
+    - repository: Repository<CardFlagModel>
+    + getFlagByDescription(description: string): Promise<CardFlagModel | null>
+    + getAll(): Promise<CardFlagModel[]>
+}
+
+class CardListDTO {
+    + id: string
+    + number: string
+    + ownerName: string
+    + isPreferred: boolean
+    + cardFlag: CardFlagListDTO
+    + {static} fromEntity(card: CreditCard): CardListDTO
+}
+
+class CardDetailsDTO {
+    + id: string
+    + number: string
+    + ownerName: string
+    + expirationDate: Date
+    + securityCode: string
+    + isPreferred: boolean
+    + cardFlag: CardFlagListDTO
+    + {static} fromEntity(card: CreditCard): CardDetailsDTO
+}
+
+class CardFlagListDTO {
+    + description: string
+    + {static} fromEntity(cardFlag: CardFlag): CardFlagListDTO
+}
+
+class CardControllerFactory {
+}
+
+class AddressController {
+    - service: AddressService
+    + create(req: Request, res: Response): Promise<void>
+    + getAll(req: Request, res: Response): Promise<void>
+    + getById(req: Request, res: Response): Promise<void>
+    + update(req: Request, res: Response): Promise<void>
+    + delete(req: Request, res: Response): Promise<void>
+    + renderAddressesTable(req: Request, res: Response): Promise<void>
+    + renderAddressDetails(req: Request, res: Response): Promise<void>
+    - createErrorResponse(res: Response, error: Error): void
+    - verifyRequestBody(req: Request, res: Response): void
+}
+
+class AddressService {
+    - addressDAO: AddressDAO
+    - countryDAO: CountryDAO
+    - clientDAO: ClientDAO
+    + create(clientId: string, address: Address): Promise<Address>
+    + getById(id: string): Promise<Address>
+    + getAll(): Promise<Address[]>
+    + getByClientId(clientId: string): Promise<Address[]>
+    + update(id: string, updateData: IUpdateAddressData): Promise<Address>
+    + delete(id: string): Promise<void>
+    + getExistingCountryByAcronym(countryModel: CountryModel): Promise<void>
+}
+
+class AddressDAO {
+    - repository: Repository<AddressModel>
+    + findByClientId(clientId: string): Promise<AddressModel[]>
+}
+
+class CountryDAO {
+    - repository: Repository<CountryModel>
+    + findByAcronym(acronym: string): Promise<CountryModel | null>
+}
+
+class AddressListDTO {
+    + id: string
+    + publicPlace: string
+    + number: string
+    + neighborhood: string
+    + city: string
+    + state: string
+    + country: string
+    + zipCode: string
+    + shortPhrase: string
+    + isDeliveryAddress: boolean
+    + isBillingAddress: boolean
+    + {static} fromEntity(address: Address): AddressListDTO
+}
+
+class AddressDetailsDTO {
+    + id: string
+    + publicPlace: string
+    + number: string
+    + complement: string
+    + neighborhood: string
+    + city: string
+    + state: string
+    + country: string
+    + zipCode: string
+    + shortPhrase: string
+    + isDeliveryAddress: boolean
+    + isBillingAddress: boolean
+    + {static} fromEntity(address: Address): AddressDetailsDTO
+}
+
+class AddressControllerFactory {
+	+ makeAddressService(clientDAO: ClientDAO)
+}
+
+class PasswordService {
+    - passwordDAO: PasswordDAO
+    + updatePassword(clientId: string, data: IUpdatePasswordData): Promise<void>
+    - validateCurrentPassword(client: ClientModel, currentPassword: string): Promise<void>
+    - encryptPassword(password: string): Promise<string>
+}
+
+class PasswordDAO {
+    - repository: Repository<PasswordModel>
+}
+
+ClientController --> "1" ClientService
+ClientController --> "1" PasswordService
+CardController --> "1" CardService
+AddressController --> "1" AddressService
+
+ClientService --> "1" ClientDAO
+ClientService --> "1" CardService
+ClientService --> "1" AddressService
+CardService --> "1" CardDAO
+CardService --> "1" CardFlagDAO
+CardService --> "1" ClientDAO
+AddressService --> "1" AddressDAO
+AddressService --> "1" CountryDAO
+AddressService --> "1" ClientDAO
+PasswordService --> "1" PasswordDAO
+
+ClientDAO ..|> IDAO
+CardDAO ..|> IDAO
+AddressDAO ..|> IDAO
+CountryDAO ..|> IDAO
+PasswordDAO ..|> IDAO
+ClientControllerFactory ..|> IFactory
+CardControllerFactory ..|> IFactory
+AddressControllerFactory ..|> IFactory
+
+ClientControllerFactory --> "1" ClientController : creates
+CardControllerFactory --> "1" CardController : creates
+AddressControllerFactory --> "1" AddressController : creates
+ClientControllerFactory --> "1" CardControllerFactory
+ClientControllerFactory --> "1" AddressControllerFactory
+
+ClientController --> "*" ClientListDTO
+ClientController --> "*" ClientDetailsDTO
+CardController --> "*" CardListDTO
+CardController --> "*" CardDetailsDTO
+CardController --> "*" CardFlagListDTO
+AddressController --> "*" AddressListDTO
+AddressController --> "*" AddressDetailsDTO
+
+@enduml

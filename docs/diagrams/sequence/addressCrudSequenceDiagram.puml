@@ -1,0 +1,251 @@
+@startuml Address CRUD Sequence Diagram - CozyShelf
+
+!theme plain
+skinparam backgroundColor white
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 20
+skinparam maxMessageSize 60
+skinparam sequenceParticipant underline
+skinparam dpi 300
+
+actor Client as "Cliente"
+participant Router as "Express Router"
+participant Controller as "AddressController"
+participant Service as "AddressService"
+participant AddressDAO as "AddressDAO"
+participant CountryDAO as "CountryDAO"
+participant ClientDAO as "ClientDAO"
+participant AddressDTO as "AddressDTO"
+participant Database as "PostgreSQL"
+
+== Criação de Endereço (CREATE) ==
+
+Client -> Router: POST /addresses
+activate Router
+Router -> Controller: create(req, res)
+activate Controller
+
+Controller -> Controller: Address.fromRequestData(body)
+Controller -> Service: create(clientId, address)
+activate Service
+
+Service -> ClientDAO: findById(clientId)
+activate ClientDAO
+ClientDAO -> Database: SELECT * FROM clients WHERE id = ?
+activate Database
+Database --> ClientDAO: ClientModel | null
+deactivate Database
+ClientDAO --> Service: ClientModel | null
+deactivate ClientDAO
+
+alt Cliente não encontrado
+    Service -> Controller: throw NoClientsFound(clientId)
+    Controller -> Router: res.status(404).json(error)
+    Router -> Client: 404 - Cliente não encontrado
+else Cliente encontrado
+    Service -> CountryDAO: findByAcronym(countryAcronym)
+    activate CountryDAO
+    CountryDAO -> Database: SELECT * FROM countries WHERE acronym = ?
+    activate Database
+    Database --> CountryDAO: CountryModel | null
+    deactivate Database
+    CountryDAO --> Service: CountryModel | null
+    deactivate CountryDAO
+
+    alt País não encontrado
+        Service -> Controller: throw CountryNotFound(acronym)
+        Controller -> Router: res.status(404).json(error)
+        Router -> Client: 404 - País não encontrado
+    else País encontrado
+        Service -> AddressDAO: save(addressModel)
+        activate AddressDAO
+        AddressDAO -> Database: INSERT INTO addresses (...)
+        activate Database
+        Database --> AddressDAO: AddressModel
+        deactivate Database
+        AddressDAO --> Service: AddressModel
+        deactivate AddressDAO
+
+        Service --> Controller: Address
+        deactivate Service
+
+        Controller -> Router: res.status(201).json(success)
+        Router -> Client: 201 - Endereço criado com sucesso
+    end
+end
+deactivate Controller
+deactivate Router
+
+== Consulta de Endereços por Cliente (READ ALL) ==
+
+Client -> Router: GET /clients/:id/addresses
+activate Router
+Router -> Controller: getAll(req, res)
+activate Controller
+
+Controller -> Service: getByClientId(clientId)
+activate Service
+
+Service -> AddressDAO: findByClientId(clientId)
+activate AddressDAO
+AddressDAO -> Database: SELECT * FROM addresses WHERE client_id = ?
+activate Database
+Database --> AddressDAO: AddressModel[]
+deactivate Database
+AddressDAO --> Service: AddressModel[]
+deactivate AddressDAO
+
+alt Nenhum endereço encontrado
+    Service -> Controller: return []
+    Controller -> AddressDTO: AddressListDTO.fromEntity([])
+    activate AddressDTO
+    AddressDTO --> Controller: AddressListDTO[]
+    deactivate AddressDTO
+    Controller -> Router: res.status(200).json(empty list)
+    Router -> Client: 200 - Lista vazia
+else Endereços encontrados
+    Service --> Controller: Address[]
+    deactivate Service
+
+    Controller -> AddressDTO: AddressListDTO.fromEntity(address)
+    activate AddressDTO
+    AddressDTO --> Controller: AddressListDTO[]
+    deactivate AddressDTO
+
+    Controller -> Router: res.status(200).json(addressListDTOs)
+    Router -> Client: 200 - Lista de endereços
+end
+deactivate Controller
+deactivate Router
+
+== Consulta de Endereço por ID (READ ONE) ==
+
+Client -> Router: GET /addresses/:id
+activate Router
+Router -> Controller: getById(req, res)
+activate Controller
+
+Controller -> Service: getById(id)
+activate Service
+
+Service -> AddressDAO: findById(id)
+activate AddressDAO
+AddressDAO -> Database: SELECT * FROM addresses WHERE id = ?
+activate Database
+Database --> AddressDAO: AddressModel | null
+deactivate Database
+AddressDAO --> Service: AddressModel | null
+deactivate AddressDAO
+
+alt Endereço não encontrado
+    Service -> Controller: throw AddressNotFound(id)
+    Controller -> Router: res.status(404).json(error)
+    Router -> Client: 404 - Endereço não encontrado
+else Endereço encontrado
+    Service --> Controller: Address
+    deactivate Service
+
+    Controller -> AddressDTO: AddressDetailsDTO.fromEntity(address)
+    activate AddressDTO
+    AddressDTO --> Controller: AddressDetailsDTO
+    deactivate AddressDTO
+
+    Controller -> Router: res.status(200).json(addressDetailsDTO)
+    Router -> Client: 200 - Dados do endereço
+end
+deactivate Controller
+deactivate Router
+
+== Atualização de Endereço (UPDATE) ==
+
+Client -> Router: PUT /addresses/:id
+activate Router
+Router -> Controller: update(req, res)
+activate Controller
+
+Controller -> Service: update(id, updateData)
+activate Service
+
+Service -> AddressDAO: findById(id)
+activate AddressDAO
+AddressDAO -> Database: SELECT * FROM addresses WHERE id = ?
+activate Database
+Database --> AddressDAO: AddressModel | null
+deactivate Database
+AddressDAO --> Service: AddressModel | null
+deactivate AddressDAO
+
+alt Endereço não encontrado
+    Service -> Controller: throw AddressNotFound(id)
+    Controller -> Router: res.status(404).json(error)
+    Router -> Client: 404 - Endereço não encontrado
+else Endereço encontrado
+    Service -> Service: existingAddress.toEntity()
+    Service -> Service: updatedEntity.updateData(updateData)
+    Service -> Service: existingAddress.updateFromEntity(updatedEntity)
+
+    Service -> AddressDAO: save(existingAddressModel)
+    activate AddressDAO
+    AddressDAO -> Database: UPDATE addresses SET ... WHERE id = ?
+    activate Database
+    Database --> AddressDAO: AddressModel
+    deactivate Database
+    AddressDAO --> Service: AddressModel
+    deactivate AddressDAO
+
+    Service --> Controller: Address
+    deactivate Service
+
+    Controller -> Router: res.status(200).json(success)
+    Router -> Client: 200 - Endereço atualizado com sucesso
+end
+deactivate Controller
+deactivate Router
+
+== Exclusão de Endereço (DELETE) ==
+
+Client -> Router: DELETE /addresses/:id
+activate Router
+Router -> Controller: delete(req, res)
+activate Controller
+
+Controller -> Service: delete(id)
+activate Service
+
+Service -> AddressDAO: findById(id)
+activate AddressDAO
+AddressDAO -> Database: SELECT * FROM addresses WHERE id = ?
+activate Database
+Database --> AddressDAO: AddressModel | null
+deactivate Database
+AddressDAO --> Service: AddressModel | null
+deactivate DAO
+
+alt Endereço não encontrado
+    Service -> Controller: throw AddressNotFound(id)
+    Controller -> Router: res.status(404).json(error)
+    Router -> Client: 404 - Endereço não encontrado
+else Endereço encontrado
+    Service -> Service: existingAddress.toEntity()
+    Service -> Service: updatedEntity.inactivate()
+    Service -> Service: existingAddress.updateFromEntity(updatedEntity, true)
+
+    Service -> AddressDAO: save(existingAddress)
+    activate AddressDAO
+    AddressDAO -> Database: UPDATE addresses SET isActive = false WHERE id = ?
+    activate Database
+    Database --> AddressDAO: AddressModel
+    deactivate Database
+    AddressDAO --> Service: AddressModel
+    deactivate AddressDAO
+
+    Service --> Controller: void
+    deactivate Service
+
+    Controller -> Router: res.status(200).json(success)
+    Router -> Client: 200 - Endereço removido com sucesso
+end
+deactivate Controller
+deactivate Router
+
+@enduml

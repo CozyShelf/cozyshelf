@@ -2,7 +2,7 @@ import { DataSource, Repository } from "typeorm";
 import IDAO from "../../../generic/dao/IDAO";
 import AddressModel from "../../model/AddressModel";
 
-export class AddressDAO implements IDAO<AddressModel> {
+export class 	AddressDAO implements IDAO<AddressModel> {
 	private repository: Repository<AddressModel>;
 
 	constructor(dataSource: DataSource) {

@@ -1,0 +1,97 @@
+@startuml CozyShelf Package Architecture
+title Arquitetura em Pacotes - CozyShelf CRUD System
+
+!define SPACING_FACTOR 0.5
+skinparam packageStyle rectangle
+skinparam minClassWidth 80
+skinparam nodesep 5
+skinparam ranksep 10
+skinparam padding 2
+skinparam componentStyle rectangle
+
+
+rectangle "Aplicação Web" #lightgreen {
+  package "br.cozyshelf.client.controller" {
+  }
+  package "br.cozyshelf.address.controller" {
+  }
+  package "br.cozyshelf.card.controller" {
+  }
+  package "br.cozyshelf.client.router" {
+  }
+}
+
+' Camada de Negócio
+rectangle "Camada de Negócio" #lightyellow {
+  package "br.cozyshelf.client.service" {
+    class ClientService
+  }
+  package "br.cozyshelf.address.service" {
+    class AddressService
+  }
+  package "br.cozyshelf.card.service" {
+    class CardService
+  }
+  package "br.cozyshelf.password.service" {
+    class PasswordService
+  }
+  package "br.cozyshelf.generic.factories" {
+    class ClientControllerFactory
+    class AddressControllerFactory
+    class CardControllerFactory
+  }
+}
+
+rectangle "Camada de Domínio" #lightcyan {
+  package "br.cozyshelf.client.domain" {
+    class Client
+  }
+  package "br.cozyshelf.address.domain" {
+    class Address
+  }
+  package "br.cozyshelf.card.domain" {
+    class CreditCard
+  }
+  package "br.cozyshelf.password.domain" {
+    class Password
+  }
+  package "br.cozyshelf.client.dto" {
+    class ClientListDTO
+    class ClientDetailsDTO
+  }
+}
+
+rectangle "Camada de Persistência" #lightblue {
+  package "br.cozyshelf.client.dao.typeORM" {
+    class ClientDAO
+  }
+  package "br.cozyshelf.address.dao.typeORM" {
+    class AddressDAO
+  }
+  package "br.cozyshelf.card.dao.typeORM" {
+    class CardDAO
+  }
+  package "br.cozyshelf.password.dao" {
+    class PasswordDAO
+  }
+  package "br.cozyshelf.client.model" {
+    class ClientModel
+  }
+  package "br.cozyshelf.address.model" {
+    class AddressModel
+  }
+  package "br.cozyshelf.card.model" {
+    class CreditCardModel
+  }
+}
+
+rectangle "Infraestrutura" #lightgray {
+  package "br.cozyshelf.generic.config.database" {
+    class postgresDataSource
+  }
+  package "br.cozyshelf.generic.dao" {
+    interface IDAO
+  }
+}
+
+@enduml

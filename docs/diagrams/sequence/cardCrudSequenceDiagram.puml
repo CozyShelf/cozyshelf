@@ -1,0 +1,348 @@
+@startuml Card CRUD Sequence Diagram - CozyShelf
+
+!theme plain
+skinparam backgroundColor white
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 20
+skinparam maxMessageSize 60
+skinparam sequenceParticipant underline
+skinparam dpi 300
+
+actor Client as "Cliente"
+participant Router as "Express Router"
+participant Controller as "CardController"
+participant Service as "CardService"
+participant CardDAO as "CardDAO"
+participant CardFlagDAO as "CardFlagDAO"
+participant ClientDAO as "ClientDAO"
+participant CardDTO as "CardDTO"
+participant Database as "PostgreSQL"
+
+== Criação de Cartão (CREATE) ==
+
+Client -> Router: POST /cards
+activate Router
+Router -> Controller: create(req, res)
+activate Controller
+
+Controller -> Controller: verifyRequestBody(req, res)
+Controller -> Controller: CreditCard.fromRequestData(body)
+Controller -> Service: create(clientId, card)
+activate Service
+
+Service -> ClientDAO: findById(clientId)
+activate ClientDAO
+ClientDAO -> Database: SELECT * FROM clients WHERE id = ?
+activate Database
+Database --> ClientDAO: ClientModel | null
+deactivate Database
+ClientDAO --> Service: ClientModel | null
+deactivate ClientDAO
+
+alt Cliente não encontrado
+    Service -> Controller: throw NoClientsFound(clientId)
+    Controller -> Router: res.status(404).json(error)
+    Router -> Client: 404 - Cliente não encontrado
+else Cliente encontrado
+    Service -> CardFlagDAO: getFlagByDescription(flagDescription)
+    activate CardFlagDAO
+    CardFlagDAO -> Database: SELECT * FROM card_flags WHERE description = ?
+    activate Database
+    Database --> CardFlagDAO: CardFlagModel | null
+    deactivate Database
+    CardFlagDAO --> Service: CardFlagModel | null
+    deactivate CardFlagDAO
+
+    alt Bandeira não encontrada
+        Service -> Controller: throw CardFlagNotFound(description)
+        Controller -> Router: res.status(404).json(error)
+        Router -> Client: 404 - Bandeira de cartão não encontrada
+    else Bandeira encontrada
+        Service -> CardDAO: findByCardNumber(cardNumber)
+        activate CardDAO
+        CardDAO -> Database: SELECT * FROM cards WHERE number = ?
+        activate Database
+        Database --> CardDAO: CreditCardModel | null
+        deactivate Database
+        CardDAO --> Service: CreditCardModel | null
+        deactivate CardDAO
+
+        alt Cartão já existe
+            Service -> Controller: throw CardAlreadyExists(cardNumber)
+            Controller -> Router: res.status(409).json(error)
+            Router -> Client: 409 - Cartão já cadastrado
+        else Cartão não existe
+            Service -> CardDAO: save(cardModel)
+            activate CardDAO
+            CardDAO -> Database: INSERT INTO cards (...)
+            activate Database
+            Database --> CardDAO: CreditCardModel
+            deactivate Database
+            CardDAO --> Service: CreditCardModel
+            deactivate CardDAO
+
+            Service --> Controller: CreditCard
+            deactivate Service
+
+            Controller -> Router: res.status(201).json(success)
+            Router -> Client: 201 - Cartão criado com sucesso
+        end
+    end
+end
+deactivate Controller
+deactivate Router
+
+== Consulta de Bandeiras de Cartão (READ FLAGS) ==
+
+Client -> Router: GET /cards/flags
+activate Router
+Router -> Controller: getAllFlags(req, res)
+activate Controller
+
+Controller -> Service: getAllFlags()
+activate Service
+
+Service -> CardFlagDAO: getAll()
+activate CardFlagDAO
+CardFlagDAO -> Database: SELECT * FROM card_flags WHERE isActive = true
+activate Database
+Database --> CardFlagDAO: CardFlagModel[]
+deactivate Database
+CardFlagDAO --> Service: CardFlagModel[]
+deactivate CardFlagDAO
+
+Service --> Controller: CardFlag[]
+deactivate Service
+
+Controller -> CardDTO: CardFlagListDTO.fromEntity(flag)
+activate CardDTO
+CardDTO --> Controller: CardFlagListDTO[]
+deactivate CardDTO
+
+Controller -> Router: res.status(200).json(flagListDTOs)
+Router -> Client: 200 - Lista de bandeiras
+deactivate Controller
+deactivate Router
+
+== Consulta de Cartões por Cliente (READ BY CLIENT) ==
+
+Client -> Router: GET /clients/:clientId/cards
+activate Router
+Router -> Controller: getByClientId(req, res)
+activate Controller
+
+Controller -> Service: getByClientId(clientId)
+activate Service
+
+Service -> CardDAO: findByClientId(clientId)
+activate CardDAO
+CardDAO -> Database: SELECT * FROM cards WHERE client_id = ?
+activate Database
+Database --> CardDAO: CreditCardModel[]
+deactivate Database
+CardDAO --> Service: CreditCardModel[]
+deactivate CardDAO
+
+alt Nenhum cartão encontrado
+    Service -> Controller: return []
+    Controller -> CardDTO: CardListDTO.fromEntity([])
+    activate CardDTO
+    CardDTO --> Controller: CardListDTO[]
+    deactivate CardDTO
+    Controller -> Router: res.status(200).json(empty list)
+    Router -> Client: 200 - Lista vazia
+else Cartões encontrados
+    Service --> Controller: CreditCard[]
+    deactivate Service
+
+    Controller -> CardDTO: CardListDTO.fromEntity(card)
+    activate CardDTO
+    CardDTO --> Controller: CardListDTO[]
+    deactivate CardDTO
+
+    Controller -> Router: res.status(200).json(cardListDTOs)
+    Router -> Client: 200 - Lista de cartões
+end
+deactivate Controller
+deactivate Router
+
+== Consulta de Cartão por ID (READ ONE) ==
+
+Client -> Router: GET /cards/:id
+activate Router
+Router -> Controller: getById(req, res)
+activate Controller
+
+Controller -> Service: getById(id)
+activate Service
+
+Service -> CardDAO: findById(id)
+activate CardDAO
+CardDAO -> Database: SELECT * FROM cards WHERE id = ?
+activate Database
+Database --> CardDAO: CreditCardModel | null
+deactivate Database
+CardDAO --> Service: CreditCardModel | null
+deactivate CardDAO
+
+alt Cartão não encontrado
+    Service -> Controller: throw CardNotFound(id)
+    Controller -> Router: res.status(404).json(error)
+    Router -> Client: 404 - Cartão não encontrado
+else Cartão encontrado
+    Service --> Controller: CreditCard
+    deactivate Service
+
+    Controller -> CardDTO: CardDetailsDTO.fromEntity(card)
+    activate CardDTO
+    CardDTO --> Controller: CardDetailsDTO
+    deactivate CardDTO
+
+    Controller -> Router: res.status(200).json(cardDetailsDTO)
+    Router -> Client: 200 - Dados do cartão
+end
+deactivate Controller
+deactivate Router
+
+== Atualização de Cartão (UPDATE) ==
+
+Client -> Router: PUT /cards/:id
+activate Router
+Router -> Controller: update(req, res)
+activate Controller
+
+Controller -> Controller: verifyRequestBody(req, res)
+Controller -> Service: update(id, updateData)
+activate Service
+
+Service -> CardDAO: findById(id)
+activate CardDAO
+CardDAO -> Database: SELECT * FROM cards WHERE id = ?
+activate Database
+Database --> CardDAO: CreditCardModel | null
+deactivate Database
+CardDAO --> Service: CreditCardModel | null
+deactivate CardDAO
+
+alt Cartão não encontrado
+    Service -> Controller: throw CardNotFound(id)
+    Controller -> Router: res.status(404).json(error)
+    Router -> Client: 404 - Cartão não encontrado
+else Cartão encontrado
+    Service -> Service: existingCard.toEntity()
+    Service -> Service: updatedEntity.updateData(updateData)
+    Service -> Service: existingCard.updateFromEntity(updatedEntity)
+
+    Service -> CardDAO: save(existingCardModel)
+    activate CardDAO
+    CardDAO -> Database: UPDATE cards SET ... WHERE id = ?
+    activate Database
+    Database --> CardDAO: CreditCardModel
+    deactivate Database
+    CardDAO --> Service: CreditCardModel
+    deactivate CardDAO
+
+    Service --> Controller: CreditCard
+    deactivate Service
+
+    Controller -> Router: res.status(200).json(success)
+    Router -> Client: 200 - Cartão atualizado com sucesso
+end
+deactivate Controller
+deactivate Router
+
+== Exclusão de Cartão (DELETE) ==
+
+Client -> Router: DELETE /cards/:id
+activate Router
+Router -> Controller: delete(req, res)
+activate Controller
+
+alt ID inválido ou vazio
+    Controller -> Router: res.status(400).json(error)
+    Router -> Client: 400 - ID obrigatório
+else ID válido
+    Controller -> Service: delete(id)
+    activate Service
+
+    Service -> CardDAO: findById(id)
+    activate CardDAO
+    CardDAO -> Database: SELECT * FROM cards WHERE id = ?
+    activate Database
+    Database --> CardDAO: CreditCardModel | null
+    deactivate Database
+    CardDAO --> Service: CreditCardModel | null
+    deactivate CardDAO
+
+    alt Cartão não encontrado
+        Service -> Controller: throw CardNotFound(id)
+        Controller -> Router: res.status(404).json(error)
+        Router -> Client: 404 - Cartão não encontrado
+    else Cartão encontrado
+        Service -> Service: existingCard.toEntity()
+        Service -> Service: updatedEntity.inactivate()
+        Service -> Service: existingCard.updateFromEntity(updatedEntity, true)
+
+        Service -> CardDAO: save(existingCard)
+        activate CardDAO
+        CardDAO -> Database: UPDATE cards SET isActive = false WHERE id = ?
+        activate Database
+        Database --> CardDAO: CreditCardModel
+        deactivate Database
+        CardDAO --> Service: CreditCardModel
+        deactivate CardDAO
+
+        Service --> Controller: void
+        deactivate Service
+
+        Controller -> Router: res.status(200).json(success)
+        Router -> Client: 200 - Cartão removido com sucesso
+    end
+end
+deactivate Controller
+deactivate Router
+
+== Definir Cartão como Preferido (SET AS PREFERRED) ==
+
+Client -> Router: PUT /cards/:id/set-preferred
+activate Router
+Router -> Controller: setAsPreferred(req, res)
+activate Controller
+
+Controller -> Service: setAsPreferred(cardId, clientId)
+activate Service
+
+Service -> CardDAO: findById(cardId)
+activate CardDAO
+CardDAO -> Database: SELECT * FROM cards WHERE id = ?
+activate Database
+Database --> CardDAO: CreditCardModel | null
+deactivate Database
+CardDAO --> Service: CreditCardModel | null
+deactivate CardDAO
+
+alt Cartão não encontrado
+    Service -> Controller: throw CardNotFound(cardId)
+    Controller -> Router: res.status(404).json(error)
+    Router -> Client: 404 - Cartão não encontrado
+else Cartão encontrado
+    Service -> CardDAO: findByClientId(clientId)
+    activate CardDAO
+    CardDAO -> Database: UPDATE cards SET isPreferred = false WHERE client_id = ?
+    CardDAO -> Database: UPDATE cards SET isPreferred = true WHERE id = ?
+    activate Database
+    Database --> CardDAO: void
+    deactivate Database
+    CardDAO --> Service: void
+    deactivate CardDAO
+
+    Service --> Controller: void
+    deactivate Service
+
+    Controller -> Router: res.status(200).json(success)
+    Router -> Client: 200 - Cartão definido como preferido
+end
+deactivate Controller
+deactivate Router
+
+@enduml
