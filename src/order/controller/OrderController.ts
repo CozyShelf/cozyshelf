@@ -79,7 +79,7 @@ export default class OrderController {
 		}
 	}
 
-	public async renderOrdersTable(req: Request, res: Response): Promise<void> {
+	public async renderOrdersTable(_: Request, res: Response): Promise<void> {
 		try {
 			const orders = await this.service.getAll();
 			res.render("ordersTable", {
@@ -95,7 +95,7 @@ export default class OrderController {
 		}
 	}
 
-	public async renderAdminOrdersTable(req: Request, res: Response): Promise<void> {
+	public async renderAdminOrdersTable(_: Request, res: Response): Promise<void> {
 		try {
 			const orders = await this.service.getAll();
 			res.render("ordersTable", {

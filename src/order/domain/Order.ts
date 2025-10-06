@@ -166,7 +166,6 @@ export default class Order extends DomainEntity {
             data.coupons?.exchange || []
         );
 
-        console.log("order controller: ", order);
         return order;
     }
 }

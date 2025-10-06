@@ -54,4 +54,11 @@ export default class CartDAO implements IDAO<CartItemModel> {
 	async delete(id: string): Promise<void> {
 		await this.repository.update(id, { isActive: false });
 	}
+
+	async deleteAllByClientID(clientID: string): Promise<void> {
+		await this.repository.update(
+			{ client: { id: clientID }, isActive: true },
+			{ isActive: false }
+		);
+	}
 }

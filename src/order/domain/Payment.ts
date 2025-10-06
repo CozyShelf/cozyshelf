@@ -23,7 +23,6 @@ export default class Payment extends DomainEntity{
     }
 
     static fromRequestData(data: any): Payment {
-        console.log("payment controller: ", data);
         const payment = new Payment(
             data.totalAmount,
             data.cards.map((cardData: any) => PaymentCard.fromRequestData(cardData))

@@ -1,16 +1,22 @@
+import CartService from "../../cart/service/CartService";
 import OrderDAO from "../dao/typeORM/OrderDAO";
 import Order from "../domain/Order";
 import OrderModel from "../model/OrderModel";
 
 export class OrderService {
     constructor(
-        private readonly orderDAO: OrderDAO
+        private readonly orderDAO: OrderDAO,
+        private readonly cartService: CartService
     ) {}
 
     public async create(order: Order): Promise<Order> {
         const orderModel = OrderModel.fromEntity(order);
         const createdOrderModel = await this.orderDAO.save(orderModel);
-        return createdOrderModel.toEntity();
+        const createdOrder = createdOrderModel.toEntity();
+
+        this.cartService.clearCart(createdOrder.clientId);
+        
+        return createdOrder;
     }
 
     public async getById(id: string): Promise<Order | null> {

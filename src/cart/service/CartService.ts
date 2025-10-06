@@ -150,4 +150,22 @@ export default class CartService {
 
 		await this.dao.delete(itemId);
 	}
+
+	public async clearCart(clientID: string): Promise<void> {
+		const cartItems = await this.dao.findAllByClientID(clientID);
+		if (!cartItems || cartItems.length === 0) {
+			return;
+		}
+
+		for (const cartItem of cartItems) {
+			if (cartItem.isActive) {
+				await this.bookService.increaseBookStock(
+					cartItem.book.id,
+					cartItem.quantity
+				);
+			}
+		}
+
+		await this.dao.deleteAllByClientID(clientID);
+	}
 }

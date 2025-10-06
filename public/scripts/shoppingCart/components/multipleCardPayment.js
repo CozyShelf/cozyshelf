@@ -258,19 +258,21 @@ document.addEventListener("DOMContentLoaded", function () {
 			return;
 		}
 
-		// Validação para soma total dos cartões
+		// CORREÇÃO: Validação para soma total dos cartões - permitir exatamente o total
 		const otherCardsTotal = selectedCards.reduce((sum, card, i) => {
 			return i === index ? sum : sum + parseFloat(card.amount || 0);
 		}, 0);
-
-		if (otherCardsTotal + parsedAmount > totalAmount) {
+		const newTotal = otherCardsTotal + parsedAmount;
+		
+		// Usar uma margem de tolerância para problemas de precisão decimal
+		const tolerance = 0.001;
+		
+		if (newTotal > (totalAmount + tolerance)) {
 			const maxAllowed = totalAmount - otherCardsTotal;
 			Swal.fire({
-				icon: "warning",
+				icon: "warning", 
 				title: "Valor excede o total",
-				text: `A soma dos valores dos cartões não pode exceder o total do pedido. Valor máximo permitido para este cartão: R$ ${maxAllowed
-					.toFixed(2)
-					.replace(".", ",")}`,
+				text: `A soma dos valores dos cartões não pode exceder o total do pedido. Valor máximo permitido para este cartão: R$ ${maxAllowed.toFixed(2).replace(".", ",")}`,
 				confirmButtonColor: "#8B4513",
 			});
 
