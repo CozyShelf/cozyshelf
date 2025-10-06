@@ -1,9 +1,10 @@
 <div class="flex flex-col w-full gap-10 mt-9 mb-15 px-32">
 	<div class="flex justify-between align-middle">
-		<h1 class="font-semibold text-[20px]">Estoque (6)</h1>
+		<h1 class="font-semibold text-[20px]">Estoque (<%= books.length %>)</h1>
 		<div class="flex items-center gap-2">
 			<h1 class="text-gray">Filtrar: </h1>
-            <select class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown">
+			<select
+				class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown">
 				<option value="all">Todos</option>
 				<option value="approved">Fora de Mercado</option>
 				<option value="inTransport">Ativos</option>
@@ -22,16 +23,24 @@
 		<tbody class="divide-y divide-light-brown text-sm text-gray-2 bg-lighter-brown justify-centers">
 			<% books.forEach(function(book) { %>
 				<tr>
-					<td class="px-6 py-3 font-medium text-gray-2"><%= book.id %></td>
+					<td class="px-6 py-3 font-medium text-gray-2">
+						<%= book.id %>
+					</td>
 					<td class="px-6 py-3 flex items-center gap-2">
-						<img src="<%= book.coverPath %>" alt="Capa de <%= book.title %>" class="w-8 h-12 object-cover rounded shadow" />
-						<span><%= book.name %></span>
+						<img src="<%= book.coverPath %>" alt="Capa de <%= book.name %>"
+							class="w-8 h-12 object-cover rounded shadow" />
+						<span>
+							<%= book.name %>
+						</span>
 					</td>
 					<td class="px-6 py-3">
 						<div class="flex items-center gap-2 w-28 ">
-							<button type="button" class="px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-3" title="Diminuir quantidade">-</button>
-							<input type="text" value="<%= book.quantity || 1 %>" class="w-8 text-center border rounded text-[12px] bg-white" readonly>
-							<button type="button" class="px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-3" title="Aumentar quantidade">+</button>
+							<button type="button" class="px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-3"
+								title="Diminuir quantidade">-</button>
+							<input type="text" value="<%= book.stockQuantity || 0 %>"
+								class="w-8 text-center border rounded text-[12px] bg-white" readonly>
+							<button type="button" class="px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-3"
+								title="Aumentar quantidade">+</button>
 						</div>
 					</td>
 					<td class="px-6 py-3 flex flex-row justify-center items-center">
@@ -40,8 +49,8 @@
 						</button>
 					</td>
 				</tr>
-			<% }); %>
+				<% }); %>
 		</tbody>
 	</table>
 </div>
-<script src="/scripts/deleteSubmit.mjs"></script>
+<script type="module" src="/scripts/generic/delete/deleteFormSubmit.mjs"></script>

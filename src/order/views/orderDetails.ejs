@@ -63,7 +63,7 @@
                                 <h2 class="font-semibold text-[14px]"><%= book.name %></h2>
                                 <div class="flex items-center justify-between gap-15">
                                         <p class="text-gray-dark text-[12px]">Quantidade: 1</p>
-                                        <p class="font-semibold text-brown text-[14px]">R$ <%= book.price.toFixed(2).replace('.', ',') %></p>
+                                        <p class="font-semibold text-brown text-[14px]"><%= book.formattedPrice || `R$ ${book.price.toFixed(2).replace('.', ',')}` %></p>
                                 </div>
                             </div>
                         </div>
