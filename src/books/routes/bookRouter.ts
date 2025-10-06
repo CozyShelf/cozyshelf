@@ -10,24 +10,12 @@ bookRouter.use(
 
 const controller = new BookControllerFactory().make();
 
-bookRouter.get("/", async (req: Request, res: Response) => {
-	const books = await controller.getAll(req, res);
-
-	res.render("listAllBooks", {
-		title: "Explore nosso catálogo",
-		currentHeaderTab: "books",
-		books,
-	});
-});
+bookRouter.get("/", async (req: Request, res: Response) =>
+	controller.renderAllBooksWithPagination(req, res)
+);
 
 bookRouter.get("/:id", async (req: Request, res: Response) => {
-	const book = await controller.getById(req, res);
-
-	res.render("bookDetails", {
-		title: `Detalhes do livro - ${book.name}`,
-		currentHeaderTab: "books",
-		book,
-	});
+	controller.renderBookDetails(req, res)
 });
 
 export default bookRouter;

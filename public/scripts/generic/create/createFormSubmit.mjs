@@ -8,7 +8,8 @@
 export async function submitCreationForm(
 	createPath,
 	requestBody,
-	redirectPath
+	redirectPath,
+	withRedirect = false
 ) {
 	try {
 		const response = await fetch(createPath, {
@@ -19,7 +20,19 @@ export async function submitCreationForm(
 			body: JSON.stringify(requestBody),
 		});
 
-		const result = await response.json();
+		// Verifica se a resposta tem conteúdo JSON válido
+		const contentType = response.headers.get("content-type");
+		let result;
+
+		if (contentType && contentType.includes("application/json")) {
+			result = await response.json();
+		} else {
+			// Se não é JSON, trata como erro (provavelmente HTML de erro 404/500)
+			const errorText = await response.text();
+			throw new Error(
+				`Rota não implementada ou erro no servidor (${response.status}): ${createPath}`
+			);
+		}
 
 		if (response.ok) {
 			Swal.fire({
@@ -37,7 +50,9 @@ export async function submitCreationForm(
 					}
 				},
 			}).then((result) => {
-				if (result.isConfirmed) window.location.href = redirectPath;
+				if (withRedirect) {
+					if (result.isConfirmed) window.location.href = redirectPath;
+				}
 			});
 		} else {
 			throw new Error(result.message || "Erro no servidor");
