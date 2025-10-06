@@ -23,7 +23,7 @@ export default class CardController {
 
 			const card = CreditCard.fromRequestData(body);
 			const createdCard = await this.service.create(clientId, card);
-			
+
 			res.status(201).json({
 				message: `Cartão ${createdCard.cardFlag.description} criado com sucesso para o cliente de id: ${clientId}!`,
 				cardId: createdCard.id,
@@ -150,6 +150,7 @@ export default class CardController {
 			currentUrl: "card",
 			isAdmin: false,
 			card: CardDetailsDTO.fromEntity(cardEntity),
+			withTitle: true
 		});
 	}
 
@@ -161,6 +162,7 @@ export default class CardController {
 			currentUrl: "card",
 			isAdmin: false,
 			card: null,
+			withTitle: true
 		});
 	}
 
