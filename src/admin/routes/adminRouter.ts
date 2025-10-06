@@ -3,6 +3,7 @@ import { BookControllerFactory } from "../../books/factories/BookControllerFacto
 import ConfigDynamicPaths from "../../generic/helpers/ConfigDynamicPaths";
 import path from "path";
 import { ClientControllerFactory } from "../../client/factories/ClientControllerFactory";
+import { OrderControllerFactory } from "../../order/factory/OrderControllerFactory";
 
 // TODO: Criar routers de admin especificos para cada entidade e alterar admin router (e.g. defaultAPIRouter.ts);
 
@@ -17,15 +18,10 @@ adminRouter.use(
 
 const bookController = new BookControllerFactory().make();
 const clientController = new ClientControllerFactory().make();
+const ordersController = new OrderControllerFactory().make();
 
 adminRouter.get("/orders", (_: Request, res: Response) => {
-	res.render("ordersTable", {
-		title: "Pedidos",
-		currentHeaderTab: "profile",
-		layout: "defaultLayoutAdmin",
-		currentUrl: "orders",
-		isAdmin: true,
-	});
+	ordersController.renderAdminOrdersTable(_, res);
 });
 
 adminRouter.get("/orders/exchange-orders", (_: Request, res: Response) => {
@@ -39,7 +35,7 @@ adminRouter.get("/orders/exchange-orders", (_: Request, res: Response) => {
 });
 
 adminRouter.get("/orders/:id", async (req: Request, res: Response) => {
-	await bookController.renderBooksForOrderDetails(req, res);
+	await ordersController.renderAdminOrderDetails(req, res);
 });
 
 adminRouter.get("/stock", async (req: Request, res: Response) => {

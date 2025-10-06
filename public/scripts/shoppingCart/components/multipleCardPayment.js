@@ -100,6 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				card.lastDigits
 			}</span>
 				</div>
+				<input type="hidden" name="cardUuid" value="${card.id}">
 				<div class="flex items-center gap-2">
 					<label class="text-[11px] text-gray-600">R$</label>
 					<input type="number"

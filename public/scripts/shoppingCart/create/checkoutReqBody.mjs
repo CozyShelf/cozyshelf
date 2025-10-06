@@ -32,6 +32,7 @@ export function buildCheckoutReqBody(form) {
 		},
 		coupons: appliedCoupons,
 		payment: paymentMethods,
+		clientId: "f4a4ecf2-e31e-41b2-8c9f-a36898e23d81",
 		metadata: {
 			timestamp: new Date().toISOString(),
 			sessionId: generateSessionId(),
@@ -105,7 +106,7 @@ function collectCartItems() {
 				itemId: itemId,
 				quantity: quantity,
 				unitPrice: unitPrice,
-				subtotal: subtotal,
+				subTotal: subtotal,
 			};
 
 			cartItems.push(item);
@@ -183,7 +184,7 @@ function collectPaymentMethods() {
 	if (selectedCardsContainer) {
 		// Busca pelos inputs hidden que contêm os IDs dos cartões
 		const cardIdInputs = selectedCardsContainer.querySelectorAll(
-			'input[name*="selectedCards"][name*="[id]"]'
+			'input[type="hidden"][name="cardUuid"]'
 		);
 
 		cardIdInputs.forEach((cardIdInput, index) => {
@@ -233,37 +234,55 @@ function collectPaymentMethods() {
 /**
  * Coleta os totais calculados
  */
+// ...existing code...
 function collectTotals() {
-	const totals = {
-		itemsSubtotal: 0,
-		freight: 0,
-		discount: 0,
-		finalTotal: 0,
-	};
+    const totals = {
+        itemsSubtotal: 0,
+        freight: 0,
+        discount: 0,
+        finalTotal: 0,
+    };
 
-	// Subtotal dos itens
-	const itemsSubtotalElement = document.getElementById("items-subtotal");
-	if (itemsSubtotalElement) {
-		totals.itemsSubtotal = parseMoneyValue(itemsSubtotalElement.textContent);
-	}
+    // Subtotal dos itens
+    const itemsSubtotalElement = document.getElementById("items-subtotal");
+    if (itemsSubtotalElement) {
+        totals.itemsSubtotal = parseMoneyValue(itemsSubtotalElement.textContent);
+    }
 
-	// Frete (valor fixo por enquanto)
-	totals.freight = 10.0; // Pode ser dinâmico no futuro
+    // Frete (valor fixo por enquanto)
+    totals.freight = 10.0; // Pode ser dinâmico no futuro
 
-	// Desconto (calculado pelos cupons)
-	const discountElement = document.querySelector("[data-discount-amount]");
-	if (discountElement) {
-		totals.discount = parseFloat(discountElement.dataset.discountAmount) || 0;
-	}
+    // Desconto - buscar pelo texto do desconto de cupons
+    const discountElements = document.querySelectorAll("p.text-green-600");
+    discountElements.forEach((element) => {
+        if (element.textContent.includes("- R$")) {
+            // Captura o valor do desconto (remove o "- R$" e converte)
+            const discountValue = parseMoneyValue(element.textContent.replace("-", ""));
+            totals.discount += discountValue;
+        }
+    });
 
-	// Total final
-	const totalElement = document.getElementById("total-display");
-	if (totalElement) {
-		totals.finalTotal = parseMoneyValue(totalElement.textContent);
-	}
+    // Alternativa: buscar pelo elemento pai que contém "Descontos de cupons"
+    const discountSection = Array.from(document.querySelectorAll("h2")).find(h2 => 
+        h2.textContent.includes("Descontos de cupons")
+    );
+    
+    if (discountSection && totals.discount === 0) {
+        const discountValueElement = discountSection.parentElement.querySelector("p.text-green-600");
+        if (discountValueElement) {
+            totals.discount = parseMoneyValue(discountValueElement.textContent.replace("-", ""));
+        }
+    }
 
-	return totals;
+    // Total final
+    const totalElement = document.getElementById("total-display");
+    if (totalElement) {
+        totals.finalTotal = parseMoneyValue(totalElement.textContent);
+    }
+
+    return totals;
 }
+// ...existing code...
 
 /**
  * Utilitário para converter valores monetários
