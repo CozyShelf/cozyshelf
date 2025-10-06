@@ -4,7 +4,6 @@ import CategoryModel from "../../../../../books/model/CategoryModel";
 import PublisherModel from "../../../../../books/model/PublisherModel";
 import AuthorModel from "../../../../../books/model/AuthorModel";
 import PricingGroupModel from "../../../../../books/model/PricingGroupModel";
-import ImagesModel from "../../../../model/ImagesModel";
 import books from "./books";
 
 export default class BookSeeder {
@@ -14,27 +13,23 @@ export default class BookSeeder {
 		const publisherDao = dataSource.getRepository(PublisherModel);
 		const authorDao = dataSource.getRepository(AuthorModel);
 		const pricingGroupDao = dataSource.getRepository(PricingGroupModel);
-		const imagesDao = dataSource.getRepository(ImagesModel);
 
 		for (const book of books) {
 			let author = await authorDao.findOneBy(book.author);
 			if (!author) {
-				author = authorDao.create(book.author);
-				await authorDao.save(author);
+				author = new AuthorModel(book.author._name);
 			}
 
 			let publisher = await publisherDao.findOneBy(book.publisher);
 			if (!publisher) {
-				publisher = publisherDao.create(book.publisher);
-				await publisherDao.save(publisher);
+				publisher = new PublisherModel(book.publisher._description);
 			}
 
 			const categories: CategoryModel[] = [];
 			for (const catName of book.categories) {
 				let category = await categoryDao.findOneBy({ _description: catName });
 				if (!category) {
-					category = categoryDao.create({ _description: catName });
-					await categoryDao.save(category);
+					category = new CategoryModel(catName);
 				}
 				categories.push(category);
 			}
@@ -43,38 +38,32 @@ export default class BookSeeder {
 				_description: "default",
 			});
 			if (!pricingGroup) {
-				pricingGroup = pricingGroupDao.create({
-					_description: "default",
-					_percentage: 0,
-				});
-				await pricingGroupDao.save(pricingGroup);
+				pricingGroup = new PricingGroupModel("default", 0);
 			}
 
-			const image = imagesDao.create({ path: book.coverPath });
-			await imagesDao.save(image);
-
-			const bookEntity = bookDao.create({
-				saleValue: book.price,
-				title: book.name,
-				synopsis: book.resume,
-				isbn: book.isbn,
-				pageNumber: book.numberOfPages,
-				year: book.year,
-				edition: book.edition,
-				height: book.height,
-				width: book.width,
-				weight: book.weight,
-				depth: book.thickness,
-				barCode: book.barCode,
-				justificationInitiation: book.inactivationCause,
-				justificationActivation: book.activationCause,
+			const bookEntity = new BookModel(
+				Number(book.price),
+				book.name,
+				book.resume,
+				book.isbn,
+				book.numberOfPages,
+				book.year,
+				book.edition,
+				book.height,
+				book.width,
+				book.weight,
+				book.thickness,
+				book.barCode,
+				book.inactivationCause,
+				book.activationCause,
 				categories,
 				author,
 				publisher,
 				pricingGroup,
-				status: BookStatus.ACTIVE,
-				images: [image],
-			});
+				BookStatus.ACTIVE,
+				book.coverPath,
+				(book as any).stockQuantity || Math.floor(Math.random() * 50) + 5 // Quantidade aleatória entre 5 e 54
+			);
 
 			await bookDao.save(bookEntity);
 		}

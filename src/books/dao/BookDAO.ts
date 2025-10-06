@@ -1,51 +1,21 @@
 import IDAO from "../../generic/dao/IDAO";
-import Book from "../domain/Book";
-import path from "path";
-import fs from "fs";
+import { DataSource, Repository } from "typeorm";
+import BookModel from "../model/BookModel";
 
-export default class BookDAO implements IDAO<Book> {
-	save(entity: Book): Promise<Book> {
-		throw new Error("Method not implemented.");
+export default class BookDAO implements IDAO<BookModel> {
+	private repository: Repository<BookModel>;
+
+	public constructor(dataSource: DataSource) {
+		this.repository = dataSource.getRepository(BookModel);
 	}
 
-	async findAll(): Promise<Book[] | null> {
-    try {
-			const jsonFilePath = path.join(__dirname, "/books.json");
+	async save(entity: BookModel): Promise<BookModel> {
+		return await this.repository.save(entity);
+	}
 
-      if (!fs.existsSync(jsonFilePath)) {
-        console.error(`Arquivo não encontrado: ${jsonFilePath}`);
-        return null;
-      }
-
-      const jsonData = JSON.parse(fs.readFileSync(jsonFilePath, "utf-8"));
-
-      if (!Array.isArray(jsonData)) {
-        console.error("JSON não contém um array de livros");
-        return null;
-      }
-
-      if (jsonData.length === 0) {
-        return [];
-      }
-
-      const books: Book[] = [];
-
-      for (const data of jsonData) {
-        try {
-          const book = Book.fromJSON(data);
-          books.push(book);
-        } catch (error) {
-          console.warn(`Erro ao processar livro com ID ${data.id || 'desconhecido'}:`, error);
-        }
-      }
-
-      return books;
-
-    } catch (error) {
-      console.error("Erro ao ler arquivo de livros:", error);
-      return null;
-    }
-  }
+	async findAll(): Promise<BookModel[] | null> {
+		return this.repository.findBy({ isActive: true });
+	}
 
 	async findAllWithPagination(limit: number, offset: number) {
 		const books = await this.findAll();
@@ -57,13 +27,11 @@ export default class BookDAO implements IDAO<Book> {
 		return books.slice(offset, offset + limit);
 	}
 
-	findById(id: number): Promise<Book | null> {
-		return this.findAll().then((books) => {
-			return books?.find((book) => book.id === id) || null;
-		});
+	findById(id: string): Promise<BookModel | null> {
+		return this.repository.findOneBy({ id, isActive: true });
 	}
 
-	delete(id: number): Promise<void> {
+	delete(id: string): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
 }

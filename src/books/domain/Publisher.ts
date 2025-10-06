@@ -1,15 +1,18 @@
-export default class Publisher{
-    _description!: string;
+import DomainEntity from "../../generic/domain/DomainEntity";
 
-    constructor(description: string){
-        this._description = description;
-    }
+export default class Publisher extends DomainEntity {
+	_description!: string;
 
-    get description(): string {
-        return this._description;
-    }
+	constructor(description: string) {
+		super();
+		this._description = description;
+	}
 
-    set description(value: string){
-        this._description = value;
-    }
+	get description(): string {
+		return this._description;
+	}
+
+	set description(value: string) {
+		this._description = value;
+	}
 }

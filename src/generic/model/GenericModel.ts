@@ -4,7 +4,6 @@ import {
 	Generated,
 	PrimaryGeneratedColumn,
 } from "typeorm";
-import Entity from "../domain/DomainEntity";
 
 export default abstract class GenericModel {
 	@PrimaryGeneratedColumn("uuid")
@@ -16,6 +15,4 @@ export default abstract class GenericModel {
 
 	@Column({ type: "boolean" })
 	isActive: boolean = true;
-
-	abstract toEntity(): Entity;
 }
