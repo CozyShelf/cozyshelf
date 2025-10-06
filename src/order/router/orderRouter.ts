@@ -16,21 +16,12 @@ orderRouter.get("/", (req: Request, res: Response) => {
 		currentHeaderTab: "profile",
 		layout: "detailsLayout",
 		currentUrl: "orders",
-		isAdmin: false
+		isAdmin: false,
 	});
 });
 
 orderRouter.get("/:id", async (req: Request, res: Response) => {
-	const books = await bookController.getAll(req, res);
-	res.render("orderDetails", {
-		title: "Detalhes do Pedido",
-		currentHeaderTab: "profile",
-		layout: "detailsLayout",
-		isNewOrder: false,
-		books: books,
-		currentUrl: "orders",
-		isAdmin: false
-	});
+	await bookController.renderBooksForOrderDetails(req, res);
 });
 
 export default orderRouter;

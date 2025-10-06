@@ -39,57 +39,15 @@ adminRouter.get("/orders/exchange-orders", (_: Request, res: Response) => {
 });
 
 adminRouter.get("/orders/:id", async (req: Request, res: Response) => {
-	const books = await bookController.getAll(req, res);
-	res.render("orderDetails", {
-		title: "Detalhes do Pedido",
-		currentHeaderTab: "profile",
-		layout: "defaultLayoutAdmin",
-		isNewOrder: false,
-		books,
-		currentUrl: "orders",
-		isAdmin: true,
-	});
+	await bookController.renderBooksForOrderDetails(req, res);
 });
 
 adminRouter.get("/stock", async (req: Request, res: Response) => {
-	const books = await bookController.getAll(req, res);
-
-	res.render("stockTable", {
-		title: "Estoque",
-		currentHeaderTab: "profile",
-		layout: "defaultLayoutAdmin",
-		currentUrl: "stock",
-		isAdmin: true,
-		books,
-	});
+	await bookController.renderBooksForStock(req, res);
 });
 
 adminRouter.get("/dashboard", async (req: Request, res: Response) => {
-	const books = await bookController.getAll(req, res);
-
-	const labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
-
-	const salesHistory = (books ?? []).map((book: any) => {
-		const sales = labels.map(() => Math.floor(Math.random() * 50) + 10);
-		return {
-			label: book.name,
-			data: sales,
-			fill: false,
-			borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-			tension: 0.3,
-		};
-	});
-
-	res.render("dashboard", {
-		title: "Dashboard - Grafico de linha de vendas",
-		currentHeaderTab: "profile",
-		layout: "defaultLayoutAdmin",
-		currentUrl: "dashboard",
-		isAdmin: true,
-		books,
-		labels,
-		salesHistory,
-	});
+	await bookController.renderBooksForDashboard(req, res);
 });
 
 adminRouter.get("/clients", async (req: Request, res: Response) => {
