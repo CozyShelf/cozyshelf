@@ -1,17 +1,19 @@
 <div class="relative flex flex-col gap-10 justify-center items-center mt-10 mb-10">
-	<%- include("headers/pageHeader.ejs", {pageTitle: "Livros"}) %>
+	<%- include("headers/pageHeader.ejs", {pageTitle: "Livros" }) %>
 
-	<%- include("books/bookList.ejs", { books }) %>
+		<%- include("books/bookList.ejs", { books }) %>
 
-	<div class="flex flex-row gap-10 items-center">
-		<button id="prevPage" hidden
-			class="flex justify-center items-center p-4 bg-light-title font-semibold text-white w-auto h-12 rounded-full hover:bg-brown hover:cursor-pointer">
-			Voltar
-		</button>
-		<button id="nextPage"
-			class="flex justify-center items-center p-4 bg-light-title font-semibold text-white w-auto h-12 rounded-full hover:bg-brown hover:cursor-pointer">
-			Próxima
-		</button>
-	</div>
+			<div class="flex flex-row gap-10 items-center">
+				<button id="prevPage" hidden
+					class="flex justify-center items-center p-4 bg-light-title font-semibold text-white w-auto h-12 rounded-full hover:bg-brown hover:cursor-pointer">
+					Voltar
+				</button>
+				<button id="nextPage"
+					class="flex justify-center items-center p-4 bg-light-title font-semibold text-white w-auto h-12 rounded-full hover:bg-brown hover:cursor-pointer">
+					Próxima
+				</button>
+			</div>
 </div>
-<script src="/scripts/handleBooksPagination.mjs"></script>
+<script type="module" src="/scripts/global/components/handleBooksPagination.mjs"></script>
+<script type="module" src="/scripts/shoppingCart/utils/cartUtils.mjs"></script>
+<script type="module" src="/scripts/books/components/bookComponent.mjs"></script>
