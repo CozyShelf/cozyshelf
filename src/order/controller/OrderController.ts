@@ -21,7 +21,6 @@ export default class OrderController {
 			const clientId = body.clientId;
 
 			const order = Order.fromRequestData(body);
-			console.log("order controller: ", order);
 			const createdOrder = await this.service.create(order);
 
 			res.status(201).json({

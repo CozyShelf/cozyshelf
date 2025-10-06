@@ -8,16 +8,9 @@ export class OrderService {
     ) {}
 
     public async create(order: Order): Promise<Order> {
-        console.log("order: ", order);
-        console.log("in service");      
-
         const orderModel = OrderModel.fromEntity(order);
-
         const createdOrderModel = await this.orderDAO.save(orderModel);
-        console.log("createdOrderModel: ", createdOrderModel);
-        const created = createdOrderModel.toEntity();
-        console.log("created: ", created);
-        return created;
+        return createdOrderModel.toEntity();
     }
 
     public async getById(id: string): Promise<Order | null> {
@@ -30,12 +23,9 @@ export class OrderService {
 
     public async getAll(): Promise<Order[]> {
         const orderModels = await this.orderDAO.findAll();
-        console.log("orderModels: ", orderModels);
         if (!orderModels) {
             return [];
         }
-        const entities = orderModels.map(orderModel => orderModel.toEntity());
-        console.log("entities: ", entities);
-        return entities;
+        return orderModels.map(orderModel => orderModel.toEntity());
     }
 }
