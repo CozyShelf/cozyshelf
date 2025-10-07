@@ -65,11 +65,30 @@ document.addEventListener("DOMContentLoaded", function () {
 			return;
 		}
 
+		// Calcular valor já alocado em outros cartões
+		const alreadyAllocated = selectedCards.reduce(
+			(sum, card) => sum + parseFloat(card.amount || 0),
+			0
+		);
+		const remainingAmount = Math.max(0, totalAmount - alreadyAllocated);
+
 		// Definir valor mínimo baseado na regra especial
 		const minAmountForCard = couponsApplied ? 0.01 : 10;
-		const suggestedAmount = couponsApplied
-			? totalAmount
-			: Math.max(10, Math.min(totalAmount, 10));
+
+		// Sugerir o valor restante ou o mínimo, o que for apropriado
+		let suggestedAmount;
+		if (couponsApplied) {
+			suggestedAmount =
+				remainingAmount > 0 ? remainingAmount : minAmountForCard;
+		} else {
+			suggestedAmount = Math.max(
+				minAmountForCard,
+				Math.min(remainingAmount, minAmountForCard)
+			);
+		}
+
+		// Arredondar para evitar problemas de precisão
+		suggestedAmount = Math.round(suggestedAmount * 100) / 100;
 
 		const cardInfo = {
 			id: cardId,
@@ -106,7 +125,6 @@ document.addEventListener("DOMContentLoaded", function () {
 					<input type="number"
 						   step="0.01"
 						   min="0"
-						   max="${totalAmount}"
 						   value="${card.amount}"
 						   class="w-20 h-7 px-2 text-[11px] border border-gray-300 rounded"
 						   data-card-index="${index}"
@@ -241,38 +259,26 @@ document.addEventListener("DOMContentLoaded", function () {
 			return;
 		}
 
-		// Validação para valor máximo (não pode exceder o total do pedido)
-		if (parsedAmount > totalAmount) {
-			Swal.fire({
-				icon: "error",
-				title: "Valor inválido",
-				text: `O valor não pode exceder o total do pedido (R$ ${totalAmount
-					.toFixed(2)
-					.replace(".", ",")})`,
-				confirmButtonColor: "#8B4513",
-			});
-
-			if (input) {
-				input.value = selectedCards[index].amount || minAmount;
-			}
-			return;
-		}
-
 		// CORREÇÃO: Validação para soma total dos cartões - permitir exatamente o total
 		const otherCardsTotal = selectedCards.reduce((sum, card, i) => {
 			return i === index ? sum : sum + parseFloat(card.amount || 0);
 		}, 0);
-		const newTotal = otherCardsTotal + parsedAmount;
-		
-		// Usar uma margem de tolerância para problemas de precisão decimal
-		const tolerance = 0.001;
-		
-		if (newTotal > (totalAmount + tolerance)) {
+
+		// Usar Math.round para evitar problemas de precisão decimal
+		const newTotalCents = Math.round((otherCardsTotal + parsedAmount) * 100);
+		const totalAmountCents = Math.round(totalAmount * 100);
+
+		if (newTotalCents > totalAmountCents) {
 			const maxAllowed = totalAmount - otherCardsTotal;
+			// Arredondar para 2 casas decimais para evitar problemas de precisão
+			const maxAllowedRounded = Math.round(maxAllowed * 100) / 100;
+
 			Swal.fire({
-				icon: "warning", 
+				icon: "warning",
 				title: "Valor excede o total",
-				text: `A soma dos valores dos cartões não pode exceder o total do pedido. Valor máximo permitido para este cartão: R$ ${maxAllowed.toFixed(2).replace(".", ",")}`,
+				text: `A soma dos valores dos cartões não pode exceder o total do pedido. Valor máximo permitido para este cartão: R$ ${maxAllowedRounded
+					.toFixed(2)
+					.replace(".", ",")}`,
 				confirmButtonColor: "#8B4513",
 			});
 
@@ -319,12 +325,6 @@ document.addEventListener("DOMContentLoaded", function () {
 			return;
 		}
 
-		// Valor excede o total
-		if (parsedValue > totalAmount) {
-			input.classList.add("border-red-500");
-			return;
-		}
-
 		// Valor abaixo do mínimo
 		if (parsedValue > 0 && parsedValue < minAmount) {
 			input.classList.add("border-red-500");
@@ -341,12 +341,15 @@ document.addEventListener("DOMContentLoaded", function () {
 			input.classList.add("border-green-500");
 		}
 
-		// Verificar se a soma excede o total
+		// Verificar se a soma excede o total (usando centavos para evitar problemas de precisão)
 		const otherCardsTotal = selectedCards.reduce((sum, card, i) => {
 			return i === index ? sum : sum + parseFloat(card.amount || 0);
 		}, 0);
 
-		if (otherCardsTotal + parsedValue > totalAmount) {
+		const newTotalCents = Math.round((otherCardsTotal + parsedValue) * 100);
+		const totalAmountCents = Math.round(totalAmount * 100);
+
+		if (newTotalCents > totalAmountCents) {
 			input.classList.add("border-orange-500");
 			return;
 		}

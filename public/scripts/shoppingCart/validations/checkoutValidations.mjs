@@ -113,27 +113,29 @@ function validatePaymentMethods() {
 		};
 	}
 
-	// Tolerância para diferenças de centavos
-	const tolerance = 0.01;
-	const difference = Math.abs(totalCardAmount - totalAmount);
+	// Usar comparação em centavos para evitar problemas de precisão de ponto flutuante
+	const totalCardAmountCents = Math.round(totalCardAmount * 100);
+	const totalAmountCents = Math.round(totalAmount * 100);
+	const difference = Math.abs(totalCardAmountCents - totalAmountCents);
 
 	// Debug temporário para investigar o problema
 	console.log("🔍 DEBUG VALORES:");
-	console.log("- Total cartões (raw):", totalCardAmount);
-	console.log("- Total compra (raw):", totalAmount);
-	console.log("- Diferença:", difference);
-	console.log("- Tolerância:", tolerance);
-	console.log("- Diferença > tolerância?", difference > tolerance);
+	console.log("- Total cartões (centavos):", totalCardAmountCents);
+	console.log("- Total compra (centavos):", totalAmountCents);
+	console.log("- Diferença (centavos):", difference);
+	console.log("- Valores são iguais?", difference === 0);
 
-	if (difference > tolerance) {
+	if (difference > 0) {
 		let errorMessage;
-		if (totalCardAmount < totalAmount) {
-			const remaining = totalAmount - totalCardAmount;
+		if (totalCardAmountCents < totalAmountCents) {
+			const remainingCents = totalAmountCents - totalCardAmountCents;
+			const remaining = remainingCents / 100;
 			errorMessage = `Os cartões devem cobrir o valor total da compra. Faltam R$ ${remaining.toFixed(
 				2
 			)} para completar o pagamento de R$ ${totalAmount.toFixed(2)}.`;
-		} else if (totalCardAmount > totalAmount) {
-			const excess = totalCardAmount - totalAmount;
+		} else if (totalCardAmountCents > totalAmountCents) {
+			const excessCents = totalCardAmountCents - totalAmountCents;
+			const excess = excessCents / 100;
 			errorMessage = `O valor dos cartões (R$ ${totalCardAmount.toFixed(
 				2
 			)}) está R$ ${excess.toFixed(
