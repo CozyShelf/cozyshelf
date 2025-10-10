@@ -25,6 +25,18 @@ function initAddressModal() {
 		});
 
 		// O formulário já tem sua própria lógica de submit via addressDetails.ejs
+
+		// Listener para fechar modal automaticamente após criação bem-sucedida (apenas no carrinho)
+		document.addEventListener("entityCreated", (event) => {
+			if (event.detail.type === "success") {
+				closeModal();
+				// Recarregar a lista de endereços se existir
+				const addressSelect = document.getElementById("address-selector");
+				if (addressSelect) {
+					window.location.reload(); // Recarregar para atualizar a lista de endereços
+				}
+			}
+		});
 	} else {
 		console.error("❌ Address Modal elements not found:", {
 			addAddressBtn: !!addAddressBtn,

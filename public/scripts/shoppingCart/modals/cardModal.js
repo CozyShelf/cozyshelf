@@ -20,6 +20,19 @@ document.addEventListener("DOMContentLoaded", function () {
 				modalContainer.style.display = "none";
 			}
 		});
+
+		// Listener para fechar modal automaticamente após criação bem-sucedida (apenas no carrinho)
+		document.addEventListener("entityCreated", (event) => {
+			if (event.detail.type === "success") {
+				modalContainer.classList.add("hidden");
+				modalContainer.style.display = "none";
+				// Recarregar a lista de cartões se existir
+				const cardSelect = document.getElementById("card-selector");
+				if (cardSelect) {
+					window.location.reload(); // Recarregar para atualizar a lista de cartões
+				}
+			}
+		});
 	} else {
 		console.error("❌ Card Modal elements not found:", {
 			addPaymentBtn: !!addPaymentBtn,
