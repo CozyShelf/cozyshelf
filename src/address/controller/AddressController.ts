@@ -122,6 +122,8 @@ export default class AddressController {
 			const addressEntity =  await this.service.getById(addressId);
 			const address = AddressDetailsDTO.fromEntity(addressEntity);
 
+			console.log(address);
+
 			res.render("addressDetails", {
 				title: "Editar Endereço",
 				currentHeaderTab: "profile",
@@ -130,6 +132,7 @@ export default class AddressController {
 				isAdmin: false,
 				address,
 				states: brazilStates,
+				withTitle: true
 			});
 		} catch (e) {
 			this.createErrorResponse(res, e as Error);
@@ -145,6 +148,7 @@ export default class AddressController {
 			isAdmin: false,
 			address: null,
 			states: brazilStates,
+			withTitle: true
 		});
 	}
 

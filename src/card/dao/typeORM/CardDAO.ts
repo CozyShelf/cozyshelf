@@ -61,7 +61,7 @@ export class CardDAO implements IDAO<CreditCardModel> {
 	public async findByCardNumber(
 		number: string
 	): Promise<CreditCardModel | null> {
-		return await this.repository.findOneBy({ number });
+		return await this.repository.findOneBy({ number, isActive: true });
 	}
 
 	public async delete(id: string): Promise<void> {

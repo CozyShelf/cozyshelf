@@ -1,12 +1,11 @@
+import DomainEntity from "../../generic/domain/DomainEntity";
 import BookCategory from "./enums/BookCategory";
 
-export default class Book {
-	_id: number;
+export default class Book extends DomainEntity {
 	_name: string;
 	_author: string;
 	_coverPath: string;
 	_price: number;
-	_rating: number;
 	_resume: string;
 	_isbn: string;
 	_numberOfPages: number;
@@ -21,14 +20,13 @@ export default class Book {
 	_barCode: string;
 	_inactivationCause: string;
 	_activationCause: string;
+	_stockQuantity: number;
 
 	constructor(
-		id: number,
 		name: string,
 		author: string,
 		coverPath: string,
 		price: number,
-		rating: number,
 		resume: string = "",
 		isbn: string = "",
 		numberOfPages: number = 0,
@@ -42,14 +40,14 @@ export default class Book {
 		thickness: number = 0,
 		barCode: string = "",
 		inactivationCause: string = "",
-		activationCause: string = ""
+		activationCause: string = "",
+		stockQuantity: number = 0
 	) {
-		this._id = id;
+		super();
 		this._name = name;
 		this._author = author;
 		this._coverPath = coverPath;
 		this._price = price;
-		this._rating = rating;
 		this._resume = resume;
 		this._isbn = isbn;
 		this._numberOfPages = numberOfPages;
@@ -64,6 +62,7 @@ export default class Book {
 		this._barCode = barCode;
 		this._inactivationCause = inactivationCause;
 		this._activationCause = activationCause;
+		this._stockQuantity = stockQuantity;
 	}
 
 	private parseCategories(categories: BookCategory[] | string[]) {
@@ -86,12 +85,10 @@ export default class Book {
 
 	static fromJSON(data: any): Book {
 		return new Book(
-			data.id,
 			data.name,
 			data.author,
 			data.coverPath,
 			data.price,
-			data.rating,
 			data.resume,
 			data.isbn,
 			data.numberOfPages,
@@ -105,16 +102,9 @@ export default class Book {
 			data.thickness,
 			data.barCode,
 			data.inactivationCause,
-			data.activationCause
+			data.activationCause,
+			data.stockQuantity || 0
 		);
-	}
-
-	get id(): number {
-		return this._id;
-	}
-
-	set id(value: number) {
-		this._id = value;
 	}
 
 	get name(): string {
@@ -147,14 +137,6 @@ export default class Book {
 
 	set price(value: number) {
 		this._price = value;
-	}
-
-	get rating(): number {
-		return this._rating;
-	}
-
-	set rating(value: number) {
-		this._rating = value;
 	}
 
 	get resume(): string {
@@ -267,5 +249,34 @@ export default class Book {
 
 	set activationCause(value: string) {
 		this._activationCause = value;
+	}
+
+	get stockQuantity(): number {
+		return this._stockQuantity;
+	}
+
+	set stockQuantity(value: number) {
+		this._stockQuantity = value;
+	}
+
+	public increaseStock(quantity: number): void {
+		if (quantity <= 0) {
+			throw new Error("Quantidade deve ser positiva");
+		}
+		this._stockQuantity += quantity;
+	}
+
+	public decreaseStock(quantity: number): void {
+		if (quantity <= 0) {
+			throw new Error("Quantidade deve ser positiva");
+		}
+		if (this._stockQuantity < quantity) {
+			throw new Error("Estoque insuficiente");
+		}
+		this._stockQuantity -= quantity;
+	}
+
+	public isInStock(quantity: number = 1): boolean {
+		return this._stockQuantity >= quantity;
 	}
 }

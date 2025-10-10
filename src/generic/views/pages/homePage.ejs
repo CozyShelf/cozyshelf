@@ -59,22 +59,24 @@
 			</p>
 		</div>
 		<%- include("books/bookList.ejs", { books }) %>
-		<div class="flex justify-center mt-10 mb-10 items-center">
-			<div class="relative group">
-				<a href="/books"
-				class="border border-light-title text-light-title hover:bg-light-title hover:text-white hover:cursor-pointer bg-transparent font-bold px-10 py-5 rounded-3xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex flex-row gap-4 items-center">
-					<span class="flex flex-col items-center gap-4">
-						<div class="text-lg">Ver Todos os Livros</div>
-					</span>
-					<span
-						class="material-symbols-outlined text-xl transform group-hover:translate-x-2 transition-transform duration-300">
-						storefront
-					</span>
-				</a>
+			<div class="flex justify-center mt-10 mb-10 items-center">
+				<div class="relative group">
+					<a href="/books"
+						class="border border-light-title text-light-title hover:bg-light-title hover:text-white hover:cursor-pointer bg-transparent font-bold px-10 py-5 rounded-3xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex flex-row gap-4 items-center">
+						<span class="flex flex-col items-center gap-4">
+							<div class="text-lg">Ver Todos os Livros</div>
+						</span>
+						<span
+							class="material-symbols-outlined text-xl transform group-hover:translate-x-2 transition-transform duration-300">
+							storefront
+						</span>
+					</a>
+				</div>
 			</div>
-		</div>
 	</div>
 </div>
 
-<script src="scripts/autoPlayCarousel.mjs"></script>
-<script src="scripts/chatbot/chatbot.js"></script>
+<script type="module" src="scripts/global/components/autoPlayCarousel.mjs"></script>
+<script type="module" src="scripts/shoppingCart/utils/cartUtils.mjs"></script>
+<script type="module" src="scripts/books/components/bookComponent.mjs"></script>
+<script src="scripts/chatbot/components/chatbot.js"></script>

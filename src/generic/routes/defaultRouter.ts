@@ -4,38 +4,21 @@ import addressRouter from "../../address/routes/addressRouter";
 import cardRouter from "../../card/routes/cardRouter";
 import orderRouter from "../../order/router/orderRouter";
 import couponsRouter from "../../coupons/router/couponsRouter";
-import { BookControllerFactory } from "../../books/factories/BookControllerFactory";
 import bookRouter from "../../books/routes/bookRouter";
 import adminRouter from "../../admin/routes/adminRouter";
 import cartRouter from "../../cart/routes/cartRouter";
 import chatbotRouter from "../../ia/routes/chatbotRouter";
 import defaultAPIRouter from "./defaultAPIRouter";
+import HomePageControllerFactory from "../factories/HomePageControllerFactory";
 
 const defaultRouter = Router();
-const bookController = new BookControllerFactory().make();
+const homePageController = new HomePageControllerFactory().make();
 
-defaultRouter.get("/", async (req: Request, res: Response) => {
-	const books = await bookController.getAll(req, res);
+defaultRouter.get("/", async (req: Request, res: Response) =>
+	homePageController.renderHomePage(req, res)
+);
 
-	res.render("homePage", {
-		title: "Seja bem vindo !",
-		currentHeaderTab: "home",
-		books,
-	});
-});
-
-defaultRouter.get("/shopping-cart", async (req: Request, res: Response) => {
-	const books = await bookController.getAll(req, res);
-
-	res.render("shoppingCart", {
-		title: "Carrinho de Compras",
-		currentHeaderTab: "cart",
-		books: books,
-		coupons: [],
-	});
-});
-
-defaultRouter.use("/api", defaultAPIRouter)
+defaultRouter.use("/api", defaultAPIRouter);
 
 defaultRouter.use("/clients", clientRouter);
 defaultRouter.use("/addresses", addressRouter);

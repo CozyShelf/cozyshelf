@@ -1,15 +1,18 @@
-export default class Author{
-    _name!: string;
+import DomainEntity from "../../generic/domain/DomainEntity";
 
-    constructor(name: string){
-        this._name = name;
-    }
+export default class Author extends DomainEntity {
+	_name!: string;
 
-    get name(): string {
-        return this._name;
-    }
+	constructor(name: string) {
+		super();
+		this._name = name;
+	}
 
-    set name(value: string) {
-        this._name = value;
-    }
+	get name(): string {
+		return this._name;
+	}
+
+	set name(value: string) {
+		this._name = value;
+	}
 }

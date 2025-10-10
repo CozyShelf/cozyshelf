@@ -1,0 +1,66 @@
+<li
+	class="flex flex-row gap-6 py-6 items-center border-b border-light-brown last:border-b-0 hover:bg-gray-50 transition-colors">
+	<div class="flex-shrink-0">
+		<a href="/books/<%= item.bookId %>" class="block group cursor-pointer" title="Ver detalhes do livro">
+			<img src="<%= item.bookCover %>" alt="Capa do livro <%= item.bookTitle %>"
+				class="w-20 h-24 object-cover rounded-lg drop-shadow-sm group-hover:drop-shadow-md group-hover:scale-105 transition-all duration-200"
+				onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+			<div
+				class="w-20 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg drop-shadow-sm flex flex-col items-center justify-center text-xs text-gray-500 group-hover:drop-shadow-md group-hover:scale-105 transition-all duration-200"
+				style="display: none;">
+				<span class="material-symbols-outlined text-gray-400 mb-1" style="font-size: 18px;">auto_stories</span>
+				<span class="text-[10px] leading-tight">Sem capa</span>
+			</div>
+		</a>
+	</div>
+
+	<div class="flex-1 min-w-0">
+		<h3 class="font-semibold text-dark-gray text-[15px] leading-tight mb-1 truncate" title="<%= item.bookTitle %>">
+			<%= item.bookTitle %>
+		</h3>
+		<p class="text-[12px] text-gray-500">
+			Preço unitário: <%= item.formattedUnitPrice %>
+		</p>
+	</div>
+
+	<div class="flex items-center bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
+		<button type="button"
+			class="quantity-btn decrease-btn flex items-center justify-center w-8 h-8 text-gray-600 hover:text-dark-gray hover:bg-gray-100 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+			data-item-id="<%= item.id %>" data-book-id="<%= item.bookId %>" data-action="decrease" title="Diminuir quantidade"
+			<%=item.quantity <=1 ? 'disabled' : '' %>>
+			<span class="material-symbols-outlined" style="font-size: 16px;">remove</span>
+		</button>
+
+		<input type="number" value="<%= item.quantity %>"
+			class="quantity-input w-12 h-8 text-center border-0 bg-transparent text-[13px] font-medium text-dark-gray focus:outline-none focus:bg-white focus:shadow-inner"
+			style="appearance: textfield; -webkit-appearance: none; -moz-appearance: textfield;" data-item-id="<%= item.id %>"
+			data-book-id="<%= item.bookId %>" min="1" max="99">
+
+		<button type="button"
+			class="quantity-btn increase-btn flex items-center justify-center w-8 h-8 text-gray-600 hover:text-dark-gray hover:bg-gray-100 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+			data-item-id="<%= item.id %>" data-book-id="<%= item.bookId %>" data-action="increase" title="Aumentar quantidade"
+			<%=item.quantity>= 99 ? 'disabled' : '' %>>
+			<span class="material-symbols-outlined" style="font-size: 16px;">add</span>
+		</button>
+	</div>
+
+	<div class="flex-shrink-0 text-right min-w-[80px]">
+		<p class="font-bold text-brown text-[16px] leading-none">
+			<%= item.formattedPrice %>
+		</p>
+		<% if (item.quantity> 1) { %>
+			<p class="text-[11px] text-gray-500 mt-1">
+				<%= item.quantity %> × <%= item.formattedUnitPrice %>
+			</p>
+			<% } %>
+	</div>
+
+	<div class="flex-shrink-0 ml-4">
+		<button type="button"
+			class="remove-btn group flex justify-center items-center text-gray-400 hover:text-red-500 w-9 h-9 transition-all duration-200 focus:outline-none cursor-pointer"
+			data-item-id="<%= item.id %>" title="Remover do carrinho">
+			<span
+				class="material-symbols-outlined text-[20px] transition-all duration-200 group-hover:scale-125">delete_outline</span>
+		</button>
+	</div>
+</li>

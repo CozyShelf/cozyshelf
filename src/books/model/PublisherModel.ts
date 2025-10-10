@@ -1,25 +1,32 @@
 import { Column, Entity, OneToMany } from "typeorm";
 import GenericModel from "../../generic/model/GenericModel";
 import BookModel from "./BookModel";
+import Publisher from "../domain/Publisher";
 
 @Entity()
-export default class PublisherModel extends GenericModel{
-    @Column({ type: "varchar", length: 150 })
-    _description!: string;
+export default class PublisherModel extends GenericModel {
+	@Column({ type: "varchar", length: 150 })
+	_description!: string;
 
-    @OneToMany(() => BookModel, book => book.publisher)
-    books!: BookModel[];
+	@OneToMany(() => BookModel, (book) => book.publisher)
+	books!: BookModel[];
 
-    constructor(description: string) {
-        super();
-        this._description = description;
-    }
+	constructor(description: string) {
+		super();
+		this._description = description;
+	}
 
-    get description(): string {
-        return this._description;
-    }
+	get description(): string {
+		return this._description;
+	}
 
-    set description(value: string) {
-        this._description = value;
-    }
+	set description(value: string) {
+		this._description = value;
+	}
+
+	toEntity() {
+		const publisher = new Publisher(this.description);
+		publisher.id = this.id;
+		return publisher;
+	}
 }
