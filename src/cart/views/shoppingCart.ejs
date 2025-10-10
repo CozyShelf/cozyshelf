@@ -179,8 +179,7 @@
 												<% if (cards && cards.length> 0) { %>
 													<% cards.forEach(function(card) { %>
 														<option value="<%= card.id %>" data-card-brand="<%= card.flagDescription %>"
-															data-card-last-digits="<%= card.maskedNumber.substr(-4) %>" <%=card.isPreferred
-															? "selected" : "" %>>
+															data-card-last-digits="<%= card.maskedNumber.substr(-4) %>">
 															<%= card.shortDisplay %>
 														</option>
 														<% }); %>
