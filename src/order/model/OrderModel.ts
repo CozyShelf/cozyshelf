@@ -5,8 +5,8 @@ import Order from "../domain/Order";
 import OrderStatus from "../domain/enums/OrderStatus";
 import ClientModel from "../../client/model/ClientModel";
 import OrderItemModel from "./OrdemItemModel";
-import AddressModel from "../../address/model/AddressModel";
 import PaymentModel from "./PaymentModel";
+import DeliveryModel from "./DeliveryModel";
 
 @Entity()
 export default class OrderModel extends GenericModel {
@@ -36,13 +36,8 @@ export default class OrderModel extends GenericModel {
     @Column({ type: "decimal", precision: 10, scale: 2, name: "final_total" })
     finalTotal!: number;
 
-    // delivery
-    @Column({ type: "timestamp", name: "delivery_date" })
-    deliveryDate!: Date;
-    
-    @ManyToOne(() => AddressModel, { eager: true })
-    @JoinColumn({ name: "address_id" })
-    address!: AddressModel;
+    @OneToOne(() => DeliveryModel, delivery => delivery.order, { cascade: true, eager: true })
+    delivery!: DeliveryModel;
 
     @OneToOne(() => PaymentModel, payment => payment.order, { cascade: true })
     payment!: PaymentModel;
@@ -60,8 +55,7 @@ export default class OrderModel extends GenericModel {
         freight: number,
         discount: number,
         finalTotal: number,
-        address: AddressModel,
-        deliveryDate: Date,
+        delivery: DeliveryModel,
         payment: PaymentModel,
         promotionalCoupon?: string,
         exchangeCoupons?: string[]
@@ -75,9 +69,7 @@ export default class OrderModel extends GenericModel {
         this.discount = discount;
         this.finalTotal = finalTotal;
 
-        this.address = address;
-        this.deliveryDate = deliveryDate; // Default delivery date is 7 days from now
-        
+        this.delivery = delivery;
         this.payment = payment;
 
         this.promotionalCouponCode = promotionalCoupon;
@@ -94,7 +86,7 @@ export default class OrderModel extends GenericModel {
             this.discount,
             this.finalTotal,
             this.client.id,
-            this.address.id,
+            this.delivery.toEntity(),
             this.payment.toEntity(),
             this.promotionalCouponCode,
             this.exchangeCoupons
@@ -102,41 +94,38 @@ export default class OrderModel extends GenericModel {
 
         order.id = this.id;
         order.isActive = this.isActive;
-        order.deliveryDate = this.deliveryDate;
         order.orderStatus = this.orderStatus;
 
         return order;
     }
 
-    // ...existing code...
-    // ...existing code...
     public static fromEntity(order: Order): OrderModel {
+
+        const deliveryModel = DeliveryModel.fromEntity(order.delivery);
+
         const model = new OrderModel(
             { id: order.clientId } as ClientModel,
-            [], // Criar items vazio primeiro
+            [],
             order.itemSubTotal,
             order.freight,
             order.discount,
             order.finalTotal,
-            { id: order.addressId } as AddressModel,
-            order.deliveryDate,
+            deliveryModel,
             new PaymentModel(0, []),
             order.promotionalCouponCode,
             order.exchangeCoupons
         );
 
-        // Definir relacionamentos após criação
         model.items = order.items.map(item => {
             const itemModel = OrderItemModel.fromEntity(item);
-            itemModel.order = model; // Definir relacionamento
+            itemModel.order = model; 
             return itemModel;
         });
 
         if (order.payment) {
             const paymentModel = PaymentModel.fromEntity(order.payment);
-            paymentModel.order = model; // Definir relacionamento
+            paymentModel.order = model;
             
-            // Definir relacionamento dos paymentCards
             paymentModel.paymentCards = paymentModel.paymentCards?.map(cardModel => {
                 cardModel.payment = paymentModel;
                 return cardModel;
@@ -145,11 +134,10 @@ export default class OrderModel extends GenericModel {
             model.payment = paymentModel;
         }
 
+        deliveryModel.order = model;
         model.orderStatus = order.orderStatus as OrderStatus;
-
         return model;
     }
-    // ...existing code...
 
     public updateFromEntity(order: Order): void {
         this.orderStatus = order.orderStatus;

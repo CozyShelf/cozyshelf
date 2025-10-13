@@ -14,11 +14,11 @@ export default class OrderDAO implements IDAO<OrderModel> {
     }
 
      async findAll(): Promise<OrderModel[] | null> {
-        return await this.repository.find({ relations: ["items", "payment", "client", "address"] });
+        return await this.repository.find({ relations: ["items", "payment", "client", "delivery"] });
     }
     
     async findById(id: string): Promise<OrderModel | null> {
-        return await this.repository.findOne({ where: { id }, relations: ["items", "payment", "client", "address"] });
+        return await this.repository.findOne({ where: { id }, relations: ["items", "payment", "client", "delivery"] });
     }
     
     async delete(id: string): Promise<void> {

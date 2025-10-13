@@ -3,21 +3,20 @@ import DomainEntity from "../../generic/domain/DomainEntity";
 import OrderStatus from "./enums/OrderStatus";
 import OrderItem from "./OrderItem";
 import Payment from "./Payment";
+import Delivery from "./Delivery";
 
 export default class Order extends DomainEntity {
     _clientId!: string;
-    _items!: OrderItem[];
-    _payment!: Payment;
-    _orderStatus!: OrderStatus;
-    _itemSubTotal: number = 0;
     _freight: number = 0;
+    _itemSubTotal: number = 0;
     _discount: number = 0;
     _finalTotal: number = 0;
     _createdAt!: Date;
-
-    // delivery
-    _addressId!: string;
-    _deliveryDate!: Date;
+    
+    _items!: OrderItem[];
+    _orderStatus!: OrderStatus;
+    _payment!: Payment;
+    _delivery!: Delivery;
 
     _promotionalCouponCode?: string;
     _exchangeCoupons: string[] = [];
@@ -29,7 +28,7 @@ export default class Order extends DomainEntity {
         discount: number,
         finalTotal: number,
         clientId: string,
-        addressId: string,
+        delivery: Delivery,
         payment: Payment,
         promotionalCouponCode?: string,
         exchangeCoupons?: string[]
@@ -43,9 +42,8 @@ export default class Order extends DomainEntity {
         this._finalTotal = finalTotal;
         this._clientId = clientId;
 
-        this._addressId = addressId;
-        this._deliveryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // Default delivery date is 7 days from now
-       
+        this._delivery = delivery;
+
         this._promotionalCouponCode = promotionalCouponCode;
         this._exchangeCoupons = exchangeCoupons || [];
 
@@ -69,20 +67,12 @@ export default class Order extends DomainEntity {
         this._items = value;
     }
 
-    get addressId(): string {
-        return this._addressId;
+    get delivery(): Delivery {
+        return this._delivery;
     }
-
-    set addressId(value: string) {
-        this._addressId = value;
-    }
-
-    get deliveryDate(): Date {
-        return this._deliveryDate;
-    }
-
-    set deliveryDate(value: Date) {
-        this._deliveryDate = value;
+    
+    set delivery(value: Delivery) {
+        this._delivery = value;
     }
 
     get orderStatus(): OrderStatus {
@@ -160,7 +150,7 @@ export default class Order extends DomainEntity {
             data.cart.totals.discount || 0,
             data.cart.totals.finalTotal || 0,
             data.clientId,
-            data.delivery.addressId,
+            Delivery.fromRequestData(data.delivery),
             Payment.fromRequestData(data.payment),
             data.coupons?.promotional,
             data.coupons?.exchange || []
