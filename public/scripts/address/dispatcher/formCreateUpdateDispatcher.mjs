@@ -5,7 +5,7 @@ export const REDIRECT_PATH =
 	"/addresses/client/f4a4ecf2-e31e-41b2-8c9f-a36898e23d81";
 export const ADDRESS_PATH = "/api/addresses/";
 
-export function setupAddressFormDispatcher() {
+export function setupAddressFormDispatcher(withRedirect = true) {
 	const form = document.getElementById("address-form");
 
 	if (!form) {
@@ -22,7 +22,7 @@ export function setupAddressFormDispatcher() {
 		if (isUpdate) {
 			await handleAddressUpdate(form);
 		} else {
-			await handleAddressCreation(form);
+			await handleAddressCreation(form, withRedirect);
 		}
 	});
 }
