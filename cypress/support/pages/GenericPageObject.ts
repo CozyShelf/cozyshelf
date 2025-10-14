@@ -10,7 +10,7 @@ export default abstract class GenericPageObject {
 		cy.get(`#${inputId}`).type(content);
 	}
 
-	protected clearAndTypeInInput(inputId: string, value: string) {
+	protected clearAndTypeInInput(inputId: string, value: any) {
         this.getInputById(inputId).clear()
         this.typeInInput(inputId, value);
     }

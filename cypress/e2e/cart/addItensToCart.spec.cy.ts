@@ -17,6 +17,12 @@ describe("add items to cart", () => {
 		addCartItensPageObject.verifyIfSuccessNotificationAppears();
 	});
 
+	it("should add many books to the cart from the book details page", () => {
+		addCartItensPageObject.visitBookDetailsPage();
+		addCartItensPageObject.addManyBooksToCart(3);
+		addCartItensPageObject.verifyIfSuccessNotificationAppears();
+	});
+
 	it("should add a book to the cart from the list all books page", () => {
 		addCartItensPageObject.visitListAllBooksPage();
 		addCartItensPageObject.addBookToCart();

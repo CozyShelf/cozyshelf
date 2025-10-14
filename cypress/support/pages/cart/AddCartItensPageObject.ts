@@ -23,6 +23,11 @@ export default class AddCartItensPageObject extends GenericPageObject {
 		this.clickButton("add-to-cart-button");
 	}
 
+	addManyBooksToCart(quantity: number) {
+		this.clearAndTypeInInput("book-quantity", quantity);
+		this.clickButton("add-to-cart-button");
+	}
+
 	verifyIfSuccessNotificationAppears() {
 		const notification = cy.get("#cart-success-notification");
 		notification.should("exist");
