@@ -1,6 +1,6 @@
 const books = [
 	{
-		id: 1,
+		id: 'da27ae01-0bc9-4509-97bd-2e1eb4fe8dab',
 		name: "Crime e Castigo",
 		author: { _name: "Fiódor Dostoiévski" },
 		coverPath: "/assets/book-covers/crime-e-castigo.png",
@@ -24,7 +24,6 @@ const books = [
 		stockQuantity: 25,
 	},
 	{
-		id: 2,
 		name: "Hipótese do Amor",
 		author: { _name: "Ali Hazelwood" },
 		coverPath: "/assets/book-covers/hipotese-do-amor.png",
@@ -48,7 +47,6 @@ const books = [
 		stockQuantity: 15,
 	},
 	{
-		id: 3,
 		name: "O Senhor dos Anéis",
 		author: { _name: "J.R.R. Tolkien" },
 		coverPath: "/assets/book-covers/senhor-dos-aneis.png",
@@ -71,7 +69,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 4,
 		name: "Crepúsculo",
 		author: { _name: "Stephenie Meyer" },
 		coverPath: "/assets/book-covers/crepusculo.png",
@@ -94,7 +91,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 5,
 		name: "É Assim que Acaba",
 		author: { _name: "Colleen Hoover" },
 		coverPath: "/assets/book-covers/e-assim-que-acaba.png",
@@ -117,7 +113,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 6,
 		name: "Noites Brancas",
 		author: { _name: "Fiódor Dostoiévski" },
 		coverPath: "/assets/book-covers/noites-brancas.png",
@@ -140,7 +135,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 7,
 		name: "1984",
 		author: { _name: "George Orwell" },
 		coverPath: "/assets/book-covers/1984.png",
@@ -163,7 +157,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 8,
 		name: "O Pequeno Príncipe",
 		author: { _name: "Antoine de Saint-Exupéry" },
 		coverPath: "/assets/book-covers/o-pequeno-principe.png",
@@ -186,7 +179,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 9,
 		name: "Dom Casmurro",
 		author: { _name: "Machado de Assis" },
 		coverPath: "/assets/book-covers/dom-casmurro.png",
@@ -209,7 +201,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 10,
 		name: "O Cortiço",
 		author: { _name: "Aluísio Azevedo" },
 		coverPath: "/assets/book-covers/o-cortico.png",
@@ -232,7 +223,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 11,
 		name: "Cem Anos de Solidão",
 		author: { _name: "Gabriel García Márquez" },
 		coverPath: "/assets/book-covers/cem-anos-de-solidao.png",
@@ -255,7 +245,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 12,
 		name: "O Sol é Para Todos",
 		author: { _name: "Harper Lee" },
 		coverPath: "/assets/book-covers/o-sol-e-para-todos.png",
@@ -278,7 +267,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 13,
 		name: "Orgulho e Preconceito",
 		author: { _name: "Jane Austen" },
 		coverPath: "/assets/book-covers/orgulho-e-preconceito.png",
@@ -301,7 +289,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 14,
 		name: "A Metamorfose",
 		author: { _name: "Franz Kafka" },
 		coverPath: "/assets/book-covers/a-metamorfose.png",
@@ -324,7 +311,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 15,
 		name: "Os Miseráveis",
 		author: { _name: "Victor Hugo" },
 		coverPath: "/assets/book-covers/os-miseraveis.png",
@@ -347,7 +333,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 16,
 		name: "O Grande Gatsby",
 		author: { _name: "F. Scott Fitzgerald" },
 		coverPath: "/assets/book-covers/o-grande-gatsby.png",
@@ -370,7 +355,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 17,
 		name: "Moby Dick",
 		author: { _name: "Herman Melville" },
 		coverPath: "/assets/book-covers/moby-dick.png",
@@ -393,7 +377,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 18,
 		name: "Romeu e Julieta",
 		author: { _name: "William Shakespeare" },
 		coverPath: "/assets/book-covers/romeu-e-julieta.png",
@@ -416,7 +399,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 19,
 		name: "Anna Karênina",
 		author: { _name: "Lev Tolstói" },
 		coverPath: "/assets/book-covers/anna-karenina.png",
@@ -439,7 +421,6 @@ const books = [
 		activationCause: "Lançamento",
 	},
 	{
-		id: 20,
 		name: "Lolita",
 		author: { _name: "Vladimir Nabokov" },
 		coverPath: "/assets/book-covers/lolita.png",
