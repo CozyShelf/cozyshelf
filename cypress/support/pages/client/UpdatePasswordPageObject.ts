@@ -1,5 +1,5 @@
-import GenericPageObject from "./GenericPageObject";
-import { IUpdatePasswordTestData } from "./types/TestData";
+import GenericPageObject from "../GenericPageObject";
+import { IUpdatePasswordTestData } from "../types/TestData";
 
 export default class UpdatePasswordPageObject extends GenericPageObject {
 	private readonly UPDATE_PASSWORD_PAGE: string;

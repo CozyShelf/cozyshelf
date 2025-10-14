@@ -1,5 +1,5 @@
 import ClientRegistrationPageObject from "./ClientRegistrationPageObject";
-import GenericPageObject from "./GenericPageObject";
+import GenericPageObject from "../GenericPageObject";
 
 export default class ClientListPageObject extends GenericPageObject {
 	private readonly CLIENT_LIST_PAGE: string;
