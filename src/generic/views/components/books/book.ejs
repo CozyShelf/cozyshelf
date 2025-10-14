@@ -29,6 +29,7 @@
 		</span>
 
 		<button type="button"
+			id="add-to-cart-button"
 			class="add-to-cart-component-btn flex items-center justify-center gap-2 w-full h-6 mt-2 px-2 py-2 border border-light-title text-light-title font-medium text-[12px] rounded-md hover:bg-light-title hover:text-white hover:cursor-pointer transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
 			data-book-id="<%= book.id %>" data-book-title="<%= book.name %>" data-book-image="<%= book.coverPath %>"
 			data-book-price="<%= book.formattedPrice || `R$ ${book.price.toFixed(2)}` %>">
