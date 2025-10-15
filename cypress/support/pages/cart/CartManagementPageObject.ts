@@ -69,27 +69,38 @@ export default class CartManagementPageObject extends GenericPageObject {
 		).click();
 	}
 
-	selectPromotionalCoupon(code: string) {
-		cy.get('select[name="promotionalCoupon"]').select(code);
+	getCartTotal() {
+		return cy.get("#total-display").invoke("text");
 	}
 
-	selectExchangeCoupon(code: string) {
-		cy.get(`input[name="exchangeCoupons"][value="${code}"]`).check();
+	selectPromotionalCoupon(couponCode: string) {
+		this.selectValue("promotional-coupon-select", couponCode);
+	}
+
+	selectExchangeCoupon(couponCode: string) {
+		cy.get(`#exchange-coupon-${couponCode}`).check({ force: true });
 	}
 
 	applyCoupons() {
-		cy.get("#apply-coupons").click();
+		this.clickButton("apply-coupons");
+
+		// Aguardar e fechar o modal de sucesso de aplicação de cupons
+		cy.get(".swal2-container", { timeout: 5000 }).should("be.visible");
+		cy.get(".swal2-title").should("contain", "Cupons aplicados!");
+		cy.get(".swal2-confirm").click();
+		cy.wait(500);
 	}
 
 	resetCoupons() {
-		cy.get("#reset-coupons").click();
+		this.clickButton("reset-coupons");
+
+		// Aguardar e fechar o modal de reset de cupons
+		cy.get(".swal2-container", { timeout: 5000 }).should("be.visible");
+		cy.get(".swal2-confirm").click();
+		cy.wait(500);
 	}
 
 	verifyAppliedCouponsStatus() {
 		cy.get("#applied-coupons-status").should("be.visible");
-	}
-
-	getCartTotal() {
-		return cy.get("#total-display").invoke("text");
 	}
 }

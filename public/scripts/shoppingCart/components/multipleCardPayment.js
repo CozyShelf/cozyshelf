@@ -16,7 +16,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			moneyString
 				.replace(/R\$/g, "")
 				.replace(/\s/g, "")
-				.replace(/\./g, "".replace(",", ".")) || 0
+				.replace(/\./g, "")
+				.replace(",", ".") || 0
 		);
 	}
 
