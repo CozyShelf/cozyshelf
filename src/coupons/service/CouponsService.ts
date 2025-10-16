@@ -25,6 +25,11 @@ export class CouponService {
         return models.map(model => model.toEntity());
     }
 
+    async getCouponsByClientAndType(clientId: string, type: CouponType): Promise<CouponEntity[]> {
+        const models = await this.couponDAO.findByClientIdAndType(clientId, type);
+        return models.map(model => model.toEntity());
+    }
+
     async getCouponById(id: string): Promise<CouponEntity | null> {
         const model = await this.couponDAO.findById(id);
         return model ? model.toEntity() : null;

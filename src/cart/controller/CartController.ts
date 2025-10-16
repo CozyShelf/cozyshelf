@@ -7,26 +7,17 @@ import { CardService } from "../../card/service/CardService";
 import AddressListDTO from "../../address/dto/AddressListDTO";
 import CardListDTO from "../../card/dto/CardListDTO";
 import { brazilStates } from "../../generic/config/database/seeders/address/states";
+import { CouponService } from "../../coupons/service/CouponsService";
+import { CouponType } from "../../coupons/domain/enums/CouponType";
 
 export default class CartController {
 	private DEFAULT_FREIGHT_VALUE = 10;
-	private MOCK_PROMOTIONAL_COUPONS = [
-		{ code: "PROMO10", name: "Desconto de Primavera", discount: 10 },
-		{ code: "WELCOME15", name: "Boas-vindas", discount: 15 },
-		{ code: "BLACKFRIDAY", name: "Black Friday", discount: 25 },
-	];
-	private MOCK_EXCHANGE_COUPONS = [
-		{ code: "TROCA001", name: "Cupom de Troca #001", value: "15,00" },
-		{ code: "TROCA002", name: "Cupom de Troca #002", value: "25,50" },
-		{ code: "TROCA003", name: "Cupom de Troca #003", value: "10,00" },
-		{ code: "TROCA004", name: "Cupom de Troca #004", value: "30,00" },
-	];
 
 	public constructor(
 		private service: CartService,
 		private cardService: CardService,
-		private addressService: AddressService
-	) /* private couponService: CouponService */
+		private addressService: AddressService,
+		private couponService: CouponService)
 	{}
 
 	public async addItemToCart(req: Request, res: Response) {
@@ -76,13 +67,8 @@ export default class CartController {
 		let itemsSubtotal = 0;
 		cartItemsListDTO.forEach((item) => (itemsSubtotal += item.subtotal));
 
-		// TODO: change mocks for actual cupons using couponService with clientID
-
-		const promotionalCoupons = this.MOCK_PROMOTIONAL_COUPONS;
-		// const promotionalCoupons = this.couponService.getByClientID(clientID);
-
-		const exchangeCoupons = this.MOCK_EXCHANGE_COUPONS;
-		// const exchangeCoupons = this.couponService.getByClientID(clientID);
+		const promotionalCoupons = await this.couponService.getCouponsByClientAndType(clientID, CouponType.PROMOTIONAL)
+		const exchangeCoupons = await this.couponService.getCouponsByClientAndType(clientID, CouponType.EXCHANGE)
 
 		const cardsEntities = await this.cardService.getByClientId(clientID);
 		const addressesEntities = await this.addressService.getByClientId(clientID);
@@ -92,6 +78,8 @@ export default class CartController {
 			AddressListDTO.fromEntity(address)
 		);
 
+		console.log(promotionalCoupons)
+		
 		res.render("shoppingCart", {
 			title: "Carrinho de Compras",
 			currentHeaderTab: "cart",

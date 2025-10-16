@@ -42,14 +42,16 @@
 									<div class="flex gap-2">
 										<select name="promotionalCoupon"
 											class="border border-gray-dark text-gray-dark rounded px-2 py-1 w-full text-[12px]">
-											<option value="">Nenhum cupom promocional</option>
-											<% if (promotionalCoupons && promotionalCoupons.length> 0) { %>
+											<option value="">Selecione um cupom promocional</option>
+											<% if (promotionalCoupons && promotionalCoupons.length > 0) { %>
 												<% promotionalCoupons.forEach(function(coupon) { %>
-													<option value="<%= coupon.code %>">
-														<%= coupon.name %> (<%= coupon.discount %>%)
+													<option value="<%= coupon.id %>">
+														<%= coupon.description %> (<%= Math.round(coupon.value) %>%)
 													</option>
-													<% }); %>
-														<% } %>
+												<% }); %>
+											<% } else { %>
+												<option value="" disabled>Nenhum cupom promocional disponível</option>
+											<% } %>
 										</select>
 									</div>
 								</div>
@@ -61,10 +63,10 @@
 										<% if (exchangeCoupons && exchangeCoupons.length> 0) { %>
 											<% exchangeCoupons.forEach(function(coupon, index) { %>
 												<label class="flex items-center gap-2 text-[12px] mb-1">
-													<input type="checkbox" name="exchangeCoupons" value="<%= coupon.code %>"
+													<input type="checkbox" name="exchangeCoupons" value="<%= coupon.id %>"
 														class="w-4 h-4 text-brown bg-gray-100 border-gray-300 rounded focus:ring-brown">
 													<span>
-														<%= coupon.name %> (R$ <%= coupon.value %>)
+														<%= coupon.description %> (R$ <%= coupon.value %>)
 													</span>
 												</label>
 												<% }); %>
