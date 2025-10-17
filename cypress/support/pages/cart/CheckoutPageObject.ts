@@ -286,8 +286,10 @@ export default class CheckoutPageObject extends GenericPageObject {
 		flag: string;
 		isPreferred: boolean;
 	}) {
-		cy.get("#cardModal", { timeout: 5000 }).should("be.visible");
+		// Aguardar modal abrir - ID correto é modal-container
+		cy.get("#modal-container", { timeout: 5000 }).should("be.visible");
 
+		// Preencher campos do cartão
 		cy.get("#card-number").clear().type(cardData.number);
 		cy.get("#card-cvv").clear().type(cardData.cvv);
 		cy.get("#card-impress-name").clear().type(cardData.impressName);

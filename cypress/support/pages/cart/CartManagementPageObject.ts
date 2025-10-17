@@ -84,7 +84,6 @@ export default class CartManagementPageObject extends GenericPageObject {
 	applyCoupons() {
 		this.clickButton("apply-coupons");
 
-		// Aguardar e fechar o modal de sucesso de aplicação de cupons
 		cy.get(".swal2-container", { timeout: 5000 }).should("be.visible");
 		cy.get(".swal2-title").should("contain", "Cupons aplicados!");
 		cy.get(".swal2-confirm").click();
@@ -94,7 +93,6 @@ export default class CartManagementPageObject extends GenericPageObject {
 	resetCoupons() {
 		this.clickButton("reset-coupons");
 
-		// Aguardar e fechar o modal de reset de cupons
 		cy.get(".swal2-container", { timeout: 5000 }).should("be.visible");
 		cy.get(".swal2-confirm").click();
 		cy.wait(500);
