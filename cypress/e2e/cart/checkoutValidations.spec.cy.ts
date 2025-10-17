@@ -22,6 +22,18 @@ describe("checkout validations", () => {
 		it("should require address selection", () => {
 			checkoutPageObject.verifyAddressRequired();
 		});
+
+		it("should create and use new address during checkout", () => {
+			cy.fixture("addressData2.json").then((newAddressData) => {
+				checkoutPageObject.clickAddAddressButton();
+				checkoutPageObject.fillAddressModalForm(newAddressData);
+				checkoutPageObject.submitAddressModal();
+
+				cy.wait(1000);
+				cy.get(".swal2-container").should("be.visible");
+				cy.get(".swal2-icon-success").should("be.visible");
+			});
+		});
 	});
 
 	describe("payment validation", () => {
@@ -289,10 +301,7 @@ describe("checkout validations", () => {
 							checkoutPageObject.submitCheckout();
 
 							cy.wait(2000);
-							cy.get(".swal2-container").should(
-								"not.contain",
-								"valor mínimo"
-							);
+							cy.get(".swal2-container").should("not.contain", "valor mínimo");
 						});
 				}
 			});

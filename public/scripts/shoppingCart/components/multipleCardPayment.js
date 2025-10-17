@@ -182,11 +182,11 @@ document.addEventListener("DOMContentLoaded", function () {
 						   data-card-index="${index}"
 						   onchange="updateCardAmount(${index}, this.value)"
 						   oninput="validateInputRange(${index}, this.value)"
-						   title="${getCardAmountTitle()}"
+						   title="${getCardAmountTitle()}">
 					<input type="hidden" name="selectedCards[${index}][id]" value="${card.id}">
 					<input type="hidden" name="selectedCards[${index}][amount]" value="${formatCurrency(
 				card.amount
-			)}"
+			)}">
 				</div>
 				<button type="button"
 						onclick="removeCard(${index})"

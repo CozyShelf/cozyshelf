@@ -70,7 +70,10 @@ export default class CartManagementPageObject extends GenericPageObject {
 	}
 
 	getCartTotal() {
-		return cy.get("#total-display").invoke("text");
+		return cy
+			.get("#total-display")
+			.invoke("text")
+			.then((text) => text.trim());
 	}
 
 	selectPromotionalCoupon(couponCode: string) {

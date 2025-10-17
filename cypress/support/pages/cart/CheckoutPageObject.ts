@@ -18,7 +18,9 @@ export default class CheckoutPageObject extends GenericPageObject {
 	}
 
 	selectDeliveryAddress(addressId: string) {
+		cy.get("#userAddress").should("be.visible");
 		this.selectValue("userAddress", addressId);
+		cy.wait(300);
 	}
 
 	verifyAddressIsSelected(addressId: string) {
@@ -31,20 +33,23 @@ export default class CheckoutPageObject extends GenericPageObject {
 	}
 
 	selectPromotionalCoupon(couponCode: string) {
+		cy.get("#promotional-coupon-select").should("be.visible");
 		this.selectValue("promotional-coupon-select", couponCode);
 	}
 
 	selectExchangeCoupon(couponCode: string) {
+		cy.get(`#exchange-coupon-${couponCode}`).should("be.visible");
 		cy.get(`#exchange-coupon-${couponCode}`).check({ force: true });
 	}
 
 	applyCoupons() {
+		cy.get("#apply-coupons").should("be.visible").and("not.be.disabled");
 		this.clickButton("apply-coupons");
 
 		cy.get(".swal2-container", { timeout: 5000 }).should("be.visible");
 		cy.get(".swal2-title").should("contain", "Cupons aplicados!");
 		cy.get(".swal2-confirm").click();
-		cy.wait(500);
+		cy.wait(1000);
 	}
 
 	resetCoupons() {
@@ -68,28 +73,42 @@ export default class CheckoutPageObject extends GenericPageObject {
 	}
 
 	selectCard(cardId: string) {
+		cy.get("#card-selector").should("be.visible").and("not.be.disabled");
 		this.selectValue("card-selector", cardId);
 	}
 
 	addCardToPayment() {
+		cy.get("#add-card-to-payment").should("be.visible").and("not.be.disabled");
 		this.clickButton("add-card-to-payment");
-		cy.wait(300);
+		cy.wait(500);
 	}
 
 	selectAndAddCard(cardId: string) {
 		this.selectCard(cardId);
 		this.addCardToPayment();
+		cy.get(`#selected-cards input[name="cardUuid"][value="${cardId}"]`, {
+			timeout: 10000,
+		}).should("exist");
+		cy.wait(500);
 	}
 
 	verifyCardAddedToPayment(cardId: string) {
-		cy.get(`#selected-cards input[value="${cardId}"]`).should("exist");
+		cy.get(`#selected-cards input[name="cardUuid"][value="${cardId}"]`, {
+			timeout: 5000,
+		}).should("exist");
 	}
 
 	updateCardAmount(cardIndex: number, amount: number) {
-		cy.get(`#selected-cards input[data-card-index="${cardIndex}"]`)
+		cy.get(`#selected-cards`, { timeout: 5000 }).should("be.visible");
+		cy.get(
+			`#selected-cards input[type="number"][data-card-index="${cardIndex}"]`,
+			{ timeout: 10000 }
+		)
+			.should("be.visible")
 			.clear()
-			.type(amount.toString());
-		cy.wait(300);
+			.type(amount.toString())
+			.blur();
+		cy.wait(500);
 	}
 
 	removeCardFromPayment(cardIndex: number) {
@@ -115,19 +134,31 @@ export default class CheckoutPageObject extends GenericPageObject {
 	}
 
 	getItemsSubtotal() {
-		return cy.get("#items-subtotal").invoke("text");
+		return cy
+			.get("#items-subtotal")
+			.invoke("text")
+			.then((text) => text.trim());
 	}
 
 	getFreightValue() {
-		return cy.get("#freight-value").invoke("text");
+		return cy
+			.get("#freight-value")
+			.invoke("text")
+			.then((text) => text.trim());
 	}
 
 	getCouponDiscount() {
-		return cy.get("#coupons-discount").invoke("text");
+		return cy
+			.get("#coupons-discount")
+			.invoke("text")
+			.then((text) => text.trim());
 	}
 
 	getTotalAmount() {
-		return cy.get("#total-display").invoke("text");
+		return cy
+			.get("#total-display")
+			.invoke("text")
+			.then((text) => text.trim());
 	}
 
 	verifyTotalAmount(expectedTotal: string) {
@@ -241,7 +272,7 @@ export default class CheckoutPageObject extends GenericPageObject {
 		type: string;
 		observation?: string;
 	}) {
-		cy.get("#addressModal", { timeout: 5000 }).should("be.visible");
+		cy.get("#address-modal-container", { timeout: 5000 }).should("be.visible");
 
 		cy.get("#address-zip-code").clear().type(addressData.cep);
 		cy.wait(2000);
