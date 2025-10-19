@@ -50,6 +50,19 @@ export class CouponService {
         return saved.toEntity() as PromotionalCoupon;
     }
 
+    async createExchangeCouponForExcessValue(clientId: string, excessValue: number): Promise<void> {
+        const coupon = new ExchangeCoupon(
+            excessValue,
+            clientId,
+            CouponType.EXCHANGE,
+            `Cupom de troca ` + new Date().toISOString()
+        );
+
+        this.createExchangeCoupon(coupon);
+
+        console.log(`[INFO] 🎟️  Created exchange coupon for client ${clientId} with value ${excessValue}`);
+    }
+
     async markAsUsed(couponIds: string[], orderId: string): Promise<void> {
         for (const id of couponIds) {
             const model = await this.couponDAO.findById(id);

@@ -14,8 +14,19 @@ export class OrderService {
     public async create(order: Order): Promise<Order> {
         const orderModel = OrderModel.fromEntity(order);
 
+        // Validate coupons before creating the order
         await this.validateCouponsForOrder(orderModel);
 
+        const exceeds = await this.couponsTotalValueExceedsOrderTotal(order.discount, orderModel);
+        
+        if (exceeds) {
+            this.couponService.createExchangeCouponForExcessValue(
+                order.clientId,
+                order.discount - (Number(order.itemSubTotal) + Number(order.freight.value))
+            );
+        }
+        
+        // Create the order
         const createdOrderModel = await this.orderDAO.save(orderModel);
         
         const createdOrder = createdOrderModel.toEntity();
@@ -33,6 +44,10 @@ export class OrderService {
             return null;
         }
         return orderModel.toEntity();
+    }
+
+    private async couponsTotalValueExceedsOrderTotal(totalCouponsValue: number, order: OrderModel): Promise<boolean> {
+        return totalCouponsValue > (Number(order.itemSubTotal) + Number(order.freight.value));
     }
 
     private async validateCouponsForOrder(order: OrderModel): Promise<void> {

@@ -17,6 +17,7 @@ export class CouponDAO {
 
     async findAll(): Promise<CouponModel[]> {
         return await this.couponRepository.find({
+            where: { isActive: true },
             relations: ['client']
         });
     }
@@ -30,7 +31,7 @@ export class CouponDAO {
 
     async findByClientId(clientId: string): Promise<CouponModel[]> {
         return await this.couponRepository.find({
-            where: { client: { id: clientId } },
+            where: { client: { id: clientId }, isActive: true },
             relations: ['client']
         });
     }

@@ -132,19 +132,13 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateDisplayedValues() {
         const discounts = calculateCouponDiscounts();
 
-        // Calcular valores considerando que desconto pode exceder total
-        let effectiveDiscount = discounts.totalDiscount;
+        // O total nunca pode ser negativo, mas o desconto mostrado deve ser o real
         let newTotal = Math.max(0, originalTotal - discounts.totalDiscount);
 
-        // Se desconto excede o valor total, mostrar desconto limitado na tela
-        if (discounts.totalDiscount > originalTotal) {
-            effectiveDiscount = originalTotal;
-            newTotal = 0;
-        }
-
-        // Atualizar desconto de cupons
+        // Atualizar desconto de cupons - SEMPRE mostrar o valor real dos cupons
         if (couponDiscountElement) {
-            couponDiscountElement.textContent = `- R$ ${effectiveDiscount.toFixed(2).replace(".", ",")}`;
+            // Mostrar o desconto REAL dos cupons, não limitado ao total
+            couponDiscountElement.textContent = `- R$ ${discounts.totalDiscount.toFixed(2).replace(".", ",")}`;
 
             if (discounts.totalDiscount > 0) {
                 couponDiscountElement.className = "text-green-600 font-semibold";
@@ -167,8 +161,8 @@ document.addEventListener("DOMContentLoaded", function () {
         window.appliedCoupons = {
             promotional: discounts.selectedPromotionalCoupon,
             exchange: discounts.selectedExchangeCoupons,
-            totalDiscount: discounts.totalDiscount,
-            effectiveDiscount: hasExcess ? originalTotal : discounts.totalDiscount,
+            totalDiscount: discounts.totalDiscount, // Valor real dos cupons
+            effectiveDiscount: discounts.totalDiscount, // Agora também é o valor real
             newTotal: newTotal,
             hasExcess: hasExcess,
             excessAmount: excessAmount,
@@ -187,8 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         console.log("Valores atualizados:", {
             originalTotal,
-            totalDiscount: discounts.totalDiscount,
-            effectiveDiscount: hasExcess ? originalTotal : discounts.totalDiscount,
+            totalDiscount: discounts.totalDiscount, // Valor real dos cupons
             newTotal,
             hasExcess,
             excessAmount: hasExcess ? excessAmount : 0,
