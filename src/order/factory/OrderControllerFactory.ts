@@ -8,6 +8,8 @@ import BookDAO from "../../books/dao/BookDAO";
 import CartService from "../../cart/service/CartService";
 import CartDAO from "../../cart/dao/CartDAO";
 import ClientDAO from "../../client/dao/typeORM/ClientDAO";
+import { CouponDAO } from "../../coupons/dao/typeORM/CouponDAO";
+import { CouponService } from "../../coupons/service/CouponsService";
 
 
 export class OrderControllerFactory implements IFactory<OrderController> {
@@ -19,7 +21,8 @@ export class OrderControllerFactory implements IFactory<OrderController> {
     public makeOrderService(): any {
         return new OrderService(
             this.makeOrderDAO(),
-            this.makeCartService()
+            this.makeCartService(),
+            this.makeCouponService()
         );
     }
 
@@ -38,5 +41,9 @@ export class OrderControllerFactory implements IFactory<OrderController> {
             new BookDAO(postgresDataSource),
             this.makeBookService()
         );
+    }
+
+    public makeCouponService(): CouponService {
+        return new CouponService(new CouponDAO(postgresDataSource));
     }
 }

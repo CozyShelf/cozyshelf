@@ -37,29 +37,38 @@ const coupons = [
     {
         id: '709bf8da-4ca5-464a-8fc9-5dfbbe0ea412',
         type: CouponType.PROMOTIONAL,
-        description: 'Desconto Primavera 10%',
+        description: 'Desconto Primavera 10% 2025',
         value: 10,
         clientId: 'f4a4ecf2-e31e-41b2-8c9f-a36898e23d81' as unknown as ClientModel,
         createdAt: new Date('2023-02-01'),
-        expirationDate: new Date('2023-11-30')
+        expirationDate: new Date('2026-11-30')
+    },
+    {
+        id: '30dfd601-04bf-41f7-beb7-49cccb28b697',
+        type: CouponType.PROMOTIONAL,
+        description: 'Desconto Primavera 10% 2024',
+        value: 10,
+        clientId: 'f4a4ecf2-e31e-41b2-8c9f-a36898e23d81' as unknown as ClientModel,
+        createdAt: new Date('2023-02-01'),
+        expirationDate: new Date('2024-11-30')
     },
     {
         id: 'd1f7c8e3-3c4b-4f5a-9e6b-2e7f8c9d0a1b',
         type: CouponType.PROMOTIONAL,
-        description: 'Desconto Verão 20%',
+        description: 'Desconto Verão 20% 2025',
         value: 20,
         clientId: 'f4a4ecf2-e31e-41b2-8c9f-a36898e23d81' as unknown as ClientModel,
         createdAt: new Date('2023-03-01'),
-        expirationDate: new Date('2023-12-31')
+        expirationDate: new Date('2026-12-31')
     },
     {
         id: 'a9ad6f2d-7f5b-4684-9c98-b9bc0e1397da',
         type: CouponType.PROMOTIONAL,
-        description: 'Desconto Outono 30%',
+        description: 'Desconto Outono 30% 2025',
         value: 30,
         clientId: 'f4a4ecf2-e31e-41b2-8c9f-a36898e23d81' as unknown as ClientModel,
         createdAt: new Date('2023-04-01'),
-        expirationDate: new Date('2023-12-31')
+        expirationDate: new Date('2026-12-31')
     }
 ];
 

@@ -21,6 +21,7 @@ export default class OrderController {
 
 			const order = Order.fromRequestData(body);
 			const createdOrder = await this.service.create(order);
+			console.log("[INFO] ✅ Order created successfully!");
 
 			res.status(201).json({
 				message: `Pedido ${createdOrder.id} criado com sucesso para o cliente de id: ${clientId}!`,

@@ -67,8 +67,8 @@ export default class CartController {
 		let itemsSubtotal = 0;
 		cartItemsListDTO.forEach((item) => (itemsSubtotal += item.subtotal));
 
-		const promotionalCoupons = await this.couponService.getCouponsByClientAndType(clientID, CouponType.PROMOTIONAL)
-		const exchangeCoupons = await this.couponService.getCouponsByClientAndType(clientID, CouponType.EXCHANGE)
+		const promotionalCoupons = await this.couponService.getValidCouponsByClientAndType(clientID, CouponType.PROMOTIONAL)
+		const exchangeCoupons = await this.couponService.getValidCouponsByClientAndType(clientID, CouponType.EXCHANGE)
 
 		const cardsEntities = await this.cardService.getByClientId(clientID);
 		const addressesEntities = await this.addressService.getByClientId(clientID);
@@ -77,8 +77,6 @@ export default class CartController {
 		const addresses = addressesEntities.map((address) =>
 			AddressListDTO.fromEntity(address)
 		);
-
-		console.log(promotionalCoupons)
 		
 		res.render("shoppingCart", {
 			title: "Carrinho de Compras",

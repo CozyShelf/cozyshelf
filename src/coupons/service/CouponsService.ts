@@ -1,6 +1,9 @@
 import { CouponDAO } from "../dao/typeORM/CouponDAO";
 import { CouponEntity } from "../domain/CouponEntity";
 import { CouponType } from "../domain/enums/CouponType";
+import CouponAlreadyUsed from "../domain/exceptions/CouponAlreadyUsed";
+import CouponExpired from "../domain/exceptions/CouponExpired";
+import CouponNotFound from "../domain/exceptions/CouponNotFound";
 import { ExchangeCoupon } from "../domain/ExchangeCoupon";
 import { PromotionalCoupon } from "../domain/PromotionalCoupon";
 import { ExchangeCouponModel } from "../model/ExchangeCouponModel";
@@ -25,8 +28,8 @@ export class CouponService {
         return models.map(model => model.toEntity());
     }
 
-    async getCouponsByClientAndType(clientId: string, type: CouponType): Promise<CouponEntity[]> {
-        const models = await this.couponDAO.findByClientIdAndType(clientId, type);
+    async getValidCouponsByClientAndType(clientId: string, type: CouponType): Promise<CouponEntity[]> {
+        const models = await this.couponDAO.findValidByClientIdAndType(clientId, type);
         return models.map(model => model.toEntity());
     }
 
@@ -45,5 +48,36 @@ export class CouponService {
         const model = PromotionalCouponModel.fromEntity(coupon);
         const saved = await this.couponDAO.savePromotionalCoupon(model);
         return saved.toEntity() as PromotionalCoupon;
+    }
+
+    async markAsUsed(couponIds: string[], orderId: string): Promise<void> {
+        for (const id of couponIds) {
+            const model = await this.couponDAO.findById(id);
+            if (model) {
+                model.isActive = false;
+                model.orderId = orderId;
+                await this.couponDAO.save(model);                
+            }
+        }
+    }
+
+    async validateCouponsAndVerifyValidity(couponIds: string[]): Promise<void> {
+        for (const couponId of couponIds) {
+            const model = await this.couponDAO.findById(couponId);
+               if (!model) {
+                throw new CouponNotFound(couponId);
+            }
+
+            if (!model.isActive) {
+                throw new CouponAlreadyUsed(couponId);
+            }
+
+            if (model instanceof PromotionalCouponModel) {
+                const now = new Date();
+                if (model.expirationDate && model.expirationDate < now) {
+                    throw new CouponExpired(model.expirationDate);
+                }
+            }
+        }
     }
 }

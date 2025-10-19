@@ -20,5 +20,8 @@ export abstract class CouponModel extends GenericModel {
     @JoinColumn({ name: "client_id" })
     client!: ClientModel;
 
+    @Column({ type: "varchar", nullable: true, name: "order_id" })
+    orderId?: string;
+
     abstract toEntity(): CouponEntity;
 }

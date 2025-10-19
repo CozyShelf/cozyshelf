@@ -1,16 +1,11 @@
-import { ChildEntity, JoinColumn, ManyToOne } from "typeorm";
+import { ChildEntity } from "typeorm";
 import { CouponType } from "../domain/enums/CouponType";
 import { CouponModel } from "./CouponModel";
-import OrderModel from "../../order/model/OrderModel";
 import { ExchangeCoupon } from "../domain/ExchangeCoupon";
 import ClientModel from "../../client/model/ClientModel";
 
 @ChildEntity(CouponType.EXCHANGE)
 export class ExchangeCouponModel extends CouponModel {
-    @ManyToOne(() => OrderModel, order => order.exchangeCoupons)
-    @JoinColumn({ name: "order_id" })
-    order?: OrderModel;
-
     public constructor(
         value: number, 
         clientId: string, 
@@ -33,10 +28,7 @@ export class ExchangeCouponModel extends CouponModel {
         );
 
         coupon.id = this.id;
-
-        if (this.order) {
-            coupon.orderId = this.order.id as unknown as string;
-        }
+        coupon.orderId = this.orderId;
 
         return coupon;
     }
@@ -53,9 +45,7 @@ export class ExchangeCouponModel extends CouponModel {
             model.id = coupon.id;
         }
 
-        if (coupon.orderId) {
-            model.order = { id: coupon.orderId } as OrderModel;
-        }
+        model.orderId = coupon.orderId;
 
         return model;
     }

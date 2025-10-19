@@ -127,46 +127,49 @@ function collectSelectedAddress(form) {
 /**
  * Coleta cupons aplicados
  */
+/**
+ * Coleta cupons aplicados
+ */
 function collectAppliedCoupons(form) {
-	const coupons = {
-		promotional: null,
-		exchange: [],
-	};
+    const coupons = {
+        promotionalCouponId: null,
+        exchangeCouponIds: [],
+    };
 
-	// Cupom promocional
-	const promotionalSelect = form.querySelector(
-		'select[name="promotionalCoupon"]'
-	);
+    // Cupom promocional - enviar apenas o ID
+    const promotionalSelect = form.querySelector(
+        'select[name="promotionalCoupon"]'
+    );
 
-	if (promotionalSelect && promotionalSelect.value) {
-		const selectedOption =
-			promotionalSelect.options[promotionalSelect.selectedIndex];
-		const discountMatch = selectedOption.text.match(/\((\d+)%\)/);
+    if (promotionalSelect && promotionalSelect.value) {
+        coupons.promotionalCouponId = promotionalSelect.value;
+    }
 
-		coupons.promotional = {
-			code: promotionalSelect.value,
-			discount: discountMatch ? parseInt(discountMatch[1]) : 0,
-		};
-	}
+    // Cupons de troca - enviar apenas os IDs
+    const exchangeCoupons = form.querySelectorAll(
+        'input[name="exchangeCoupons"]:checked'
+    );
 
-	// Cupons de troca
-	const exchangeCoupons = form.querySelectorAll(
-		'input[name="exchangeCoupons"]:checked'
-	);
+    exchangeCoupons.forEach((coupon) => {
+        if (coupon.value) {
+            coupons.exchangeCouponIds.push(coupon.value);
+        }
+    });
 
-	exchangeCoupons.forEach((coupon) => {
-		const label = coupon.closest("label");
-		const valueMatch = label?.textContent.match(/R\$ ([\d,]+)/);
+    // Alternativa: usar os cupons do couponManagement.js se disponível
+    if (window.appliedCoupons) {
+        if (window.appliedCoupons.promotional) {
+            coupons.promotionalCouponId = window.appliedCoupons.promotional._id || window.appliedCoupons.promotional.id;
+        }
+        
+        if (window.appliedCoupons.exchange && window.appliedCoupons.exchange.length > 0) {
+            coupons.exchangeCouponIds = window.appliedCoupons.exchange.map(
+                coupon => coupon._id || coupon.id
+            );
+        }
+    }
 
-		const exchangeCoupon = {
-			code: coupon.value,
-			value: valueMatch ? parseFloat(valueMatch[1].replace(",", ".")) : 0,
-		};
-
-		coupons.exchange.push(exchangeCoupon);
-	});
-
-	return coupons;
+    return coupons;
 }
 
 /**

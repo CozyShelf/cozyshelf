@@ -6,7 +6,6 @@ export class CouponEntity extends DomainEntity {
     _clientId: string;
     _type!: CouponType;
     _description?: string;
-    _orderId?: string;
 
     constructor(
         value: number, 

@@ -15,14 +15,12 @@ export class CouponDAO {
         this.promotionalRepository = dataSource.getRepository(PromotionalCouponModel);
     }
 
-    // Buscar todos os tipos
     async findAll(): Promise<CouponModel[]> {
         return await this.couponRepository.find({
             relations: ['client']
         });
     }
 
-    // Buscar por tipo específico
     async findByType(type: CouponType): Promise<CouponModel[]> {
         return await this.couponRepository.find({
             where: { type },
@@ -30,7 +28,6 @@ export class CouponDAO {
         });
     }
 
-    // Buscar por cliente
     async findByClientId(clientId: string): Promise<CouponModel[]> {
         return await this.couponRepository.find({
             where: { client: { id: clientId } },
@@ -38,18 +35,17 @@ export class CouponDAO {
         });
     }
 
-    // Buscar por cliente e tipo
-    async findByClientIdAndType(clientId: string, type: CouponType): Promise<CouponModel[]> {
+    async findValidByClientIdAndType(clientId: string, type: CouponType): Promise<CouponModel[]> {
         return await this.couponRepository.find({
             where: { 
                 client: { id: clientId },
-                type 
+                type,
+                isActive: true
             },
             relations: ['client']
         });
     }
 
-    // Buscar por ID
     async findById(id: string): Promise<CouponModel | null> {
         return await this.couponRepository.findOne({
             where: { id },
@@ -57,17 +53,14 @@ export class CouponDAO {
         });
     }
 
-    // Salvar (funciona para ambos os tipos)
     async save(coupon: CouponModel): Promise<CouponModel> {
         return await this.couponRepository.save(coupon);
     }
 
-    // Métodos específicos para Exchange Coupons
     async saveExchangeCoupon(coupon: ExchangeCouponModel): Promise<ExchangeCouponModel> {
         return await this.exchangeRepository.save(coupon);
     }
 
-    // Métodos específicos para Promotional Coupons
     async savePromotionalCoupon(coupon: PromotionalCouponModel): Promise<PromotionalCouponModel> {
         return await this.promotionalRepository.save(coupon);
     }

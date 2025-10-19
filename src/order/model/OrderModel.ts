@@ -1,4 +1,3 @@
-
 import { Entity, Column, OneToMany, ManyToOne, JoinColumn, OneToOne } from "typeorm";
 import GenericModel from "../../generic/model/GenericModel";
 import Order from "../domain/Order";
@@ -23,7 +22,6 @@ export default class OrderModel extends GenericModel {
     })
     orderStatus!: OrderStatus;
 
-
     @Column({ type: "decimal", precision: 10, scale: 2, name: "item_sub_total" })
     itemSubTotal!: number;
 
@@ -42,11 +40,11 @@ export default class OrderModel extends GenericModel {
     @OneToOne(() => PaymentModel, payment => payment.order, { cascade: true })
     payment!: PaymentModel;
 
-    @Column({ type: "varchar", length: 50, nullable: true, name: "promotional_coupon_code" })
-    promotionalCouponCode?: string;
+    @Column({ type: "varchar", nullable: true, name: "promotional_coupon_id" })
+    promotionalCouponId?: string;
 
-    @Column({ type: "json", nullable: true })
-    exchangeCoupons?: string[];
+    @Column({ type: "json", nullable: true, name: "exchange_coupon_ids" })
+    exchangeCouponIds?: string[];
 
     constructor(        
         client: ClientModel,
@@ -56,9 +54,7 @@ export default class OrderModel extends GenericModel {
         discount: number,
         finalTotal: number,
         delivery: DeliveryModel,
-        payment: PaymentModel,
-        promotionalCoupon?: string,
-        exchangeCoupons?: string[]
+        payment: PaymentModel
     ) {
         super();
         this.client = client;
@@ -68,13 +64,8 @@ export default class OrderModel extends GenericModel {
         this.freight = freight;
         this.discount = discount;
         this.finalTotal = finalTotal;
-
         this.delivery = delivery;
         this.payment = payment;
-
-        this.promotionalCouponCode = promotionalCoupon;
-        this.exchangeCoupons = exchangeCoupons;
-
         this.isActive = true;
     }
 
@@ -88,8 +79,8 @@ export default class OrderModel extends GenericModel {
             this.client.id,
             this.delivery.toEntity(),
             this.payment.toEntity(),
-            this.promotionalCouponCode,
-            this.exchangeCoupons
+            this.promotionalCouponId,
+            this.exchangeCouponIds || [] 
         );
 
         order.id = this.id;
@@ -100,9 +91,8 @@ export default class OrderModel extends GenericModel {
     }
 
     public static fromEntity(order: Order): OrderModel {
-
         const deliveryModel = DeliveryModel.fromEntity(order.delivery);
-
+        
         const model = new OrderModel(
             { id: order.clientId } as ClientModel,
             [],
@@ -111,10 +101,15 @@ export default class OrderModel extends GenericModel {
             order.discount,
             order.finalTotal,
             deliveryModel,
-            new PaymentModel(0, []),
-            order.promotionalCouponCode,
-            order.exchangeCoupons
+            new PaymentModel(0, [])
         );
+
+        if (order.id) {
+            model.id = order.id;
+        }
+
+        model.promotionalCouponId = order.promotionalCouponId;
+        model.exchangeCouponIds = order.exchangeCouponsIds;
 
         model.items = order.items.map(item => {
             const itemModel = OrderItemModel.fromEntity(item);
@@ -136,6 +131,7 @@ export default class OrderModel extends GenericModel {
 
         deliveryModel.order = model;
         model.orderStatus = order.orderStatus as OrderStatus;
+        
         return model;
     }
 

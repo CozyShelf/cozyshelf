@@ -18,8 +18,8 @@ export default class Order extends DomainEntity {
     _payment!: Payment;
     _delivery!: Delivery;
 
-    _promotionalCouponCode?: string;
-    _exchangeCoupons: string[] = [];
+    _promotionalCouponId?: string;
+    _exchangeCouponsIds: string[] = [];
 
     constructor(        
         items: OrderItem[],
@@ -30,8 +30,8 @@ export default class Order extends DomainEntity {
         clientId: string,
         delivery: Delivery,
         payment: Payment,
-        promotionalCouponCode?: string,
-        exchangeCoupons?: string[]
+        promotionalCouponId?: string,
+        exchangeCouponsIds?: string[]
     ) {
         super();
         this._items = items;
@@ -44,8 +44,8 @@ export default class Order extends DomainEntity {
 
         this._delivery = delivery;
 
-        this._promotionalCouponCode = promotionalCouponCode;
-        this._exchangeCoupons = exchangeCoupons || [];
+        this._promotionalCouponId = promotionalCouponId;
+        this._exchangeCouponsIds = exchangeCouponsIds || [];
 
         this._orderStatus = OrderStatus.PROCESSING;
         this._createdAt = new Date();
@@ -126,20 +126,20 @@ export default class Order extends DomainEntity {
         return this._createdAt;
     }
 
-    get promotionalCouponCode(): string | undefined {
-        return this._promotionalCouponCode;
+    get promotionalCouponId(): string | undefined {
+        return this._promotionalCouponId;
     }
 
-    set promotionalCouponCode(value: string | undefined) {
-        this._promotionalCouponCode = value;
+    set promotionalCouponId(value: string | undefined) {
+        this._promotionalCouponId = value;
     }
     
-    get exchangeCoupons(): string[] {
-        return this._exchangeCoupons;
+    get exchangeCouponsIds(): string[] {
+        return this._exchangeCouponsIds;
     }
 
-    set exchangeCoupons(value: string[]) {
-        this._exchangeCoupons = value;
+    set exchangeCouponsIds(value: string[]) {
+        this._exchangeCouponsIds = value;
     }
 
     static fromRequestData(data: any): Order {
@@ -152,8 +152,8 @@ export default class Order extends DomainEntity {
             data.clientId,
             Delivery.fromRequestData(data.delivery),
             Payment.fromRequestData(data.payment),
-            data.coupons?.promotional,
-            data.coupons?.exchange || []
+            data.coupons?.promotionalCouponId,
+            data.coupons?.exchangeCouponIds || []
         );
 
         return order;

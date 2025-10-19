@@ -8,7 +8,7 @@ export default class CouponController{
         this.service = couponService;
     }
 
-    public async getAllCoupons(req: any, res: any): Promise<void> {
+    public async getAllCoupons(_: any, res: any): Promise<void> {
         try {
             const coupons = await this.service.getAllCoupons();
             res.status(200).json(coupons);

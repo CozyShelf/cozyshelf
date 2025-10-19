@@ -226,6 +226,11 @@
 			<!-- Modal de Cartão (fora do formulário principal) -->
 			<%- include('../../generic/views/components/card/cardModal.ejs') %>
 				<% } %>
+					<script>
+						window.promotionalCoupons = <%- JSON.stringify(promotionalCoupons || []) %>;
+						window.exchangeCoupons = <%- JSON.stringify(exchangeCoupons || []) %>;
+					</script>
+
 					<script type="module" src="/scripts/generic/create/createFormSubmit.mjs"></script>
 					<script type="module" src="/scripts/generic/delete/deleteFormSubmit.mjs"></script>
 					<script src="/scripts/shoppingCart/utils/cartUtils.mjs"></script>

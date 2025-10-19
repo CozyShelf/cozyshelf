@@ -1,18 +1,13 @@
-import { ChildEntity, Column, JoinColumn, OneToOne } from "typeorm";
+import { ChildEntity, Column } from "typeorm";
 import { CouponType } from "../domain/enums/CouponType";
 import { CouponModel } from "./CouponModel";
 import { PromotionalCoupon } from "../domain/PromotionalCoupon";
 import ClientModel from "../../client/model/ClientModel";
-import OrderModel from "../../order/model/OrderModel";
 
 @ChildEntity(CouponType.PROMOTIONAL)
 export class PromotionalCouponModel extends CouponModel {
     @Column({ type: "timestamp", nullable: true, name: "expiration_date" })
     expirationDate!: Date;
-
-    @OneToOne(() => OrderModel, order => order.promotionalCouponCode)
-    @JoinColumn({ name: "order_id" })
-    order?: OrderModel;
 
     public constructor(
         value: number,  
@@ -39,10 +34,7 @@ export class PromotionalCouponModel extends CouponModel {
         );
 
         coupon.id = this.id;
-
-        if (this.order) {
-            coupon.orderId = this.order.id as unknown as string;
-        }
+        coupon.orderId = this.orderId;
 
         return coupon;
     }
@@ -60,9 +52,7 @@ export class PromotionalCouponModel extends CouponModel {
             model.id = coupon.id;
         }
 
-        if (coupon.orderId) {
-            model.order = { id: coupon.orderId } as OrderModel;
-        }
+        model.orderId = coupon.orderId;
         
         return model;
     }
