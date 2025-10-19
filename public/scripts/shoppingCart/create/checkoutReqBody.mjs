@@ -176,62 +176,46 @@ function collectAppliedCoupons(form) {
  * Coleta métodos de pagamento selecionados
  */
 function collectPaymentMethods() {
-	const paymentMethods = {
-		cards: [],
-		totalAmount: 0,
-	};
+    const paymentMethods = {
+        cards: [],
+        totalAmount: 0,
+    };
 
-	// Busca por cartões selecionados no sistema de múltiplos cartões
-	const selectedCardsContainer = document.getElementById("selected-cards");
+    // Busca por cartões selecionados usando a estrutura HTML correta
+    const selectedCards = document.querySelectorAll('#selected-cards .flex.items-center');
+    
+    selectedCards.forEach((cardElement, index) => {
+        // Buscar pelo input hidden do ID do cartão
+        const cardIdInput = cardElement.querySelector('input[name="cardUuid"]');
+        // Buscar pelo input de valor numérico
+        const amountInput = cardElement.querySelector('input[type="number"]');
+        
+        if (cardIdInput && amountInput) {
+            const cardId = cardIdInput.value;
+            const amount = parseFloat(amountInput.value) || 0;
+            
+            console.log(`🔍 Cartão ${index + 1}: ID=${cardId}, Valor=${amount}`);
+            
+            if (cardId && amount > 0) {
+                paymentMethods.cards.push({
+                    cardId: cardId,
+                    amount: Math.round(amount * 100) / 100, // Garantir 2 casas decimais
+                });
+            }
+        }
+    });
 
-	if (selectedCardsContainer) {
-		// Busca pelos inputs hidden que contêm os IDs dos cartões
-		const cardIdInputs = selectedCardsContainer.querySelectorAll(
-			'input[type="hidden"][name="cardUuid"]'
-		);
+    // Calcula o total com precisão
+    paymentMethods.totalAmount = paymentMethods.cards.reduce(
+        (total, card) => total + card.amount,
+        0
+    );
+    
+    // Arredondar para 2 casas decimais
+    paymentMethods.totalAmount = Math.round(paymentMethods.totalAmount * 100) / 100;
 
-		cardIdInputs.forEach((cardIdInput, index) => {
-			const cardId = cardIdInput.value;
-			// Para o valor, usa o input de número visível (mais atualizado que o hidden)
-			const amountInput = selectedCardsContainer.querySelector(
-				`input[type="number"][data-card-index="${index}"]`
-			);
-
-			if (cardId && amountInput) {
-				const amount = parseFloat(amountInput.value) || 0;
-
-				paymentMethods.cards.push({
-					cardId: cardId,
-					amount: amount,
-				});
-			}
-		});
-
-		// Se não encontrou pelos hidden inputs, tenta pelos inputs de número visíveis
-		if (paymentMethods.cards.length === 0) {
-			const amountInputs = selectedCardsContainer.querySelectorAll(
-				'input[type="number"]'
-			);
-
-			amountInputs.forEach((amountInput, index) => {
-				const amount = parseFloat(amountInput.value) || 0;
-
-				// Usa um ID genérico se não encontrar o ID real
-				paymentMethods.cards.push({
-					cardId: `card_${index}`,
-					amount: amount,
-				});
-			});
-		}
-	}
-
-	// Calcula o total a ser pago
-	paymentMethods.totalAmount = paymentMethods.cards.reduce(
-		(total, card) => total + card.amount,
-		0
-	);
-
-	return paymentMethods;
+    console.log('💰 Payment Methods:', paymentMethods);
+    return paymentMethods;
 }
 
 /**

@@ -92,7 +92,7 @@ export default class OrderModel extends GenericModel {
     }
 
     public static fromEntity(order: Order): OrderModel {
-        const deliveryModel = DeliveryModel.fromEntity(order.delivery);
+        const deliveryModel = DeliveryModel.fromEntity(order.delivery);        
         const freightModel = FreightModel.fromEntity(order.freight);
 
         const model = new OrderModel(

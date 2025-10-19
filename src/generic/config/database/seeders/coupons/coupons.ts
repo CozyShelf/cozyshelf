@@ -34,6 +34,14 @@ const coupons = [
         clientId: 'f4a4ecf2-e31e-41b2-8c9f-a36898e23d81' as unknown as ClientModel,
         createdAt: new Date('2024-05-01')
     },
+     {
+        id: '8df94113-76dd-4b68-a481-4be9b50986eb',
+        type: CouponType.EXCHANGE,
+        description: 'Cupom de troca #5',
+        value: 15,
+        clientId: 'f4a4ecf2-e31e-41b2-8c9f-a36898e23d81' as unknown as ClientModel,
+        createdAt: new Date('2024-05-01')
+    },
     {
         id: '709bf8da-4ca5-464a-8fc9-5dfbbe0ea412',
         type: CouponType.PROMOTIONAL,
@@ -66,6 +74,15 @@ const coupons = [
         type: CouponType.PROMOTIONAL,
         description: 'Desconto Outono 30% 2025',
         value: 30,
+        clientId: 'f4a4ecf2-e31e-41b2-8c9f-a36898e23d81' as unknown as ClientModel,
+        createdAt: new Date('2023-04-01'),
+        expirationDate: new Date('2026-12-31')
+    },
+    {
+        id: 'f64bc03e-72a6-42aa-aba3-507f733ce355',
+        type: CouponType.PROMOTIONAL,
+        description: 'Desconto Welcome 15% 2025',
+        value: 15,
         clientId: 'f4a4ecf2-e31e-41b2-8c9f-a36898e23d81' as unknown as ClientModel,
         createdAt: new Date('2023-04-01'),
         expirationDate: new Date('2026-12-31')

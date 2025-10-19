@@ -8,7 +8,7 @@ export default class FreightModel extends GenericModel {
     @Column({ type: "decimal", precision: 10, scale: 2 })
     value!: number;
 
-    @OneToOne(() => OrderModel, order => order.payment)
+    @OneToOne(() => OrderModel, order => order.freight)
     @JoinColumn({ name: "order_id" })
     order!: OrderModel;
 

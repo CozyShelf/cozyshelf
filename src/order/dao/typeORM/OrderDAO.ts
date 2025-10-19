@@ -19,7 +19,8 @@ export default class OrderDAO implements IDAO<OrderModel> {
                 'client', 
                 'items', 
                 'delivery', 
-                'payment'
+                'payment',
+                'freight'
             ]
         });
     }
@@ -29,7 +30,8 @@ export default class OrderDAO implements IDAO<OrderModel> {
             'client', 
             'items', 
             'delivery', 
-            'payment'
+            'payment',
+            'freight'
         ] });
     }
     
