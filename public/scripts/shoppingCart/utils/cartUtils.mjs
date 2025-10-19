@@ -148,7 +148,7 @@ const CartUtils = {
 			notification.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 12px; padding: 16px; cursor: pointer;"
                      onmouseover="this.style.transform='scale(1.02)'; this.style.transition='transform 0.2s ease';"
-                     onmouseout="this.style.transform='scale(1)'; this.style.transition='transform 0.2s ease';">
+                     onmouseout="this.style.transform='scale(1)'; this.style.transition='transform 0.2s ease';" id="cart-success-notification">
                     <div style="flex-shrink: 0; position: relative;">
                         <img src="${bookData.bookImage}"
                              alt="Capa do livro"
@@ -206,7 +206,7 @@ const CartUtils = {
             `;
 		} else {
 			notification.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px;">
+                <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px;" id="cart-error-notification">
                     <span class="material-symbols-outlined" style="font-size: 20px;">
                         ${type === "success" ? "check_circle" : "error"}
                     </span>

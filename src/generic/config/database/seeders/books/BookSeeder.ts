@@ -65,6 +65,10 @@ export default class BookSeeder {
 				(book as any).stockQuantity || Math.floor(Math.random() * 50) + 5 // Quantidade aleatória entre 5 e 54
 			);
 
+			if (book.id) {
+				bookEntity.id = book.id
+			}
+
 			await bookDao.save(bookEntity);
 		}
 	}
