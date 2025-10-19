@@ -4,10 +4,10 @@ import OrderStatus from "./enums/OrderStatus";
 import OrderItem from "./OrderItem";
 import Payment from "./Payment";
 import Delivery from "./Delivery";
+import Freight from "../../freight/domain/Freight";
 
 export default class Order extends DomainEntity {
     _clientId!: string;
-    _freight: number = 0;
     _itemSubTotal: number = 0;
     _discount: number = 0;
     _finalTotal: number = 0;
@@ -15,6 +15,7 @@ export default class Order extends DomainEntity {
     
     _items!: OrderItem[];
     _orderStatus!: OrderStatus;
+    _freight!: Freight;
     _payment!: Payment;
     _delivery!: Delivery;
 
@@ -24,12 +25,12 @@ export default class Order extends DomainEntity {
     constructor(        
         items: OrderItem[],
         itemSubTotal: number,
-        freight: number,
         discount: number,
         finalTotal: number,
         clientId: string,
         delivery: Delivery,
         payment: Payment,
+        freight: Freight,
         promotionalCouponId?: string,
         exchangeCouponsIds?: string[]
     ) {
@@ -99,17 +100,18 @@ export default class Order extends DomainEntity {
         this._itemSubTotal = value;
     }
 
-    get freight(): number {
+    get freight(): Freight {
         return this._freight;
     }
     
-    set freight(value: number) {
+    set freight(value: Freight) {
         this._freight = value;
     }
     
     get discount(): number {
         return this._discount;
     }
+    
     set discount(value: number) {
         this._discount = value;
     }
@@ -146,12 +148,12 @@ export default class Order extends DomainEntity {
         const order = new Order(
             data.cart.items.map((itemData: any) => OrderItem.fromRequestData(itemData)),
             data.cart.totals.itemsSubtotal || 0,
-            data.cart.totals.freight || 0,
             data.cart.totals.discount || 0,
             data.cart.totals.finalTotal || 0,
             data.clientId,
             Delivery.fromRequestData(data.delivery),
             Payment.fromRequestData(data.payment),
+            Freight.fromRequestData(data.cart.totals.freight),
             data.coupons?.promotionalCouponId,
             data.coupons?.exchangeCouponIds || []
         );

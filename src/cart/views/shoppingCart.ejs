@@ -110,7 +110,7 @@
 								</div>
 								<div class="flex justify-between">
 									<h2 class="text-gray-dark [12px]">Frete:</h2>
-									<p class="font-semibold">
+									<p class="font-semibold" id="freight-display">
 										<%= freight %>
 									</p>
 								</div>
@@ -139,7 +139,9 @@
 												<option value="">Selecione um endereço</option>
 												<% if (addresses && addresses.length> 0) { %>
 													<% addresses.forEach(function(address) { %>
-														<option value="<%= address.id %>">
+														<option value="<%= address.id %>"
+															data-freight="<%= address.freightValue %>"
+                											data-state="<%= address.state %>">
 															<%= address.shortPhrase %> - <%= address.fullAddress %>
 														</option>
 														<% }); %>
@@ -241,6 +243,7 @@
 					<script src="/scripts/shoppingCart/components/couponManagement.js"></script>
 					<script src="/scripts/shoppingCart/components/couponValidation.js"></script>
 					<script src="/scripts/shoppingCart/components/multipleCardPayment.js"></script>
+					<script src="/scripts/shoppingCart/components/addressFreightCalculator.mjs"></script>
 
 					<!-- Sistema de Checkout -->
 					<script type="module" src="/scripts/shoppingCart/checkout.mjs"></script>

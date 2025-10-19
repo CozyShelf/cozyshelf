@@ -9,15 +9,17 @@ import CardListDTO from "../../card/dto/CardListDTO";
 import { brazilStates } from "../../generic/config/database/seeders/address/states";
 import { CouponService } from "../../coupons/service/CouponsService";
 import { CouponType } from "../../coupons/domain/enums/CouponType";
+import { FreightService } from "../../freight/service/FreightService";
 
 export default class CartController {
-	private DEFAULT_FREIGHT_VALUE = 10;
 
 	public constructor(
 		private service: CartService,
 		private cardService: CardService,
 		private addressService: AddressService,
-		private couponService: CouponService)
+		private couponService: CouponService,
+		private freightService: FreightService
+	)
 	{}
 
 	public async addItemToCart(req: Request, res: Response) {
@@ -53,46 +55,58 @@ export default class CartController {
 			this.createErrorResponse(res, error as Error);
 		}
 	}
+async renderBooksForCart(req: Request, res: Response) {
+    const { clientID } = req.params;
 
-	async renderBooksForCart(req: Request, res: Response) {
-		const { clientID } = req.params;
+    const cartBooks = await this.service.findAllCartItems(clientID);
+    const cartItemsListDTO = cartBooks
+        ? CartItemListDTO.fromEntityList(cartBooks)
+        : [];
 
-		const cartBooks = await this.service.findAllCartItems(clientID);
-		const cartItemsListDTO = cartBooks
-			? CartItemListDTO.fromEntityList(cartBooks)
-			: [];
+    // Calcular quantidade total de itens
+    const totalItems = cartItemsListDTO.reduce((total, item) => total + item.quantity, 0);
+    
+    let itemsSubtotal = 0;
+    cartItemsListDTO.forEach((item) => (itemsSubtotal += item.subtotal));
 
-		const freight = this.DEFAULT_FREIGHT_VALUE;
+    const promotionalCoupons = await this.couponService.getValidCouponsByClientAndType(clientID, CouponType.PROMOTIONAL)
+    const exchangeCoupons = await this.couponService.getValidCouponsByClientAndType(clientID, CouponType.EXCHANGE)
 
-		let itemsSubtotal = 0;
-		cartItemsListDTO.forEach((item) => (itemsSubtotal += item.subtotal));
+    const cardsEntities = await this.cardService.getByClientId(clientID);
+    const addressesEntities = await this.addressService.getByClientId(clientID);
 
-		const promotionalCoupons = await this.couponService.getValidCouponsByClientAndType(clientID, CouponType.PROMOTIONAL)
-		const exchangeCoupons = await this.couponService.getValidCouponsByClientAndType(clientID, CouponType.EXCHANGE)
+    const cards = cardsEntities.map((card) => CardListDTO.fromEntity(card));
+    const addresses = addressesEntities.map((address) =>
+        AddressListDTO.fromEntity(address)
+    );
 
-		const cardsEntities = await this.cardService.getByClientId(clientID);
-		const addressesEntities = await this.addressService.getByClientId(clientID);
+    const addressesWithFreight = addresses.map(address => {
+        const freightValue = this.freightService.calculateFreightValue(address.state, totalItems);
+        return {
+            ...address,
+            freightValue: freightValue,
+            freightFormatted: `R$ ${freightValue.toFixed(2).replace(".", ",")}`
+        };
+    });
 
-		const cards = cardsEntities.map((card) => CardListDTO.fromEntity(card));
-		const addresses = addressesEntities.map((address) =>
-			AddressListDTO.fromEntity(address)
-		);
-		
-		res.render("shoppingCart", {
-			title: "Carrinho de Compras",
-			currentHeaderTab: "cart",
-			layout: "defaultLayout",
-			cartItems: cartBooks ? CartItemListDTO.fromEntityList(cartBooks) : [],
-			promotionalCoupons,
-			exchangeCoupons,
-			itemsSubtotal: `R$ ${itemsSubtotal.toFixed(2).replace(".", ",")}`,
-			freight: `R$ ${freight}`,
-			total: `R$ ${(itemsSubtotal + freight).toFixed(2).replace(".", ",")}`,
-			cards,
-			addresses,
-			states: brazilStates
-		});
-	}
+    const defaultFreight = 0;
+    
+    res.render("shoppingCart", {
+        title: "Carrinho de Compras",
+        currentHeaderTab: "cart",
+        layout: "defaultLayout",
+        cartItems: cartItemsListDTO,
+        promotionalCoupons,
+        exchangeCoupons,
+        itemsSubtotal: `R$ ${itemsSubtotal.toFixed(2).replace(".", ",")}`,
+        freight: `R$ ${defaultFreight.toFixed(2).replace(".", ",")}`,
+        total: `R$ ${(itemsSubtotal + defaultFreight).toFixed(2).replace(".", ",")}`,
+        totalItems,
+        cards,
+        addresses: addressesWithFreight, // Endereços já com frete calculado
+        states: brazilStates
+    });
+}
 
 	public async removeQuantityFromCart(req: Request, res: Response) {
 		try {

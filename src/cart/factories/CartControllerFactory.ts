@@ -5,6 +5,7 @@ import { CardControllerFactory } from "../../card/factories/CardControllerFactor
 import ClientDAO from "../../client/dao/typeORM/ClientDAO";
 import { CouponDAO } from "../../coupons/dao/typeORM/CouponDAO";
 import { CouponControllerFactory } from "../../coupons/factories/CouponControllerFactory";
+import { FreightService } from "../../freight/service/FreightService";
 import postgresDataSource from "../../generic/config/database/datasources/postgresDataSource";
 import IFactory from "../../generic/factories/Factory";
 import CartController from "../controller/CartController";
@@ -32,11 +33,12 @@ export default class CartControllerFactory implements IFactory<CartController> {
 				new CartDAO(postgresDataSource),
 				clientDAO,
 				bookDAO,
-				new BookService(bookDAO)
+				new BookService(bookDAO),
 			),
 			this.cardControllerFactory.makeCardService(clientDAO),
 			this.addressControllerFactory.makeAddressService(clientDAO),
-			this.couponContollerFactory.makeCouponService(couponDAO)
+			this.couponContollerFactory.makeCouponService(couponDAO),
+			new FreightService()
 		);
 	}
 }

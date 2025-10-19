@@ -6,6 +6,7 @@ import ClientModel from "../../client/model/ClientModel";
 import OrderItemModel from "./OrdemItemModel";
 import PaymentModel from "./PaymentModel";
 import DeliveryModel from "./DeliveryModel";
+import FreightModel from "../../freight/model/FreightModel";
 
 @Entity()
 export default class OrderModel extends GenericModel {
@@ -26,9 +27,6 @@ export default class OrderModel extends GenericModel {
     itemSubTotal!: number;
 
     @Column({ type: "decimal", precision: 10, scale: 2 })
-    freight!: number;
-
-    @Column({ type: "decimal", precision: 10, scale: 2 })
     discount!: number;
 
     @Column({ type: "decimal", precision: 10, scale: 2, name: "final_total" })
@@ -40,6 +38,9 @@ export default class OrderModel extends GenericModel {
     @OneToOne(() => PaymentModel, payment => payment.order, { cascade: true })
     payment!: PaymentModel;
 
+    @OneToOne(() => FreightModel, freight => freight.order, { cascade: true })
+    freight!: FreightModel;
+
     @Column({ type: "varchar", nullable: true, name: "promotional_coupon_id" })
     promotionalCouponId?: string;
 
@@ -50,7 +51,7 @@ export default class OrderModel extends GenericModel {
         client: ClientModel,
         items: OrderItemModel[],
         itemSubTotal: number,
-        freight: number,
+        freight: FreightModel,
         discount: number,
         finalTotal: number,
         delivery: DeliveryModel,
@@ -73,14 +74,14 @@ export default class OrderModel extends GenericModel {
         const order = new Order(
             this.items.map(item => item.toEntity()),
             this.itemSubTotal,
-            this.freight,
             this.discount,
             this.finalTotal,
             this.client.id,
             this.delivery.toEntity(),
             this.payment.toEntity(),
+            this.freight.toEntity(),
             this.promotionalCouponId,
-            this.exchangeCouponIds || [] 
+            this.exchangeCouponIds || []
         );
 
         order.id = this.id;
@@ -92,12 +93,13 @@ export default class OrderModel extends GenericModel {
 
     public static fromEntity(order: Order): OrderModel {
         const deliveryModel = DeliveryModel.fromEntity(order.delivery);
-        
+        const freightModel = FreightModel.fromEntity(order.freight);
+
         const model = new OrderModel(
             { id: order.clientId } as ClientModel,
             [],
             order.itemSubTotal,
-            order.freight,
+            freightModel,
             order.discount,
             order.finalTotal,
             deliveryModel,
@@ -130,6 +132,8 @@ export default class OrderModel extends GenericModel {
         }
 
         deliveryModel.order = model;
+        freightModel.order = model;
+
         model.orderStatus = order.orderStatus as OrderStatus;
         
         return model;
