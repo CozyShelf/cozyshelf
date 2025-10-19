@@ -6,7 +6,7 @@ import {
 import { validateForm } from "../validations/formValidations.mjs";
 import { buildNewAddressReqBody } from "./createAddressReqBody.mjs";
 
-export async function handleAddressCreation(form) {
+export async function handleAddressCreation(form, withRedirect = true) {
 	if (!validateForm(form)) {
 		return;
 	}
@@ -14,5 +14,9 @@ export async function handleAddressCreation(form) {
 	const requestBody = buildNewAddressReqBody(form);
 	requestBody.clientId = "f4a4ecf2-e31e-41b2-8c9f-a36898e23d81";
 
-	await submitCreationForm(ADDRESS_PATH, requestBody, REDIRECT_PATH, true);
+	if (withRedirect) {
+		await submitCreationForm(ADDRESS_PATH, requestBody, REDIRECT_PATH, true);
+	} else {
+		await submitCreationForm(ADDRESS_PATH, requestBody, null, false);
+	}
 }

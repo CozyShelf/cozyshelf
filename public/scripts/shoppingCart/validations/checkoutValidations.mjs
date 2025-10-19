@@ -118,13 +118,6 @@ function validatePaymentMethods() {
 	const totalAmountCents = Math.round(totalAmount * 100);
 	const difference = Math.abs(totalCardAmountCents - totalAmountCents);
 
-	// Debug temporário para investigar o problema
-	console.log("🔍 DEBUG VALORES:");
-	console.log("- Total cartões (centavos):", totalCardAmountCents);
-	console.log("- Total compra (centavos):", totalAmountCents);
-	console.log("- Diferença (centavos):", difference);
-	console.log("- Valores são iguais?", difference === 0);
-
 	if (difference > 0) {
 		let errorMessage;
 		if (totalCardAmountCents < totalAmountCents) {

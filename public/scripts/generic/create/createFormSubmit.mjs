@@ -52,6 +52,13 @@ export async function submitCreationForm(
 			}).then((result) => {
 				if (withRedirect) {
 					if (result.isConfirmed) window.location.href = redirectPath;
+				} else {
+					// Se não estamos redirecionando, emitir evento para fechar modais (útil no carrinho)
+					document.dispatchEvent(
+						new CustomEvent("entityCreated", {
+							detail: { type: "success" },
+						})
+					);
 				}
 			});
 		} else {
