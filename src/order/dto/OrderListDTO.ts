@@ -19,13 +19,8 @@ export default class OrderListDTO {
     public static fromEntity(order: Order): OrderListDTO {
         return new OrderListDTO(
             order.id,
-            order.deliveryDate,
+            order.delivery.deliveryDate,
             order.orderStatus
         );
     }
-
-    public get formattedDeliveryDate(): string {
-        return this.estimatedDeliveryDate.toLocaleDateString('pt-BR');
-    }
-
 }

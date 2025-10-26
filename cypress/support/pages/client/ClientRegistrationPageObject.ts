@@ -1,9 +1,9 @@
-import GenericPage from "./GenericPageObject";
+import GenericPage from "../GenericPageObject";
 import {
 	IAddressTestData,
 	ICardTestData,
 	IClientTestData,
-} from "./types/TestData";
+} from "../types/TestData";
 
 export default class ClientRegistrationPageObject extends GenericPage {
 	private readonly CLIENT_REGISTER_PAGE: string;
@@ -17,7 +17,10 @@ export default class ClientRegistrationPageObject extends GenericPage {
 		this.visitPage(this.CLIENT_REGISTER_PAGE);
 	}
 
-	registerNewClient(client: IClientTestData, preSendDataRule?: (...args: any) => void) {
+	registerNewClient(
+		client: IClientTestData,
+		preSendDataRule?: (...args: any) => void
+	) {
 		this.visitClientsPage();
 		this.typeClientInformation(client);
 		this.typeClientAddressInformation(client.address);

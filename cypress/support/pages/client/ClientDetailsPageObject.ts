@@ -1,10 +1,9 @@
-import ClientRegistrationPageObject from "./ClientRegistrationPageObject";
-import GenericPageObject from "./GenericPageObject";
+import GenericPageObject from "../GenericPageObject";
 import {
 	IAddressTestData,
 	ICardTestData,
 	IClientTestData,
-} from "./types/TestData";
+} from "../types/TestData";
 
 export default class ClientDetailsPageObject extends GenericPageObject {
 	private readonly CLIENT_DETAILS_PAGE: string;

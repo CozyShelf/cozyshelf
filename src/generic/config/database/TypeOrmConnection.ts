@@ -3,6 +3,7 @@ import DatabaseConnectionError from "./errors/DatabaseConnectionError";
 import CardFlagSeeder from "./seeders/CardFlagSeeder";
 import BookSeeder from "./seeders/books/BookSeeder";
 import UserSeeder from "./seeders/user/UserSeeder";
+import CouponsSeeder from "./seeders/coupons/CouponsSeeder";
 
 export default class TypeOrmConnection {
 	static async connect(dataSource: DataSource) {
@@ -21,6 +22,8 @@ export default class TypeOrmConnection {
 			console.log("[INFO] 📚 Books seeded successfully");
 			await UserSeeder.execute(dataSource);
 			console.log("[INFO] 👤 Users seeded successfully");
+			await CouponsSeeder.execute(dataSource);
+			console.log("[INFO] 🎟️  Coupons seeded successfully");
 		}
 	}
 }

@@ -1,6 +1,7 @@
 export default abstract class DomainEntity {
 	_id!: string;
 	_isActive: boolean;
+	_orderId?: string;
 
 	public constructor() {
 		this._isActive = true;
@@ -20,5 +21,13 @@ export default abstract class DomainEntity {
 
 	set isActive(value: boolean) {
 		this._isActive = value;
+	}
+
+	get orderId(): string | undefined {
+		return this._orderId;
+	}
+	
+	set orderId(value: string | undefined) {
+		this._orderId = value;
 	}
 }

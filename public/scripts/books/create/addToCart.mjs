@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-	const addToCartBtn = document.getElementById("add-to-cart-btn");
+	const addToCartBtn = document.getElementById("add-to-cart-button");
 	const quantityInput = document.getElementById("book-quantity");
 	const btnText = document.getElementById("btn-text");
 	const btnIcon = document.getElementById("btn-icon");

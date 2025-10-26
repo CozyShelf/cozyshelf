@@ -1,6 +1,6 @@
 import BookDAO from "../../books/dao/BookDAO";
 import NoBooksFound from "../../books/service/exceptions/NoBooksFound";
-import InsufficientStockException from "../../books/service/exceptions/InsufficientStockException";
+// import InsufficientStockException from "../../books/service/exceptions/InsufficientStockException";
 import BookService from "../../books/service/BookService";
 import ClientDAO from "../../client/dao/typeORM/ClientDAO";
 import NoClientsFound from "../../client/service/exceptions/NoClientsFound";
@@ -32,23 +32,12 @@ export default class CartService {
 			throw new NoBooksFound(bookID);
 		}
 
-		const book = await this.bookService.getById(bookID);
-		const isInStock = book.isInStock(quantity);
-		if (!isInStock) {
-			throw new InsufficientStockException(
-				book.name,
-				quantity,
-				book.stockQuantity
-			);
-		}
-
 		const existingCartItem = await this.checkForExistingCartItem(
 			clientID,
 			bookID
 		);
 
 		let cartItemModel: CartItemModel;
-		let quantityToDecrease = quantity;
 
 		if (existingCartItem) {
 			const cartItemEntity = existingCartItem.toEntity();
@@ -59,8 +48,6 @@ export default class CartService {
 		} else {
 			cartItemModel = new CartItemModel(foundClient, foundBook, quantity, true);
 		}
-
-		await this.bookService.decreaseBookStock(bookID, quantityToDecrease);
 
 		const savedCartItem = await this.dao.save(cartItemModel);
 
@@ -116,18 +103,13 @@ export default class CartService {
 		const cartItemEntity = existingCartItem.toEntity();
 		let quantityToReturnToStock = quantity;
 
-		// Se a quantidade a remover é maior ou igual à quantidade atual, remove o item completamente
 		if (quantity >= cartItemEntity.quantity) {
 			quantityToReturnToStock = cartItemEntity.quantity;
 			existingCartItem.isActive = false;
 		} else {
-			// Remove apenas a quantidade especificada
 			cartItemEntity.removeQuantity(quantity);
 			existingCartItem.quantity = cartItemEntity.quantity;
 		}
-
-		// Retornar ao estoque a quantidade removida
-		await this.bookService.increaseBookStock(bookID, quantityToReturnToStock);
 
 		return await this.dao.save(existingCartItem);
 	}
@@ -142,12 +124,6 @@ export default class CartService {
 			throw new Error("Item já foi removido do carrinho");
 		}
 
-		// Retornar toda a quantidade ao estoque antes de deletar
-		await this.bookService.increaseBookStock(
-			cartItem.book.id,
-			cartItem.quantity
-		);
-
 		await this.dao.delete(itemId);
 	}
 
@@ -155,15 +131,6 @@ export default class CartService {
 		const cartItems = await this.dao.findAllByClientID(clientID);
 		if (!cartItems || cartItems.length === 0) {
 			return;
-		}
-
-		for (const cartItem of cartItems) {
-			if (cartItem.isActive) {
-				await this.bookService.increaseBookStock(
-					cartItem.book.id,
-					cartItem.quantity
-				);
-			}
 		}
 
 		await this.dao.deleteAllByClientID(clientID);

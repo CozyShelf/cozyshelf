@@ -122,8 +122,6 @@ export default class AddressController {
 			const addressEntity =  await this.service.getById(addressId);
 			const address = AddressDetailsDTO.fromEntity(addressEntity);
 
-			console.log(address);
-
 			res.render("addressDetails", {
 				title: "Editar Endereço",
 				currentHeaderTab: "profile",
