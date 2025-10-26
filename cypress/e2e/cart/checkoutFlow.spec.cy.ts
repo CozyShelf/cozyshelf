@@ -10,6 +10,21 @@ describe("checkout flow - complete purchase", () => {
 	const TEST_ADDRESS_ID = "d5b4ecf2-e31e-41b2-8c9f-a36898e23d81";
 	const TEST_CARD_ID = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
 
+	const PROMOTIONAL_COUPONS = {
+        PROMO10: "709bf8da-4ca5-464a-8fc9-5dfbbe0ea412", // Desconto Primavera 10% 2025
+        PROMO20: "d1f7c8e3-3c4b-4f5a-9e6b-2e7f8c9d0a1b", // Desconto Verão 20% 2025
+        BLACKFRIDAY: "a9ad6f2d-7f5b-4684-9c98-b9bc0e1397da", // Desconto Outono 30% 2025
+		WELCOME15: "f64bc03e-72a6-42aa-aba3-507f733ce355" // Desconto Welcome 15% 2025
+    };
+
+	const EXCHANGE_COUPONS = {
+        TROCA001: "42caca40-cbb1-4dd0-b3bf-07e7ed651ad1", // Cupom de troca #1 - R$ 10
+        TROCA002: "58d6f8e1-3c4b-4f5a-9e6b-2e7f8c9d0a1b", // Cupom de troca #2 - R$ 25
+        TROCA003: "67e8f9a2-5d4c-4e6b-8f7a-3b8c9d0e1f2a", // Cupom de troca #3 - R$ 30
+        TROCA004: "78f9a1b2-6e5d-4f7a-9b8c-4c9d0e1f2a3b",  // Cupom de troca #4 - R$ 15
+		TROCA005: "8df94113-76dd-4b68-a481-4be9b50986eb"  // Cupom de troca #5 - R$ 15
+    };
+
 	const makeSUT = () => {
 		addCartItensPageObject = new AddCartItensPageObject();
 		checkoutPageObject = new CheckoutPageObject(addCartItensPageObject);
@@ -76,7 +91,7 @@ describe("checkout flow - complete purchase", () => {
 		it("should complete checkout with promotional coupon", () => {
 			checkoutPageObject.visitCartPageWithItems(2);
 
-			checkoutPageObject.selectPromotionalCoupon("PROMO10");
+			checkoutPageObject.selectPromotionalCoupon(PROMOTIONAL_COUPONS.PROMO10);
 			checkoutPageObject.applyCoupons();
 
 			checkoutPageObject.verifyAppliedCouponsStatus();
@@ -104,7 +119,7 @@ describe("checkout flow - complete purchase", () => {
 		it("should complete checkout with exchange coupon", () => {
 			checkoutPageObject.visitCartPageWithItems(2);
 
-			checkoutPageObject.selectExchangeCoupon("TROCA002");
+			checkoutPageObject.selectExchangeCoupon(EXCHANGE_COUPONS.TROCA002);
 			checkoutPageObject.applyCoupons();
 
 			checkoutPageObject.verifyAppliedCouponsStatus();
@@ -119,8 +134,8 @@ describe("checkout flow - complete purchase", () => {
 		it("should complete checkout with both promotional and exchange coupons", () => {
 			checkoutPageObject.visitCartPageWithItems(3);
 
-			checkoutPageObject.selectPromotionalCoupon("PROMO10");
-			checkoutPageObject.selectExchangeCoupon("TROCA002");
+			checkoutPageObject.selectPromotionalCoupon(PROMOTIONAL_COUPONS.PROMO20);
+			checkoutPageObject.selectExchangeCoupon(EXCHANGE_COUPONS.TROCA005);
 			checkoutPageObject.applyCoupons();
 
 			checkoutPageObject.verifyAppliedCouponsStatus();
@@ -135,10 +150,10 @@ describe("checkout flow - complete purchase", () => {
 		it("should disable payment when coupons cover full amount", () => {
 			checkoutPageObject.visitCartPageWithItems(1);
 
-			checkoutPageObject.selectPromotionalCoupon("BLACKFRIDAY");
-			checkoutPageObject.selectExchangeCoupon("TROCA001");
-			checkoutPageObject.selectExchangeCoupon("TROCA003");
-			checkoutPageObject.selectExchangeCoupon("TROCA004");
+			checkoutPageObject.selectPromotionalCoupon(PROMOTIONAL_COUPONS.BLACKFRIDAY);
+			checkoutPageObject.selectExchangeCoupon(EXCHANGE_COUPONS.TROCA001);
+			checkoutPageObject.selectExchangeCoupon(EXCHANGE_COUPONS.TROCA003);
+			checkoutPageObject.selectExchangeCoupon(EXCHANGE_COUPONS.TROCA004);
 			checkoutPageObject.applyCoupons();
 
 			cy.wait(1000);
@@ -169,7 +184,7 @@ describe("checkout flow - complete purchase", () => {
 
 			checkoutPageObject.selectDeliveryAddress(TEST_ADDRESS_ID);
 
-			checkoutPageObject.selectPromotionalCoupon("WELCOME15");
+			checkoutPageObject.selectPromotionalCoupon(PROMOTIONAL_COUPONS.WELCOME15);
 			checkoutPageObject.applyCoupons();
 			checkoutPageObject.verifyAppliedCouponsStatus();
 

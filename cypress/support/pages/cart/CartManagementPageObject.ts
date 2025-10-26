@@ -76,13 +76,15 @@ export default class CartManagementPageObject extends GenericPageObject {
 			.then((text) => text.trim());
 	}
 
-	selectPromotionalCoupon(couponCode: string) {
-		this.selectValue("promotional-coupon-select", couponCode);
-	}
+	selectPromotionalCoupon(couponId: string) {
+        cy.get("#promotional-coupon-select").should("be.visible");
+        this.selectValue("promotional-coupon-select", couponId);
+    }
 
-	selectExchangeCoupon(couponCode: string) {
-		cy.get(`#exchange-coupon-${couponCode}`).check({ force: true });
-	}
+    selectExchangeCoupon(couponId: string) {
+        cy.get(`input[name="exchangeCoupons"][value="${couponId}"]`).should("be.visible");
+        cy.get(`input[name="exchangeCoupons"][value="${couponId}"]`).check({ force: true });
+    }
 
 	applyCoupons() {
 		this.clickButton("apply-coupons");

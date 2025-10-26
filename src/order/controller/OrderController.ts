@@ -16,12 +16,12 @@ export default class OrderController {
 
 	public async create(req: Request, res: Response): Promise<void> {
 		try {
-			//TODO: Validar o corpo da requisição
 			const body = req.body as INewOrderData;
 			const clientId = body.clientId;
 
 			const order = Order.fromRequestData(body);
 			const createdOrder = await this.service.create(order);
+			console.log("[INFO] ✅ Order created successfully!");
 
 			res.status(201).json({
 				message: `Pedido ${createdOrder.id} criado com sucesso para o cliente de id: ${clientId}!`,
@@ -52,19 +52,18 @@ export default class OrderController {
 		try {
 			const id = req.params.id;
 			const order = await this.service.getById(id);
-			
+
+			if (!order) {
+				res.status(404).json({message: `Pedido de id: ${id} não foi encontrado!`,});
+				return;
+			}
+
 			const booksEntity = order?._items
 				? await Promise.all(order._items.map((item) => this.bookService.getById(item._bookId)))
 				: [];
 
 			const books = booksEntity.map(book => book ? BookDetailsDTO.fromEntity(book) : null).filter(book => book !== null);
 
-			if (!order) {
-				res.status(404).json({
-					message: `Pedido de id: ${id} não foi encontrado!`,
-				});
-				return;
-			}
 			res.render("orderDetails", {
 				title: `Detalhes do Pedido ${order.id}`,
 				currentHeaderTab: "profile",

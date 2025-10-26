@@ -32,15 +32,15 @@ export default class CheckoutPageObject extends GenericPageObject {
 		addressSelect.should("have.attr", "required");
 	}
 
-	selectPromotionalCoupon(couponCode: string) {
-		cy.get("#promotional-coupon-select").should("be.visible");
-		this.selectValue("promotional-coupon-select", couponCode);
-	}
+    selectPromotionalCoupon(couponId: string) {
+        cy.get("#promotional-coupon-select").should("be.visible");
+        this.selectValue("promotional-coupon-select", couponId);
+    }
 
-	selectExchangeCoupon(couponCode: string) {
-		cy.get(`#exchange-coupon-${couponCode}`).should("be.visible");
-		cy.get(`#exchange-coupon-${couponCode}`).check({ force: true });
-	}
+    selectExchangeCoupon(couponId: string) {
+        cy.get(`input[name="exchangeCoupons"][value="${couponId}"]`).should("be.visible");
+        cy.get(`input[name="exchangeCoupons"][value="${couponId}"]`).check({ force: true });
+    }
 
 	applyCoupons() {
 		cy.get("#apply-coupons").should("be.visible").and("not.be.disabled");
@@ -255,7 +255,13 @@ export default class CheckoutPageObject extends GenericPageObject {
 	}
 
 	clickAddAddressButton() {
-		cy.get("#add-address").click();
+        cy.get("#add-address")
+			.should("be.visible")
+			.should("not.be.disabled");
+
+		cy.wait(1000);
+                
+        cy.get("#add-address").click({ force: true });
 		cy.wait(500);
 	}
 

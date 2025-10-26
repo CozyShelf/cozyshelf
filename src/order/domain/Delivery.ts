@@ -25,10 +25,7 @@ export default class Delivery extends DomainEntity{
     }
 
     static fromRequestData(data: any): Delivery {
-        const delivery = new Delivery(
-            data.addressId
-        );
-
+        const delivery = new Delivery(data.addressId);
         return delivery;
     }
 }

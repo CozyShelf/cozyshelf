@@ -1,43 +1,59 @@
-import { Entity, Column, ManyToOne, JoinColumn} from "typeorm";
-import GenericModel from "../../generic/model/GenericModel";
+import { ChildEntity, Column } from "typeorm";
+import { CouponType } from "../domain/enums/CouponType";
+import { CouponModel } from "./CouponModel";
 import { PromotionalCoupon } from "../domain/PromotionalCoupon";
 import ClientModel from "../../client/model/ClientModel";
 
-@Entity()
-export default class PromotionalCouponModel extends GenericModel {
-    @Column({ type: "decimal", precision: 10, scale: 2 })
-    valor!: number;
+@ChildEntity(CouponType.PROMOTIONAL)
+export class PromotionalCouponModel extends CouponModel {
+    @Column({ type: "timestamp", nullable: true, name: "expiration_date" })
+    expirationDate!: Date;
 
-    @Column({ type: "date" })
-    validade!: Date;
-
-    @Column({ type: "varchar", length: 50, unique: true })
-    codigo!: string;
-
-    @ManyToOne(() => ClientModel)
-    @JoinColumn({ name: "client_id" })
-    client!: ClientModel;
+    public constructor(
+        value: number,  
+        clientId: string, 
+        type: CouponType, 
+        expirationDate: Date,
+        description?: string,
+    ) {
+        super();
+        this.value = value;
+        this.type = type;
+        this.expirationDate = expirationDate;
+        this.description = description;
+        this.client = { id: clientId } as ClientModel;
+    }
 
     public toEntity(): PromotionalCoupon {
-        return new PromotionalCoupon(
-            this.valor,
-            this.validade,
-            this.codigo,
-            this.client.toEntity()
+        const coupon = new PromotionalCoupon(
+            this.value,
+            this.client.id,
+            this.type,
+            this.expirationDate,
+            this.description
         );
+
+        coupon.id = this.id;
+        coupon.orderId = this.orderId;
+
+        return coupon;
     }
 
-    public static fromEntity(promotionalCoupon: PromotionalCoupon): PromotionalCouponModel {
-        const model = new PromotionalCouponModel();
-        model.valor = promotionalCoupon.valor;
-        model.validade = promotionalCoupon.validade;
-        model.codigo = promotionalCoupon.codigo;
-        return model;
-    }
+    public static fromEntity(coupon: PromotionalCoupon): PromotionalCouponModel {
+        const model = new PromotionalCouponModel(
+            coupon.value,
+            coupon.clientId,
+            CouponType.PROMOTIONAL,
+            coupon.expirationDate,
+            coupon.description
+        );
 
-    public updateFromEntity(promotionalCoupon: PromotionalCoupon): void {
-        if (promotionalCoupon.isActive !== this.isActive) {
-            this.isActive = promotionalCoupon.isActive;
+        if (coupon.id){
+            model.id = coupon.id;
         }
+
+        model.orderId = coupon.orderId;
+        
+        return model;
     }
 }

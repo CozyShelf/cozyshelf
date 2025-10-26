@@ -3,36 +3,36 @@ import DomainEntity from "../../generic/domain/DomainEntity";
 import OrderStatus from "./enums/OrderStatus";
 import OrderItem from "./OrderItem";
 import Payment from "./Payment";
+import Delivery from "./Delivery";
+import Freight from "../../freight/domain/Freight";
 
 export default class Order extends DomainEntity {
     _clientId!: string;
-    _items!: OrderItem[];
-    _payment!: Payment;
-    _orderStatus!: OrderStatus;
     _itemSubTotal: number = 0;
-    _freight: number = 0;
     _discount: number = 0;
     _finalTotal: number = 0;
     _createdAt!: Date;
+    
+    _items!: OrderItem[];
+    _orderStatus!: OrderStatus;
+    _freight!: Freight;
+    _payment!: Payment;
+    _delivery!: Delivery;
 
-    // delivery
-    _addressId!: string;
-    _deliveryDate!: Date;
-
-    _promotionalCouponCode?: string;
-    _exchangeCoupons: string[] = [];
+    _promotionalCouponId?: string;
+    _exchangeCouponsIds: string[] = [];
 
     constructor(        
         items: OrderItem[],
         itemSubTotal: number,
-        freight: number,
         discount: number,
         finalTotal: number,
         clientId: string,
-        addressId: string,
+        delivery: Delivery,
         payment: Payment,
-        promotionalCouponCode?: string,
-        exchangeCoupons?: string[]
+        freight: Freight,
+        promotionalCouponId?: string,
+        exchangeCouponsIds?: string[]
     ) {
         super();
         this._items = items;
@@ -43,11 +43,10 @@ export default class Order extends DomainEntity {
         this._finalTotal = finalTotal;
         this._clientId = clientId;
 
-        this._addressId = addressId;
-        this._deliveryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // Default delivery date is 7 days from now
-       
-        this._promotionalCouponCode = promotionalCouponCode;
-        this._exchangeCoupons = exchangeCoupons || [];
+        this._delivery = delivery;
+
+        this._promotionalCouponId = promotionalCouponId;
+        this._exchangeCouponsIds = exchangeCouponsIds || [];
 
         this._orderStatus = OrderStatus.PROCESSING;
         this._createdAt = new Date();
@@ -69,20 +68,12 @@ export default class Order extends DomainEntity {
         this._items = value;
     }
 
-    get addressId(): string {
-        return this._addressId;
+    get delivery(): Delivery {
+        return this._delivery;
     }
-
-    set addressId(value: string) {
-        this._addressId = value;
-    }
-
-    get deliveryDate(): Date {
-        return this._deliveryDate;
-    }
-
-    set deliveryDate(value: Date) {
-        this._deliveryDate = value;
+    
+    set delivery(value: Delivery) {
+        this._delivery = value;
     }
 
     get orderStatus(): OrderStatus {
@@ -109,17 +100,18 @@ export default class Order extends DomainEntity {
         this._itemSubTotal = value;
     }
 
-    get freight(): number {
+    get freight(): Freight {
         return this._freight;
     }
     
-    set freight(value: number) {
+    set freight(value: Freight) {
         this._freight = value;
     }
     
     get discount(): number {
         return this._discount;
     }
+    
     set discount(value: number) {
         this._discount = value;
     }
@@ -136,34 +128,34 @@ export default class Order extends DomainEntity {
         return this._createdAt;
     }
 
-    get promotionalCouponCode(): string | undefined {
-        return this._promotionalCouponCode;
+    get promotionalCouponId(): string | undefined {
+        return this._promotionalCouponId;
     }
 
-    set promotionalCouponCode(value: string | undefined) {
-        this._promotionalCouponCode = value;
+    set promotionalCouponId(value: string | undefined) {
+        this._promotionalCouponId = value;
     }
     
-    get exchangeCoupons(): string[] {
-        return this._exchangeCoupons;
+    get exchangeCouponsIds(): string[] {
+        return this._exchangeCouponsIds;
     }
 
-    set exchangeCoupons(value: string[]) {
-        this._exchangeCoupons = value;
+    set exchangeCouponsIds(value: string[]) {
+        this._exchangeCouponsIds = value;
     }
 
     static fromRequestData(data: any): Order {
         const order = new Order(
             data.cart.items.map((itemData: any) => OrderItem.fromRequestData(itemData)),
             data.cart.totals.itemsSubtotal || 0,
-            data.cart.totals.freight || 0,
             data.cart.totals.discount || 0,
             data.cart.totals.finalTotal || 0,
             data.clientId,
-            data.delivery.addressId,
+            Delivery.fromRequestData(data.delivery),
             Payment.fromRequestData(data.payment),
-            data.coupons?.promotional,
-            data.coupons?.exchange || []
+            Freight.fromRequestData(data.cart.totals.freight),
+            data.coupons?.promotionalCouponId,
+            data.coupons?.exchangeCouponIds || []
         );
 
         return order;

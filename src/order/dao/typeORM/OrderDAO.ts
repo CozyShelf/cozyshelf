@@ -13,12 +13,26 @@ export default class OrderDAO implements IDAO<OrderModel> {
         return await this.repository.save(order);
     }
 
-     async findAll(): Promise<OrderModel[] | null> {
-        return await this.repository.find({ relations: ["items", "payment", "client", "address"] });
+    async findAll(): Promise<OrderModel[]> {
+        return await this.repository.find({
+            relations: [
+                'client', 
+                'items', 
+                'delivery', 
+                'payment',
+                'freight'
+            ]
+        });
     }
     
     async findById(id: string): Promise<OrderModel | null> {
-        return await this.repository.findOne({ where: { id }, relations: ["items", "payment", "client", "address"] });
+        return await this.repository.findOne({ where: { id }, relations: [
+            'client', 
+            'items', 
+            'delivery', 
+            'payment',
+            'freight'
+        ] });
     }
     
     async delete(id: string): Promise<void> {

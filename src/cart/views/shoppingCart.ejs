@@ -42,14 +42,16 @@
 									<div class="flex gap-2">
 										<select id="promotional-coupon-select" name="promotionalCoupon"
 											class="border border-gray-dark text-gray-dark rounded px-2 py-1 w-full text-[12px]">
-											<option value="">Nenhum cupom promocional</option>
-											<% if (promotionalCoupons && promotionalCoupons.length> 0) { %>
+											<option value="">Selecione um cupom promocional</option>
+											<% if (promotionalCoupons && promotionalCoupons.length > 0) { %>
 												<% promotionalCoupons.forEach(function(coupon) { %>
-													<option value="<%= coupon.code %>">
-														<%= coupon.name %> (<%= coupon.discount %>%)
+													<option value="<%= coupon.id %>">
+														<%= coupon.description %> (<%= Math.round(coupon.value) %>%)
 													</option>
-													<% }); %>
-														<% } %>
+												<% }); %>
+											<% } else { %>
+												<option value="" disabled>Nenhum cupom promocional disponível</option>
+											<% } %>
 										</select>
 									</div>
 								</div>
@@ -61,11 +63,10 @@
 										<% if (exchangeCoupons && exchangeCoupons.length> 0) { %>
 											<% exchangeCoupons.forEach(function(coupon, index) { %>
 												<label class="flex items-center gap-2 text-[12px] mb-1">
-													<input type="checkbox" name="exchangeCoupons" id="exchange-coupon-<%= coupon.code %>"
-														value="<%= coupon.code %>"
+													<input type="checkbox" name="exchangeCoupons" value="<%= coupon.id %>"
 														class="w-4 h-4 text-brown bg-gray-100 border-gray-300 rounded focus:ring-brown">
 													<span>
-														<%= coupon.name %> (R$ <%= coupon.value %>)
+														<%= coupon.description %> (R$ <%= coupon.value %>)
 													</span>
 												</label>
 												<% }); %>
@@ -139,7 +140,9 @@
 												<option value="">Selecione um endereço</option>
 												<% if (addresses && addresses.length> 0) { %>
 													<% addresses.forEach(function(address) { %>
-														<option value="<%= address.id %>">
+														<option value="<%= address.id %>"
+															data-freight="<%= address.freightValue %>"
+                											data-state="<%= address.state %>">
 															<%= address.shortPhrase %> - <%= address.fullAddress %>
 														</option>
 														<% }); %>
@@ -227,6 +230,11 @@
 			<!-- Modal de Cartão (fora do formulário principal) -->
 			<%- include('../../generic/views/components/card/cardModal.ejs') %>
 				<% } %>
+					<script>
+						window.promotionalCoupons = <%- JSON.stringify(promotionalCoupons || []) %>;
+						window.exchangeCoupons = <%- JSON.stringify(exchangeCoupons || []) %>;
+					</script>
+
 					<script type="module" src="/scripts/generic/create/createFormSubmit.mjs"></script>
 					<script type="module" src="/scripts/generic/delete/deleteFormSubmit.mjs"></script>
 					<script src="/scripts/shoppingCart/utils/cartUtils.mjs"></script>
@@ -237,6 +245,7 @@
 					<script src="/scripts/shoppingCart/components/couponManagement.js"></script>
 					<script src="/scripts/shoppingCart/components/couponValidation.js"></script>
 					<script src="/scripts/shoppingCart/components/multipleCardPayment.js"></script>
+					<script src="/scripts/shoppingCart/components/addressFreightCalculator.mjs"></script>
 
 					<!-- Sistema de Checkout -->
 					<script type="module" src="/scripts/shoppingCart/checkout.mjs"></script>

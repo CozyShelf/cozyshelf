@@ -1,6 +1,6 @@
 <div class="flex flex-col w-full gap-10 mt-9 mb-15 px-32">
 	<div class="flex justify-between align-middle">
-		<h1 class="font-semibold text-[20px]">Meus Cupons (2)</h1>
+		<h1 class="font-semibold text-[20px]">Meus Cupons (<%= coupons.length %>)</h1>
 		<div class="flex items-center gap-2">
 			<h1 class="text-gray">Filtrar: </h1>
 			<select
@@ -21,26 +21,24 @@
 			</tr>
 		</thead>
 		<tbody class="divide-y divide-light-brown bg-lighter-brown text-sm text-gray-2">
-			<tr>
-				<td class="px-6 py-3 font-medium text-gray-2">255846</td>
-				<td class="px-6 py-3">
-					<span class="bg-orange text-white px-2 py-0.5 rounded-full text-xs">
-						Troca
-					</span>
-				</td>
-				<td class="px-6 py-3">02/09/2025</td>
-				<td class="px-6 py-3">R$ 100,00</td>
-			</tr>
-			<tr>
-				<td class="px-6 py-3 font-medium text-gray-2">255847</td>
-				<td class="px-6 py-3">
-					<span class="bg-gray text-white px-2 py-0.5 rounded-full text-xs">
-						Promocional
-					</span>
-				</td>
-				<td class="px-6 py-3">02/09/2025</td>
-				<td class="px-6 py-3">R$ 10,00</td>
-			</tr>
+			<% coupons.forEach(coupon => { %>
+				<tr>
+					<td class="px-6 py-3 font-medium text-gray-2"><%= coupon.id %></td>
+					<td class="px-6 py-3">
+						<% if (coupon.type === 'Troca') { %>
+							<span class="bg-orange text-white px-2 py-0.5 rounded-full text-xs">
+								<%= coupon.type %> 
+							</span>
+						<% } else { %>
+							<span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
+								<%= coupon.type %> 
+							</span>
+						<% } %>
+					</td>
+					<td class="px-6 py-3"><%= coupon.expirationDate %></td>
+					<td class="px-6 py-3"><%= coupon.value%></td>
+				</tr>
+			<% }); %>
 		</tbody>
 	</table>
 </div>

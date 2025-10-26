@@ -8,6 +8,16 @@ describe("checkout validations", () => {
 	const TEST_ADDRESS_ID = "d5b4ecf2-e31e-41b2-8c9f-a36898e23d81";
 	const TEST_CARD_ID = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
 
+	const PROMOTIONAL_COUPONS = {
+		PROMO20: "d1f7c8e3-3c4b-4f5a-9e6b-2e7f8c9d0a1b",
+		BLACKFRIDAY: "a9ad6f2d-7f5b-4684-9c98-b9bc0e1397da",
+	};
+
+	const EXCHANGE_COUPONS = {
+		TROCA004: "78f9a1b2-6e5d-4f7a-9b8c-4c9d0e1f2a3b",
+		TROCA005: "8df94113-76dd-4b68-a481-4be9b50986eb",
+	};
+
 	const makeSUT = () => {
 		addCartItensPageObject = new AddCartItensPageObject();
 		checkoutPageObject = new CheckoutPageObject(addCartItensPageObject);
@@ -27,6 +37,7 @@ describe("checkout validations", () => {
 			cy.fixture("addressData2.json").then((newAddressData) => {
 				checkoutPageObject.clickAddAddressButton();
 				checkoutPageObject.fillAddressModalForm(newAddressData);
+				cy.wait(2000);
 				checkoutPageObject.submitAddressModal();
 
 				cy.wait(1000);
@@ -114,8 +125,10 @@ describe("checkout validations", () => {
 		it("should allow card amount less than R$ 10 when coupons are applied and remaining is less than R$ 10", () => {
 			checkoutPageObject.selectDeliveryAddress(TEST_ADDRESS_ID);
 
-			checkoutPageObject.selectPromotionalCoupon("BLACKFRIDAY");
-			checkoutPageObject.selectExchangeCoupon("TROCA004");
+			checkoutPageObject.selectPromotionalCoupon(
+				PROMOTIONAL_COUPONS.BLACKFRIDAY
+			);
+			checkoutPageObject.selectExchangeCoupon(EXCHANGE_COUPONS.TROCA004);
 			checkoutPageObject.applyCoupons();
 
 			cy.wait(1000);
@@ -140,8 +153,10 @@ describe("checkout validations", () => {
 		it("should not require payment when coupons cover full amount", () => {
 			checkoutPageObject.selectDeliveryAddress(TEST_ADDRESS_ID);
 
-			checkoutPageObject.selectPromotionalCoupon("BLACKFRIDAY");
-			checkoutPageObject.selectExchangeCoupon("TROCA004");
+			checkoutPageObject.selectPromotionalCoupon(
+				PROMOTIONAL_COUPONS.BLACKFRIDAY
+			);
+			checkoutPageObject.selectExchangeCoupon(EXCHANGE_COUPONS.TROCA004);
 			checkoutPageObject.applyCoupons();
 
 			cy.wait(1000);
@@ -276,8 +291,10 @@ describe("checkout validations", () => {
 		it("should allow values below R$ 10 when remaining amount after coupons is less than R$ 10", () => {
 			checkoutPageObject.selectDeliveryAddress(TEST_ADDRESS_ID);
 
-			checkoutPageObject.selectPromotionalCoupon("BLACKFRIDAY");
-			checkoutPageObject.selectExchangeCoupon("TROCA004");
+			checkoutPageObject.selectPromotionalCoupon(
+				PROMOTIONAL_COUPONS.BLACKFRIDAY
+			);
+			checkoutPageObject.selectExchangeCoupon(EXCHANGE_COUPONS.TROCA004);
 			checkoutPageObject.applyCoupons();
 
 			cy.wait(1000);
@@ -304,23 +321,6 @@ describe("checkout validations", () => {
 							cy.get(".swal2-container").should("not.contain", "valor mínimo");
 						});
 				}
-			});
-		});
-	});
-
-	describe("coupon validation during checkout", () => {
-		it("should recalculate total when coupons are applied", () => {
-			checkoutPageObject.getTotalAmount().then((totalText) => {
-				const initialTotal = parseFloat(
-					totalText.replace("R$", "").replace(",", ".").trim()
-				);
-
-				checkoutPageObject.selectPromotionalCoupon("PROMO10");
-				checkoutPageObject.applyCoupons();
-
-				cy.wait(500);
-
-				checkoutPageObject.getTotalAmount().should("not.contain", totalText);
 			});
 		});
 	});

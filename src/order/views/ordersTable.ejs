@@ -32,7 +32,7 @@
 			<% orders.forEach(order => { %>
 			<tr>
 				<td class="px-6 py-3 font-medium text-gray-2"><%= order.id.toString().substring(0, 8) %></td>
-				<td class="px-6 py-3"><%= new Date(order.deliveryDate).toLocaleDateString('pt-BR') %></td>
+				<td class="px-6 py-3"><%= new Date(order.delivery.deliveryDate).toLocaleDateString('pt-BR') %></td>
 				<td class="px-6 py-3">
 					<span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
 						<%= order.orderStatus %>
