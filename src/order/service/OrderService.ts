@@ -18,28 +18,28 @@ export class OrderService {
         await this.validateCouponsForOrder(orderModel);
 
         const exceeds = await this.couponsTotalValueExceedsOrderTotal(order.discount, orderModel);
-        
+
         if (exceeds) {
             this.couponService.createExchangeCouponForExcessValue(
                 order.clientId,
                 order.discount - (Number(order.itemSubTotal) + Number(order.freight.value))
             );
-        }
-        
-        // Create the order
-        const createdOrderModel = await this.orderDAO.save(orderModel);
-        
+				}
+
+			const createdOrderModel = await this.orderDAO.save(orderModel);
+
         const createdOrder = createdOrderModel.toEntity();
 
         await this.markCouponsAsUsed(createdOrder);
 
         this.cartService.clearCart(createdOrder.clientId);
-    
+
         return createdOrder;
     }
 
     public async getById(id: string): Promise<Order | null> {
-        const orderModel = await this.orderDAO.findById(id);
+			const orderModel = await this.orderDAO.findById(id);
+
         if (!orderModel) {
             return null;
         }

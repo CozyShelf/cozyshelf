@@ -6,7 +6,7 @@ export default class Payment extends DomainEntity{
     _paymentCard?: PaymentCard[];
 
     constructor(
-        amount: number, 
+        amount: number,
         paymentCard?: PaymentCard[]
     ) {
         super();
