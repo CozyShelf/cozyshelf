@@ -4,7 +4,6 @@ import Book from "../domain/Book";
 import BookListDTO from "../dto/BookListDTO";
 import BookDetailsDTO from "../dto/BookDetailsDTO";
 import BookAdminDTO from "../dto/BookAdminDTO";
-import BookOrderDTO from "../dto/BookOrderDTO";
 
 export default class BookController {
 	private readonly service: BookService;
@@ -59,24 +58,6 @@ export default class BookController {
 
 	delete(_req: Request, _res: Response): Promise<void> {
 		throw new Error("Method not implemented.");
-	}
-
-	async renderBooksForOrderDetails(req: Request, res: Response) {
-		const page = Number(req.query.page) || this.DEFAULT_PAGINATION_PAGE;
-		const limit = Number(req.query.limit) || this.DEFAULT_PAGINATION_LIMIT;
-
-		const books = await this.service.getAll(page, limit);
-		const isAdmin = req.path.includes("/admin/");
-
-		res.render("orderDetails", {
-			title: "Detalhes do Pedido",
-			currentHeaderTab: "profile",
-			layout: isAdmin ? "defaultLayoutAdmin" : "detailsLayout",
-			isNewOrder: false,
-			books: books ? BookOrderDTO.fromEntityList(books) : [],
-			currentUrl: "orders",
-			isAdmin: isAdmin,
-		});
 	}
 
 	async renderBooksForStock(req: Request, res: Response) {
