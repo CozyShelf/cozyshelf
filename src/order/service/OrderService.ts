@@ -1,3 +1,4 @@
+import BookService from "../../books/service/BookService";
 import CartService from "../../cart/service/CartService";
 import { CouponService } from "../../coupons/service/CouponsService";
 import OrderDAO from "../dao/typeORM/OrderDAO";
@@ -8,7 +9,8 @@ export class OrderService {
     constructor(
         private readonly orderDAO: OrderDAO,
         private readonly cartService: CartService,
-        private readonly couponService: CouponService
+        private readonly couponService: CouponService,
+				private readonly bookService: BookService
     ) {}
 
     public async create(order: Order): Promise<Order> {
@@ -26,7 +28,14 @@ export class OrderService {
             );
 				}
 
-			const createdOrderModel = await this.orderDAO.save(orderModel);
+				for (const item of order.items) {
+					const book = await this.bookService.getById(item.bookId);
+					book.verifyStockAvailability(item.quantity);
+
+					await this.bookService.decreaseBookStock(item.bookId, item.quantity);
+				}
+
+		const createdOrderModel = await this.orderDAO.save(orderModel);
 
         const createdOrder = createdOrderModel.toEntity();
 

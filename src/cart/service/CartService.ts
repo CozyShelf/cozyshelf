@@ -1,7 +1,5 @@
 import BookDAO from "../../books/dao/BookDAO";
 import NoBooksFound from "../../books/service/exceptions/NoBooksFound";
-// import InsufficientStockException from "../../books/service/exceptions/InsufficientStockException";
-import BookService from "../../books/service/BookService";
 import ClientDAO from "../../client/dao/typeORM/ClientDAO";
 import NoClientsFound from "../../client/service/exceptions/NoClientsFound";
 import CartDAO from "../dao/CartDAO";
@@ -15,8 +13,7 @@ export default class CartService {
 	public constructor(
 		private dao: CartDAO,
 		private clientDAO: ClientDAO,
-		private bookDAO: BookDAO,
-		private bookService: BookService
+		private bookDAO: BookDAO
 	) {}
 
 	public async addItemToCart(newCartItemData: INewCartItemRequestData) {
@@ -41,11 +38,15 @@ export default class CartService {
 
 		if (existingCartItem) {
 			const cartItemEntity = existingCartItem.toEntity();
+			foundBook
+				.toEntity()
+				.verifyStockAvailability(quantity + cartItemEntity.quantity);
 			cartItemEntity.updateQuantity(quantity);
 
 			existingCartItem.quantity = cartItemEntity.quantity;
 			cartItemModel = existingCartItem;
 		} else {
+			foundBook.toEntity().verifyStockAvailability(quantity);
 			cartItemModel = new CartItemModel(foundClient, foundBook, quantity, true);
 		}
 
@@ -101,10 +102,8 @@ export default class CartService {
 		}
 
 		const cartItemEntity = existingCartItem.toEntity();
-		let quantityToReturnToStock = quantity;
 
 		if (quantity >= cartItemEntity.quantity) {
-			quantityToReturnToStock = cartItemEntity.quantity;
 			existingCartItem.isActive = false;
 		} else {
 			cartItemEntity.removeQuantity(quantity);
