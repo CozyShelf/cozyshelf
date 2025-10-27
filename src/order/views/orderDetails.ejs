@@ -106,7 +106,7 @@
 				Voltar
 			</a>
 			<% if (!isAdmin) { %>
-				<button type="submit"
+				<button id="exchange-btn" type="button"
 					class="font-semibold text-sm bg-orange text-white rounded hover:bg-dark-orange w-[150px] h-10 flex items-center justify-center">
 					Pedir Troca
 				</button>
@@ -124,3 +124,5 @@
 		</div>
 	</div>
 </form>
+<%- include('exchangeModal', { books: books, order: order }) %>
+<script src="/scripts/order/exchangeHandler.js" type="module"></script>
