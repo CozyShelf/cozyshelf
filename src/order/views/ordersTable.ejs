@@ -34,7 +34,12 @@
 				<td class="px-6 py-3 font-medium text-gray-2"><%= order.id.toString().substring(0, 8) %></td>
 				<td class="px-6 py-3"><%= new Date(order.delivery.deliveryDate).toLocaleDateString('pt-BR') %></td>
 				<td class="px-6 py-3">
-					<span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
+					<span class="<%= 
+						order.orderStatus === 'Em processamento' ? 'bg-orange' :
+						order.orderStatus === 'Em trânsito' ? 'bg-orange' :
+						order.orderStatus === 'Entregue' ? 'bg-dark-green' :
+						order.orderStatus === 'Em troca' ? 'bg-yellow-500' :
+						'bg-gray-500' %> text-white px-2 py-0.5 rounded-full text-xs">
 						<%= order.orderStatus %>
 					</span>
 				</td>

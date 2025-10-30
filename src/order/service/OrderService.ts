@@ -2,6 +2,7 @@ import BookService from "../../books/service/BookService";
 import CartService from "../../cart/service/CartService";
 import { CouponService } from "../../coupons/service/CouponsService";
 import OrderDAO from "../dao/typeORM/OrderDAO";
+import OrderStatus from "../domain/enums/OrderStatus";
 import Order from "../domain/Order";
 import OrderModel from "../model/OrderModel";
 
@@ -53,6 +54,22 @@ export class OrderService {
             return null;
         }
         return orderModel.toEntity();
+    }
+
+    public async updateStatus(id: string, newStatus: keyof typeof OrderStatus): Promise<Order> {
+        const orderModel = await this.orderDAO.findById(id);
+        
+        if (!orderModel) {
+            throw new Error(`Order with id: ${id} not found.`);
+        }
+
+        if (orderModel.orderStatus === OrderStatus[newStatus]) {
+            throw new Error(`Order with id: ${id} is already in status: ${newStatus}.`);
+        }
+
+        orderModel.orderStatus = OrderStatus[newStatus];
+        const updatedOrderModel = await this.orderDAO.save(orderModel);
+        return updatedOrderModel.toEntity();
     }
 
     private async couponsTotalValueExceedsOrderTotal(totalCouponsValue: number, order: OrderModel): Promise<boolean> {

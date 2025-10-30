@@ -4,6 +4,7 @@ import Order from "../domain/Order";
 import { OrderService } from "../service/OrderService";
 import BookService from "../../books/service/BookService";
 import BookDetailsDTO from "../../books/dto/BookDetailsDTO";
+import OrderStatus from "../domain/enums/OrderStatus";
 
 export default class OrderController {
 	private readonly service: OrderService;
@@ -31,6 +32,24 @@ export default class OrderController {
 			this.createErrorResponse(res, e as Error);
 		}
 	}
+
+	public async updateStatus(req: Request, res: Response): Promise<void> {
+		try {
+			const id = req.params.id;
+			const newStatus = req.params.status as keyof typeof OrderStatus;
+
+			console.log(`[INFO] 🔄 Atualizando status do pedido de id: ${id} para ${newStatus}...`);
+			const updatedOrder = await this.service.updateStatus(id, newStatus);
+
+			res.status(200).json({
+				message: `Status do pedido atualizado para ${updatedOrder.orderStatus} com sucesso!`,
+				orderId: updatedOrder.id,
+				newStatus: updatedOrder.orderStatus,
+			});
+		} catch (e) {
+			this.createErrorResponse(res, e as Error);
+		}
+	} 
 
 	public async getById(req: Request, res: Response): Promise<void> {
 		try {

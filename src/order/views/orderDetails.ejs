@@ -3,9 +3,15 @@
 		<div class="flex items-center gap-3">
 			<h1 class="font-semibold text-[20px]">Pedido #<%= order.id.toString().substring(0, 8) %>
 			</h1>
-			<span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
-				<%= order.orderStatus %>
-			</span>
+            <span class="<%= 
+                order.orderStatus === 'Em processamento' ? 'bg-orange' :
+                order.orderStatus === 'Em trânsito' ? 'bg-orange' :
+                order.orderStatus === 'Entregue' ? 'bg-dark-green' :
+                order.orderStatus === 'Em troca' ? 'bg-yellow-500' :
+                'bg-gray-500'
+            %> text-white px-2 py-0.5 rounded-full text-xs">
+                <%= order.orderStatus %>
+            </span>
 		</div>
 
 		<div class="flex justify-between">
@@ -105,24 +111,54 @@
 				class="font-semibold text-sm bg-brown text-white rounded hover:bg-dark-brown w-[150px] h-10 flex items-center justify-center">
 				Voltar
 			</a>
+
+            <!---- PEDIDO DE TROCA CLIENTE-->
 			<% if (!isAdmin) { %>
 				<button id="exchange-btn" type="button"
 					class="font-semibold text-sm bg-orange text-white rounded hover:bg-dark-orange w-[150px] h-10 flex items-center justify-center">
-					Pedir Troca
-				</button>
-				<% } %>
-					<% if (isAdmin) { %>
-						<button type="submit"
-							class="font-semibold text-sm bg-light-brown text-white rounded hover:bg-light-title w-[150px] h-10 flex items-center justify-center">
-							Solicitar Entrega
-						</button>
-						<button type="submit"
-							class="font-semibold text-sm bg-light-green text-white rounded hover:bg-dark-green w-[150px] h-10 flex items-center justify-center">
-							Confirmar Entrega
-						</button>
-						<% } %>
+                    Pedir Troca
+                </button>
+            <% } %>
+
+            <!---- MUDANÇA DE STATUS PELO ADMIN-->
+            <% if (isAdmin) { %>
+                <% if (order.orderStatus === 'Em processamento') { %>
+                    <button 
+                        class="changeStatus font-semibold text-sm bg-light-brown text-white rounded hover:bg-light-title w-[150px] h-10 flex items-center justify-center"
+                        data-order-id="<%= order.id %>"
+                        data-status="IN_TRANSIT"
+                    >
+                        Solicitar Entrega
+                    </button>
+                <% } %>
+
+                <% if (order.orderStatus === 'Em trânsito') { %>
+                    <button 
+                        class="changeStatus font-semibold text-sm bg-dark-green text-white rounded hover:bg-green-700 w-[150px] h-10 flex items-center justify-center"
+                        data-order-id="<%= order.id %>"
+                        data-status="DELIVERED"
+                    >
+                        Confirmar Entrega
+                    </button>
+                <% } %>
+
+                <% if (order.orderStatus === 'Em troca') { %>
+                    <button 
+                        class="changeStatus font-semibold text-sm bg-yellow-500 text-white rounded hover:bg-yellow-700 w-[150px] h-10 flex items-center justify-center"
+                        data-order-id="<%= order.id %>"
+                        data-status="EXCHANGED"
+                    >
+                        Confirmar Troca
+                    </button>
+                <% } %>
+            <% } %>
+        </div>
+    </div>
+</form>
+
 		</div>
 	</div>
 </form>
 <%- include('exchangeModal', { books: books, order: order }) %>
 <script src="/scripts/order/exchangeHandler.js" type="module"></script>
+<script src="/scripts/order/changeOrderStatus.js" type="module"></script>
