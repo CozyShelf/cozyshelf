@@ -90,12 +90,13 @@ function handleExchangeSubmit() {
 		return;
 	}
 
-	const exchangeBooks = [];
+	const exchangeItems = [];
 	let hasInvalidQuantity = false;
 
 	bookCheckboxes.forEach((checkbox) => {
 		const bookId = checkbox.value;
 		const quantityInput = document.getElementById(`quantity-${bookId}`);
+		const unitPriceInput = document.getElementById(`book-price-${bookId}`);
 		const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
 		const maxQuantity = quantityInput ? parseInt(quantityInput.dataset.max) : 1;
 
@@ -109,19 +110,20 @@ function handleExchangeSubmit() {
 			return;
 		}
 
-		exchangeBooks.push({
+		exchangeItems.push({
 			bookId,
-			quantity: quantity.toString(),
+			unitPrice: unitPriceInput ? parseFloat(unitPriceInput.textContent.replace("R$ ", "").replace(",", ".")) : 0,
+			quantity: quantity.toString()
 		});
 	});
 
-	if (hasInvalidQuantity || exchangeBooks.length === 0) {
+	if (hasInvalidQuantity || exchangeItems.length === 0) {
 		return;
 	}
 
 	const requestObj = {
 		orderId: orderIdInput ? orderIdInput.value : "",
-		exchangeBooks,
+		exchangeItems,
 	};
 
 	console.log("Enviando requisição:", requestObj);
@@ -135,7 +137,7 @@ function handleExchangeSubmit() {
 	}
 
 	// TODO: Trocar pela rota backend
-	fetch("/order/exchange", {
+	fetch("/exchange", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

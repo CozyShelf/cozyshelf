@@ -94,9 +94,9 @@
 									<%= book.name %>
 								</h2>
 								<div class="flex items-center justify-between gap-15">
-									<p class="text-gray-dark text-[12px]">Quantidade: <%= order.items[index].quantity %>
+									<p class="text-gray-dark text-[12px]" id="book-quantity-<%= book.id %>">Quantidade: <%= order.items[index].quantity %>
 									</p>
-									<p class="font-semibold text-brown text-[14px]">
+									<p class="font-semibold text-brown text-[14px]" id="book-price-<%= book.id %>">
 										<%= book.formattedPrice || `R$ ${book.price.toFixed(2).replace('.', ',' )}` %>
 									</p>
 								</div>
@@ -113,7 +113,7 @@
 			</a>
 
             <!---- PEDIDO DE TROCA CLIENTE-->
-			<% if (!isAdmin) { %>
+			<% if (!isAdmin && order.orderStatus === 'Entregue') { %>
 				<button id="exchange-btn" type="button"
 					class="font-semibold text-sm bg-orange text-white rounded hover:bg-dark-orange w-[150px] h-10 flex items-center justify-center">
                     Pedir Troca
@@ -144,7 +144,7 @@
 
                 <% if (order.orderStatus === 'Em troca') { %>
                     <button 
-                        class="changeStatus font-semibold text-sm bg-yellow-500 text-white rounded hover:bg-yellow-700 w-[150px] h-10 flex items-center justify-center"
+                        class="confirmExchange font-semibold text-sm bg-yellow-500 text-white rounded hover:bg-yellow-700 w-[150px] h-10 flex items-center justify-center"
                         data-order-id="<%= order.id %>"
                         data-status="EXCHANGED"
                     >
@@ -156,9 +156,7 @@
     </div>
 </form>
 
-		</div>
-	</div>
-</form>
 <%- include('exchangeModal', { books: books, order: order }) %>
 <script src="/scripts/order/exchangeHandler.js" type="module"></script>
 <script src="/scripts/order/changeOrderStatus.js" type="module"></script>
+<script src="/scripts/order/confirmExchange.js" type="module"></script>
