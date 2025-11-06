@@ -8,7 +8,9 @@
                 order.orderStatus === 'Em trânsito' ? 'bg-orange' :
                 order.orderStatus === 'Entregue' ? 'bg-dark-green' :
                 order.orderStatus === 'Em troca' ? 'bg-yellow-500' :
-                'bg-gray-500'
+				order.orderStatus === 'Trocado' ? 'bg-light-green' :
+				order.orderStatus === 'Troca rejeitada' ? 'bg-red-500' :
+				'bg-gray'
             %> text-white px-2 py-0.5 rounded-full text-xs">
                 <%= order.orderStatus %>
             </span>
@@ -143,13 +145,22 @@
                 <% } %>
 
                 <% if (order.orderStatus === 'Em troca') { %>
-                    <button 
-                        class="confirmExchange font-semibold text-sm bg-yellow-500 text-white rounded hover:bg-yellow-700 w-[150px] h-10 flex items-center justify-center"
-                        data-order-id="<%= order.id %>"
-                        data-status="EXCHANGED"
-                    >
-                        Confirmar Troca
-                    </button>
+					<div class="flex gap-4">
+						<button 
+							class="changeStatus font-semibold text-sm bg-red-500 text-white rounded hover:bg-red-700 w-[150px] h-10 flex items-center justify-center"
+							data-order-id="<%= order.id %>"
+							data-status="EXCHANGED_REJECT"
+						>
+							Rejeitar Troca
+						</button>
+						<button 
+							class="confirmExchange font-semibold text-sm bg-yellow-500 text-white rounded hover:bg-yellow-700 w-[150px] h-10 flex items-center justify-center"
+							data-order-id="<%= order.id %>"
+							data-status="EXCHANGED"
+						>
+							Confirmar Troca
+						</button>
+					</div>
                 <% } %>
             <% } %>
         </div>

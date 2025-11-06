@@ -11,6 +11,7 @@
 				<option value="canceled">Cancelados</option>
 				<option value="inExchange">Em Troca</option>
 				<option value="exchanging">Trocado</option>
+				<option value="exchangeRejected">Troca Rejeitada</option>
 			</select>
 		</div>
 	</div>
@@ -39,7 +40,9 @@
 						order.orderStatus === 'Em trânsito' ? 'bg-orange' :
 						order.orderStatus === 'Entregue' ? 'bg-dark-green' :
 						order.orderStatus === 'Em troca' ? 'bg-yellow-500' :
-						'bg-gray-500' %> text-white px-2 py-0.5 rounded-full text-xs">
+						order.orderStatus === 'Trocado' ? 'bg-light-green' :
+						order.orderStatus === 'Troca rejeitada' ? 'bg-red-500' :
+						'bg-gray' %> text-white px-2 py-0.5 rounded-full text-xs">
 						<%= order.orderStatus %>
 					</span>
 				</td>
