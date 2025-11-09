@@ -5,14 +5,17 @@ import { OrderService } from "../service/OrderService";
 import BookService from "../../books/service/BookService";
 import BookDetailsDTO from "../../books/dto/BookDetailsDTO";
 import OrderStatus from "../domain/enums/OrderStatus";
+import { ExchangeService } from "../../exchange/service/ExchangeService";
 
 export default class OrderController {
 	private readonly service: OrderService;
 	private readonly bookService: BookService;
+	private readonly exchangeService: ExchangeService
 
-	constructor(service: OrderService, bookService: BookService) {
+	constructor(service: OrderService, bookService: BookService, exchangeService: ExchangeService) {
 		this.service = service;
 		this.bookService = bookService;
+		this.exchangeService = exchangeService;
 	}
 
 	public async create(req: Request, res: Response): Promise<void> {
@@ -83,6 +86,9 @@ export default class OrderController {
 
 			const books = booksEntity.map(book => book ? BookDetailsDTO.fromEntity(book) : null).filter(book => book !== null);
 
+			const exchange =  await this.exchangeService.getByOrderId(order.id);
+			const exchangeBooks = exchange ? await Promise.all(order._items.map((item) => this.bookService.getById(item._bookId))) : [];
+
 			res.render("orderDetails", {
 				title: `Detalhes do Pedido ${order.id}`,
 				currentHeaderTab: "profile",
@@ -90,6 +96,8 @@ export default class OrderController {
 				currentUrl: "orders",
 				order: order,
 				books: books,
+				exchangeBooks: exchangeBooks,
+				exchange: exchange,
 				isAdmin: false,
 			});
 		} catch (e) {
@@ -140,12 +148,19 @@ export default class OrderController {
 
 			const books = booksEntity.map(book => book ? BookDetailsDTO.fromEntity(book) : null).filter(book => book !== null);
 
+			
 			if (!order) {
 				res.status(404).json({
 					message: `Pedido de id: ${id} não foi encontrado!`,
 				});
 				return;
 			}
+
+			const exchange =  await this.exchangeService.getByOrderId(order.id);
+			const exchangeBooks = exchange ? await Promise.all(order._items.map((item) => this.bookService.getById(item._bookId))) : [];
+
+			console.log("Exchange books:", exchangeBooks);
+			
 			res.render("orderDetails", {
 				title: `Detalhes do Pedido ${order.id}`,
 				currentHeaderTab: "orders",
@@ -153,6 +168,8 @@ export default class OrderController {
 				currentUrl: "orders",
 				order: order,
 				books: books,
+				exchangeBooks: exchangeBooks,
+				exchange: exchange,
 				isAdmin: true,
 			});
 		} catch (e) {

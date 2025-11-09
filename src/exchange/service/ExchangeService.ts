@@ -6,6 +6,7 @@ import ItemExchange from "../domain/ItemExchange";
 import ExchangeModel from "../model/ExchangeModel";
 import OrderStatus from "../../order/domain/enums/OrderStatus";
 import { CouponService } from "../../coupons/service/CouponsService";
+import IExchangeBooksStock from "../dto/IExchangeBooksStock";
 
 export class ExchangeService {
     constructor(
@@ -32,11 +33,16 @@ export class ExchangeService {
         return createdExchange;
     }
 
-    public async confirmExchange(orderId: string): Promise<Exchange> {
+    public async confirmExchange(orderId: string, returnItemsStock: IExchangeBooksStock[]): Promise<Exchange> {
         const exchangeModel = await this.exchangeDAO.findByOrderId(orderId).then(exchanges => exchanges[0]);
 
         if (!exchangeModel) {
             throw new Error(`Exchange with order id: ${orderId} not found.`);
+        }
+
+        // Return books to stock as per returnItemsStock
+        for (const item of returnItemsStock) {
+            await this.bookService.increaseBookStock(item.bookId, item.quantity);
         }
 
         await this.orderService.updateStatus(exchangeModel.orderId, 'EXCHANGED');

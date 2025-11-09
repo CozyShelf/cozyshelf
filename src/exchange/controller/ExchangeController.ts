@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ExchangeService } from "../service/ExchangeService";
 import Exchange from "../domain/Exchange";
 import INewExchangeData from "../dto/INewExchangeData";
+import IExchangeBooksStock from "../dto/IExchangeBooksStock";
 
 export default class ExchangeController {
     private readonly service: ExchangeService;
@@ -32,8 +33,8 @@ export default class ExchangeController {
     public async confirmExchange(req: Request, res: Response): Promise<void> {
         try {
             const orderId = req.params.id;
-
-            const confirmedExchange = await this.service.confirmExchange(orderId);
+            const returnItemsStock = req.body.returnToStock as IExchangeBooksStock[];
+            const confirmedExchange = await this.service.confirmExchange(orderId, returnItemsStock);
             console.log("[INFO] ✅ Exchange confirmed successfully!");
 
             res.status(200).json({

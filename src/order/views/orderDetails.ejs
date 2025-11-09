@@ -154,6 +154,7 @@
 							Rejeitar Troca
 						</button>
 						<button 
+							id="confirm-exchange-btn"
 							class="confirmExchange font-semibold text-sm bg-yellow-500 text-white rounded hover:bg-yellow-700 w-[150px] h-10 flex items-center justify-center"
 							data-order-id="<%= order.id %>"
 							data-status="EXCHANGED"
@@ -168,6 +169,7 @@
 </form>
 
 <%- include('exchangeModal', { books: books, order: order }) %>
+<%- include('adminExchangeModal', { exchangeBooks: exchangeBooks, exchange: exchange }) %>
 <script src="/scripts/order/exchangeHandler.js" type="module"></script>
 <script src="/scripts/order/changeOrderStatus.js" type="module"></script>
 <script src="/scripts/order/confirmExchange.js" type="module"></script>

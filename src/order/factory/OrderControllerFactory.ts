@@ -10,12 +10,14 @@ import CartDAO from "../../cart/dao/CartDAO";
 import ClientDAO from "../../client/dao/typeORM/ClientDAO";
 import { CouponDAO } from "../../coupons/dao/typeORM/CouponDAO";
 import { CouponService } from "../../coupons/service/CouponsService";
+import ExchangeDAO from "../../exchange/dao/typeORM/ExchangeDAO";
+import { ExchangeService } from "../../exchange/service/ExchangeService";
 
 
 export class OrderControllerFactory implements IFactory<OrderController> {
 
     public make(): OrderController {
-        return new OrderController(this.makeOrderService(), this.makeBookService());
+        return new OrderController(this.makeOrderService(), this.makeBookService(), this.makeExchangeService());
     }
 
     public makeOrderService(): any {
@@ -45,5 +47,14 @@ export class OrderControllerFactory implements IFactory<OrderController> {
 
     public makeCouponService(): CouponService {
         return new CouponService(new CouponDAO(postgresDataSource));
+    }
+
+    public makeExchangeService(): any {
+        return new ExchangeService(
+            new ExchangeDAO(postgresDataSource),
+            this.makeOrderService(),
+            this.makeBookService(),
+            this.makeCouponService()
+        );
     }
 }
