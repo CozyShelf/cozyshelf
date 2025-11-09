@@ -4,6 +4,8 @@ import OrderConfirmationPageObject from "../../support/pages/cart/OrderConfirmat
 import ExchangePageObject from "../../support/pages/exchange/ExchangePageObject";
 import AdminOrdersPageObject from "../../support/pages/admin/AdminOrdersPageObject";
 import OrderTestHelper from "../../support/helpers/OrderTestHelper";
+import CouponsPageObject from "../../support/pages/coupons/CouponsPageObject";
+import CartManagementPageObject from "../../support/pages/cart/CartManagementPageObject";
 
 describe("Exchange and Order Status Management", () => {
 	let exchangePageObject: ExchangePageObject;
@@ -11,6 +13,8 @@ describe("Exchange and Order Status Management", () => {
 	let orderConfirmationPageObject: OrderConfirmationPageObject;
 	let adminOrdersPageObject: AdminOrdersPageObject;
 	let orderTestHelper: OrderTestHelper;
+	let couponsPageObject: CouponsPageObject;
+	let cartManagementPageObject: CartManagementPageObject;
 	let orderId: string;
 	let fullOrderId: string;
 
@@ -19,6 +23,10 @@ describe("Exchange and Order Status Management", () => {
 		exchangePageObject = new ExchangePageObject(checkoutPageObject);
 		orderConfirmationPageObject = new OrderConfirmationPageObject();
 		adminOrdersPageObject = new AdminOrdersPageObject();
+		couponsPageObject = new CouponsPageObject();
+		cartManagementPageObject = new CartManagementPageObject(
+			new AddCartItensPageObject()
+		);
 		orderTestHelper = new OrderTestHelper(
 			checkoutPageObject,
 			orderConfirmationPageObject
@@ -113,6 +121,12 @@ describe("Exchange and Order Status Management", () => {
 						// Verificar status "Trocado" na lista
 						adminOrdersPageObject.visitAdminOrdersPage();
 						adminOrdersPageObject.verifyOrderStatusById(orderId, "Trocado");
+
+						// Verificar se o cupom de troca foi criado na listagem de cupons
+						couponsPageObject.visitCouponsPage();
+						couponsPageObject.verifyCouponsPageLoaded();
+						couponsPageObject.verifyExchangeCouponExists();
+						couponsPageObject.verifyExchangeCouponHasExpirationDate();
 					});
 				});
 		});
@@ -245,6 +259,12 @@ describe("Exchange and Order Status Management", () => {
 					// Verificar status "Trocado" na lista
 					adminOrdersPageObject.visitAdminOrdersPage();
 					adminOrdersPageObject.verifyOrderStatusById(orderId, "Trocado");
+
+					// Verificar se o cupom de troca foi criado na listagem de cupons
+					couponsPageObject.visitCouponsPage();
+					couponsPageObject.verifyCouponsPageLoaded();
+					couponsPageObject.verifyExchangeCouponExists();
+					couponsPageObject.verifyExchangeCouponHasExpirationDate();
 				});
 			});
 		});
