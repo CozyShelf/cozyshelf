@@ -128,4 +128,8 @@ export default class OrderConfirmationPageObject extends GenericPageObject {
 		cy.url().should("include", "/orders");
 		cy.get("tbody", { timeout: 5000 }).should("exist");
 	}
+
+	verifyExchangeButtonExists() {
+		cy.get("#exchange-btn").should("exist").and("be.visible");
+	}
 }

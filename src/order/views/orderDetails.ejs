@@ -3,7 +3,7 @@
 		<div class="flex items-center gap-3">
 			<h1 class="font-semibold text-[20px]">Pedido #<%= order.id.toString().substring(0, 8) %>
 			</h1>
-            <span class="<%= 
+			<span class="<%=
                 order.orderStatus === 'Em processamento' ? 'bg-orange' :
                 order.orderStatus === 'Em trânsito' ? 'bg-orange' :
                 order.orderStatus === 'Entregue' ? 'bg-dark-green' :
@@ -12,8 +12,8 @@
 				order.orderStatus === 'Troca rejeitada' ? 'bg-red-500' :
 				'bg-gray'
             %> text-white px-2 py-0.5 rounded-full text-xs">
-                <%= order.orderStatus %>
-            </span>
+				<%= order.orderStatus %>
+			</span>
 		</div>
 
 		<div class="flex justify-between">
@@ -74,7 +74,7 @@
 											<%= card.cardFlag %>
 										</span>
 										<span class="text-gray-500 text-[13px] font-mono">**** **** **** <%= card.cardNumber.slice(-4) %>
-												</span>
+										</span>
 									</div>
 									<% } %>
 							</div>
@@ -96,7 +96,8 @@
 									<%= book.name %>
 								</h2>
 								<div class="flex items-center justify-between gap-15">
-									<p class="text-gray-dark text-[12px]" id="book-quantity-<%= book.id %>">Quantidade: <%= order.items[index].quantity %>
+									<p class="text-gray-dark text-[12px]" id="book-quantity-<%= book.id %>">Quantidade: <%=
+											order.items[index].quantity %>
 									</p>
 									<p class="font-semibold text-brown text-[14px]" id="book-price-<%= book.id %>">
 										<%= book.formattedPrice || `R$ ${book.price.toFixed(2).replace('.', ',' )}` %>
@@ -114,60 +115,52 @@
 				Voltar
 			</a>
 
-            <!---- PEDIDO DE TROCA CLIENTE-->
-			<% if (!isAdmin && order.orderStatus === 'Entregue') { %>
+			<!---- PEDIDO DE TROCA CLIENTE-->
+			<% if (!isAdmin && order.orderStatus==='Entregue' ) { %>
 				<button id="exchange-btn" type="button"
 					class="font-semibold text-sm bg-orange text-white rounded hover:bg-dark-orange w-[150px] h-10 flex items-center justify-center">
-                    Pedir Troca
-                </button>
-            <% } %>
+					Pedir Troca
+				</button>
+				<% } %>
 
-            <!---- MUDANÇA DE STATUS PELO ADMIN-->
-            <% if (isAdmin) { %>
-                <% if (order.orderStatus === 'Em processamento') { %>
-                    <button 
-                        class="changeStatus font-semibold text-sm bg-light-brown text-white rounded hover:bg-light-title w-[150px] h-10 flex items-center justify-center"
-                        data-order-id="<%= order.id %>"
-                        data-status="IN_TRANSIT"
-                    >
-                        Solicitar Entrega
-                    </button>
-                <% } %>
+					<!---- MUDANÇA DE STATUS PELO ADMIN-->
+					<% if (isAdmin) { %>
+						<% if (order.orderStatus==='Em processamento' ) { %>
+							<button id="approve-order-btn"
+								class="changeStatus font-semibold text-sm bg-light-brown text-white rounded hover:bg-light-title w-[150px] h-10 flex items-center justify-center"
+								data-order-id="<%= order.id %>" data-status="IN_TRANSIT">
+								Solicitar Entrega
+							</button>
+							<% } %>
 
-                <% if (order.orderStatus === 'Em trânsito') { %>
-                    <button 
-                        class="changeStatus font-semibold text-sm bg-dark-green text-white rounded hover:bg-green-700 w-[150px] h-10 flex items-center justify-center"
-                        data-order-id="<%= order.id %>"
-                        data-status="DELIVERED"
-                    >
-                        Confirmar Entrega
-                    </button>
-                <% } %>
+								<% if (order.orderStatus==='Em trânsito' ) { %>
+									<button id="confirm-delivery-btn"
+										class="changeStatus font-semibold text-sm bg-dark-green text-white rounded hover:bg-green-700 w-[150px] h-10 flex items-center justify-center"
+										data-order-id="<%= order.id %>" data-status="DELIVERED">
+										Confirmar Entrega
+									</button>
+									<% } %>
 
-                <% if (order.orderStatus === 'Em troca') { %>
-					<div class="flex gap-4">
-						<button 
-							class="changeStatus font-semibold text-sm bg-red-500 text-white rounded hover:bg-red-700 w-[150px] h-10 flex items-center justify-center"
-							data-order-id="<%= order.id %>"
-							data-status="EXCHANGED_REJECT"
-						>
-							Rejeitar Troca
-						</button>
-						<button 
-							class="confirmExchange font-semibold text-sm bg-yellow-500 text-white rounded hover:bg-yellow-700 w-[150px] h-10 flex items-center justify-center"
-							data-order-id="<%= order.id %>"
-							data-status="EXCHANGED"
-						>
-							Confirmar Troca
-						</button>
-					</div>
-                <% } %>
-            <% } %>
-        </div>
-    </div>
+										<% if (order.orderStatus==='Em troca' ) { %>
+											<div class="flex gap-4">
+												<button id="reject-exchange-btn"
+													class="changeStatus font-semibold text-sm bg-red-500 text-white rounded hover:bg-red-700 w-[150px] h-10 flex items-center justify-center"
+													data-order-id="<%= order.id %>" data-status="EXCHANGED_REJECT">
+													Rejeitar Troca
+												</button>
+												<button id="confirm-exchange-btn"
+													class="confirmExchange font-semibold text-sm bg-yellow-500 text-white rounded hover:bg-yellow-700 w-[150px] h-10 flex items-center justify-center"
+													data-order-id="<%= order.id %>" data-status="EXCHANGED">
+													Confirmar Troca
+												</button>
+											</div>
+											<% } %>
+												<% } %>
+		</div>
+	</div>
 </form>
 
 <%- include('exchangeModal', { books: books, order: order }) %>
-<script src="/scripts/order/exchangeHandler.js" type="module"></script>
-<script src="/scripts/order/changeOrderStatus.js" type="module"></script>
-<script src="/scripts/order/confirmExchange.js" type="module"></script>
+	<script src="/scripts/order/exchangeHandler.js" type="module"></script>
+	<script src="/scripts/order/changeOrderStatus.js" type="module"></script>
+	<script src="/scripts/order/confirmExchange.js" type="module"></script>
