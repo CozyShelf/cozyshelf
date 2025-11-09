@@ -1,4 +1,5 @@
 import BookService from "../../books/service/BookService";
+import BookSaleService from "../../books/service/BookSaleService";
 import CartService from "../../cart/service/CartService";
 import { CouponService } from "../../coupons/service/CouponsService";
 import OrderDAO from "../dao/typeORM/OrderDAO";
@@ -7,101 +8,130 @@ import Order from "../domain/Order";
 import OrderModel from "../model/OrderModel";
 
 export class OrderService {
-    constructor(
-        private readonly orderDAO: OrderDAO,
-        private readonly cartService: CartService,
-        private readonly couponService: CouponService,
-				private readonly bookService: BookService
-    ) {}
+	constructor(
+		private readonly orderDAO: OrderDAO,
+		private readonly cartService: CartService,
+		private readonly couponService: CouponService,
+		private readonly bookService: BookService,
+		private readonly bookSaleService: BookSaleService
+	) {}
 
-    public async create(order: Order): Promise<Order> {
-        const orderModel = OrderModel.fromEntity(order);
+	public async create(order: Order): Promise<Order> {
+		const orderModel = OrderModel.fromEntity(order);
 
-        // Validate coupons before creating the order
-        await this.validateCouponsForOrder(orderModel);
+		await this.validateCouponsForOrder(orderModel);
 
-        const exceeds = await this.couponsTotalValueExceedsOrderTotal(order.discount, orderModel);
+		const exceeds = await this.couponsTotalValueExceedsOrderTotal(
+			order.discount,
+			orderModel
+		);
 
-        if (exceeds) {
-            this.couponService.createExchangeCouponForExcessValue(
-                order.clientId,
-                order.discount - (Number(order.itemSubTotal) + Number(order.freight.value))
-            );
-				}
+		if (exceeds) {
+			this.couponService.createExchangeCouponForExcessValue(
+				order.clientId,
+				order.discount -
+					(Number(order.itemSubTotal) + Number(order.freight.value))
+			);
+		}
 
-				for (const item of order.items) {
-					const book = await this.bookService.getById(item.bookId);
-					book.verifyStockAvailability(item.quantity);
+		for (const item of order.items) {
+			const book = await this.bookService.getById(item.bookId);
+			book.verifyStockAvailability(item.quantity);
 
-					await this.bookService.decreaseBookStock(item.bookId, item.quantity);
-				}
+			await this.bookService.decreaseBookStock(item.bookId, item.quantity);
+		}
 
 		const createdOrderModel = await this.orderDAO.save(orderModel);
 
-        const createdOrder = createdOrderModel.toEntity();
+		const createdOrder = createdOrderModel.toEntity();
 
-        await this.markCouponsAsUsed(createdOrder);
+		for (const item of order.items) {
+			await this.bookSaleService.registerSale(
+				item.bookId,
+				item.quantity,
+				item.unitPrice
+			);
+		}
 
-        this.cartService.clearCart(createdOrder.clientId);
+		await this.markCouponsAsUsed(createdOrder);
 
-        return createdOrder;
-    }
+		this.cartService.clearCart(createdOrder.clientId);
 
-    public async getById(id: string): Promise<Order | null> {
-			const orderModel = await this.orderDAO.findById(id);
+		return createdOrder;
+	}
 
-        if (!orderModel) {
-            return null;
-        }
-        return orderModel.toEntity();
-    }
+	public async getById(id: string): Promise<Order | null> {
+		const orderModel = await this.orderDAO.findById(id);
 
-    public async updateStatus(id: string, newStatus: keyof typeof OrderStatus): Promise<Order> {
-        const orderModel = await this.orderDAO.findById(id);
-        
-        if (!orderModel) {
-            throw new Error(`Order with id: ${id} not found.`);
-        }
+		if (!orderModel) {
+			return null;
+		}
+		return orderModel.toEntity();
+	}
 
-        if (orderModel.orderStatus === OrderStatus[newStatus]) {
-            throw new Error(`Order with id: ${id} is already in status: ${newStatus}.`);
-        }
+	public async updateStatus(
+		id: string,
+		newStatus: keyof typeof OrderStatus
+	): Promise<Order> {
+		const orderModel = await this.orderDAO.findById(id);
 
-        orderModel.orderStatus = OrderStatus[newStatus];
-        const updatedOrderModel = await this.orderDAO.save(orderModel);
-        return updatedOrderModel.toEntity();
-    }
+		if (!orderModel) {
+			throw new Error(`Order with id: ${id} not found.`);
+		}
 
-    private async couponsTotalValueExceedsOrderTotal(totalCouponsValue: number, order: OrderModel): Promise<boolean> {
-        return totalCouponsValue > (Number(order.itemSubTotal) + Number(order.freight.value));
-    }
+		if (orderModel.orderStatus === OrderStatus[newStatus]) {
+			throw new Error(
+				`Order with id: ${id} is already in status: ${newStatus}.`
+			);
+		}
 
-    private async validateCouponsForOrder(order: OrderModel): Promise<void> {
-        if (order.promotionalCouponId) {
-            await this.couponService.validateCouponsAndVerifyValidity([order.promotionalCouponId]);
-        }
+		orderModel.orderStatus = OrderStatus[newStatus];
+		const updatedOrderModel = await this.orderDAO.save(orderModel);
+		return updatedOrderModel.toEntity();
+	}
 
-        if (order.exchangeCouponIds && order.exchangeCouponIds.length > 0) {
-            await this.couponService.validateCouponsAndVerifyValidity(order.exchangeCouponIds);
-        }
-    }
+	private async couponsTotalValueExceedsOrderTotal(
+		totalCouponsValue: number,
+		order: OrderModel
+	): Promise<boolean> {
+		return (
+			totalCouponsValue >
+			Number(order.itemSubTotal) + Number(order.freight.value)
+		);
+	}
 
-    private async markCouponsAsUsed(order: Order): Promise<void> {
+	private async validateCouponsForOrder(order: OrderModel): Promise<void> {
+		if (order.promotionalCouponId) {
+			await this.couponService.validateCouponsAndVerifyValidity([
+				order.promotionalCouponId,
+			]);
+		}
 
-        if (order.promotionalCouponId) {
-            await this.couponService.markAsUsed([order.promotionalCouponId], order.id);
-        }
+		if (order.exchangeCouponIds && order.exchangeCouponIds.length > 0) {
+			await this.couponService.validateCouponsAndVerifyValidity(
+				order.exchangeCouponIds
+			);
+		}
+	}
 
-        if (order.exchangeCouponsIds && order.exchangeCouponsIds.length > 0) {
-            await this.couponService.markAsUsed(order.exchangeCouponsIds, order.id);
-        }
-    }
+	private async markCouponsAsUsed(order: Order): Promise<void> {
+		if (order.promotionalCouponId) {
+			await this.couponService.markAsUsed(
+				[order.promotionalCouponId],
+				order.id
+			);
+		}
 
-    public async getAll(): Promise<Order[]> {
-        const orderModels = await this.orderDAO.findAll();
-        if (!orderModels) {
-            return [];
-        }
-        return orderModels.map(orderModel => orderModel.toEntity());
-    }
+		if (order.exchangeCouponsIds && order.exchangeCouponsIds.length > 0) {
+			await this.couponService.markAsUsed(order.exchangeCouponsIds, order.id);
+		}
+	}
+
+	public async getAll(): Promise<Order[]> {
+		const orderModels = await this.orderDAO.findAll();
+		if (!orderModels) {
+			return [];
+		}
+		return orderModels.map((orderModel) => orderModel.toEntity());
+	}
 }
