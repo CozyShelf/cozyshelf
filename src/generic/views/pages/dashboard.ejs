@@ -1,72 +1,174 @@
 <div class="flex flex-col w-full gap-10 mt-9 mb-15 px-32" id="client-register-form">
-    <div class="flex flex-col gap-4">
-        <div class="flex justify-between align-middle">
-            <h1 class="font-semibold text-[20px]">Dashboard de Vendas</h1>
-            <div class="flex items-center gap-2">
-                <h1 class="text-gray">Filtrar: </h1>
+	<div class="flex flex-col gap-4">
+		<div class="flex justify-between align-middle">
+			<h1 class="font-semibold text-[20px]">Dashboard de Vendas</h1>
+			<div class="flex items-center gap-2">
+				<h1 class="text-gray">Filtrar: </h1>
 
-                <input 
-                    type="date" id="start-date"
-                    class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
-                >
-                <span class="mx-1 text-gray">até</span>
-                <input 
-                    type="date" id="end-date" 
-                    class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown"
-                >
-                <button id="filter-btn" class="bg-brown text-white px-2 py-1 rounded hover:bg-dark-brown flex items-center h-[32px]">
-                    <span class="material-symbols-outlined text-[20px]">search</span>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="flex justify-center">
-        <div style="width:800px; height:450px;">
-            <canvas id="myChart" width="800" height="450"></canvas>
-        </div>
-    </div>
+				<input type="date" id="start-date"
+					class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown">
+				<span class="mx-1 text-gray">até</span>
+				<input type="date" id="end-date"
+					class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown">
+				<button id="filter-btn"
+					class="bg-brown text-white px-2 py-1 rounded hover:bg-dark-brown flex items-center h-[32px]">
+					<span class="material-symbols-outlined text-[20px]">search</span>
+				</button>
+			</div>
+		</div>
+
+		<% if (hasData) { %>
+			<div class="flex justify-center gap-4 mt-4">
+				<button id="view-books-btn"
+					class="px-6 py-2 rounded-lg font-medium transition-all duration-200 <%= viewType === 'books' ? 'bg-brown text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' %>">
+					📚 Por Livros
+				</button>
+				<button id="view-categories-btn"
+					class="px-6 py-2 rounded-lg font-medium transition-all duration-200 <%= viewType === 'categories' ? 'bg-brown text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' %>">
+					📂 Por Categorias
+				</button>
+			</div>
+			<% } %>
+	</div>
+	<div class="flex justify-center">
+		<% if (hasData) { %>
+			<div style="width:800px; height:450px;">
+				<canvas id="myChart" width="800" height="450"></canvas>
+			</div>
+			<% } else { %>
+				<div class="flex flex-col items-center justify-center" style="width:800px; height:450px;">
+					<div class="text-center p-12">
+						<div class="mb-6">
+							<svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-24 w-24 text-brown/40" fill="none"
+								viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+									d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+							</svg>
+						</div>
+						<h2 class="text-2xl font-semibold text-dark-brown mb-3">Nenhum dado de vendas encontrado</h2>
+						<p class="text-brown/70 mb-6 text-lg">
+							Não há registros de vendas para o período selecionado.
+						</p>
+					</div>
+				</div>
+				<% } %>
+	</div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        setDefaultEndDate();
-        setupFilterButton();
-        renderSalesChart();
-    });
+	document.addEventListener('DOMContentLoaded', function () {
+		initializeDashboard();
+		setupFilterButton();
+		setupViewButtons();
+	});
 
-    function setDefaultEndDate() {
-        const endDateInput = document.getElementById('end-date');
-        const today = new Date().toISOString().split('T')[0];
-        endDateInput.value = today;
-    }
+	function initializeDashboard() {
+		const urlParams = new URLSearchParams(window.location.search);
+		const startDate = urlParams.get('startDate');
+		const endDate = urlParams.get('endDate');
 
-    function setupFilterButton() {
-        const button = document.getElementById('filter-btn');
-        button.addEventListener('click', function() {
-            location.reload(); // Atualiza a página, equivalente ao F5
-        });
-    }
+		if (!startDate || !endDate) {
+			const today = new Date();
+			const defaultEndDate = today.toISOString().split('T')[0];
 
-    function renderSalesChart() {
-        const ctx = document.getElementById('myChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: <%- JSON.stringify(labels) %>,
-                datasets: (<%- JSON.stringify(salesHistory) %>)
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Histórico de Vendas de Livros'
-                    },
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
-        });
-    }
+			const startOfYear = new Date(today.getFullYear(), 0, 1);
+			const defaultStartDate = startOfYear.toISOString().split('T')[0];
+
+			const url = new URL(window.location.href);
+			url.searchParams.set('startDate', defaultStartDate);
+			url.searchParams.set('endDate', defaultEndDate);
+			window.location.href = url.toString();
+			return;
+		}
+
+		document.getElementById('start-date').value = startDate;
+		document.getElementById('end-date').value = endDate;
+
+		<% if (hasData) { %>
+			renderSalesChart();
+		<% } %>
+	}
+
+	function setupFilterButton() {
+		const button = document.getElementById('filter-btn');
+		const startDateInput = document.getElementById('start-date');
+		const endDateInput = document.getElementById('end-date');
+
+		button.addEventListener('click', function () {
+			const startDate = startDateInput.value;
+			const endDate = endDateInput.value;
+
+			if (startDate && endDate) {
+				const url = new URL(window.location.href);
+				url.searchParams.set('startDate', startDate);
+				url.searchParams.set('endDate', endDate);
+				window.location.href = url.toString();
+			} else {
+				alert('Por favor, selecione ambas as datas para filtrar.');
+			}
+		});
+	}
+
+	function setupViewButtons() {
+		const viewBooksBtn = document.getElementById('view-books-btn');
+		const viewCategoriesBtn = document.getElementById('view-categories-btn');
+
+		if (viewBooksBtn && viewCategoriesBtn) {
+			viewBooksBtn.addEventListener('click', function () {
+				changeView('books');
+			});
+
+			viewCategoriesBtn.addEventListener('click', function () {
+				changeView('categories');
+			});
+		}
+	}
+
+	function changeView(viewType) {
+		const url = new URL(window.location.href);
+		url.searchParams.set('viewType', viewType);
+		window.location.href = url.toString();
+	}
+
+	function renderSalesChart() {
+		const viewType = '<%= viewType %>';
+		const chartTitle = viewType === 'categories'
+			? 'Histórico de Vendas por Categoria'
+			: 'Histórico de Vendas por Livro';
+
+		const ctx = document.getElementById('myChart').getContext('2d');
+		new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: <%- JSON.stringify(labels) %>,
+				datasets: <%- JSON.stringify(salesHistory) %>
+			},
+			options: {
+				responsive: true,
+				plugins: {
+					title: {
+						display: true,
+						text: chartTitle
+					},
+					legend: {
+						position: 'bottom'
+					}
+				},
+				scales: {
+					y: {
+						beginAtZero: true,
+						ticks: {
+							stepSize: 1,
+							precision: 0,
+							callback: function (value) {
+								if (Number.isInteger(value)) {
+									return value;
+								}
+							}
+						}
+					}
+				}
+			}
+		});
+	}
 </script>
