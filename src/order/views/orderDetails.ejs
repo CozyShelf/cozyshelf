@@ -43,6 +43,33 @@
 						</p>
 					</div>
 				</div>
+		<div class="flex justify-between">
+			<!-- LADO ESQUERDO-->
+			<div class="flex flex-col w-1/2 gap-5 mr-10 mt-4">
+				<!---BEGIN: valores-->
+				<div class="flex flex-col gap-4">
+					<h1 class="font-bold text-[18px] text-brown">Valores</h1>
+					<div class="flex justify-between">
+						<h2 class="text-gray-dark [12px]">Subtotal de itens:</h2>
+						<p class="font-semibold">R$ <%= order.itemSubTotal %>
+						</p>
+					</div>
+					<div class="flex justify-between">
+						<h2 class="text-gray-dark [12px]">Frete:</h2>
+						<p class="font-semibold">R$ <%= order.freight.value %>
+						</p>
+					</div>
+					<div class="flex justify-between">
+						<h2 class="text-gray-dark [12px]">Descontos de cupons:</h2>
+						<p class="text-light-green">- R$ <%= order.discount %>
+						</p>
+					</div>
+					<div class="flex justify-between border-t border-gray pt-2">
+						<h2 class="font-semibold text-[16px] text-brown">Total:</h2>
+						<p class="font-semibold text-[16px]">R$ <%= order.finalTotal %>
+						</p>
+					</div>
+				</div>
 
 				<!---END: valores-->
 				<!---BEGIN: detalhes(endereço e cartao)-->
