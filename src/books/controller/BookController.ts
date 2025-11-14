@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import BookService from "../service/BookService";
+import BookSaleService from "../service/BookSaleService";
 import Book from "../domain/Book";
 import BookListDTO from "../dto/BookListDTO";
 import BookDetailsDTO from "../dto/BookDetailsDTO";
@@ -7,11 +8,13 @@ import BookAdminDTO from "../dto/BookAdminDTO";
 
 export default class BookController {
 	private readonly service: BookService;
+	private readonly bookSaleService: BookSaleService;
 	private readonly DEFAULT_PAGINATION_PAGE = 1;
 	private readonly DEFAULT_PAGINATION_LIMIT = 6;
 
-	constructor(service: BookService) {
+	constructor(service: BookService, bookSaleService: BookSaleService) {
 		this.service = service;
+		this.bookSaleService = bookSaleService;
 	}
 
 	create(_req: Request, _res: Response): Promise<Book> {
@@ -77,23 +80,54 @@ export default class BookController {
 	}
 
 	async renderBooksForDashboard(req: Request, res: Response) {
-		const page = Number(req.query.page) || this.DEFAULT_PAGINATION_PAGE;
 		const limit = Number(req.query.limit) || this.DEFAULT_PAGINATION_LIMIT;
+		const viewType = (req.query.viewType as string) || "books";
 
-		const books = await this.service.getAll(page, limit);
-		const labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
+		if (!req.query.startDate || !req.query.endDate) {
+			res.render("dashboard", {
+				title: "Dashboard - Grafico de linha de vendas",
+				currentHeaderTab: "profile",
+				layout: "defaultLayoutAdmin",
+				currentUrl: "dashboard",
+				isAdmin: true,
+				books: [],
+				labels: [],
+				salesHistory: [],
+				hasData: false,
+				needsDateSelection: true,
+				viewType,
+			});
+			return;
+		}
 
-		const booksForChart = books ? BookAdminDTO.fromEntityList(books) : [];
-		const salesHistory = booksForChart.map((book) => {
-			const sales = labels.map(() => Math.floor(Math.random() * 50) + 10);
-			return {
-				label: book.name,
-				data: sales,
-				fill: false,
-				borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-				tension: 0.3,
-			};
-		});
+		const endDate = this.parseLocalDate(req.query.endDate as string);
+		const startDate = this.parseLocalDate(req.query.startDate as string);
+		const labels = this.generateMonthLabels(startDate, endDate);
+
+		let salesHistory: any[] = [];
+		let hasData = false;
+
+		if (viewType === "categories") {
+			const categoryChartData =
+				await this.bookSaleService.getSalesChartDataByCategory(
+					startDate,
+					endDate,
+					labels
+				);
+
+			salesHistory = categoryChartData.datasets;
+			hasData = categoryChartData.hasData;
+		} else {
+			const bookChartData = await this.bookSaleService.getSalesChartDataByBook(
+				startDate,
+				endDate,
+				labels,
+				limit
+			);
+
+			salesHistory = bookChartData.datasets;
+			hasData = bookChartData.hasData;
+		}
 
 		res.render("dashboard", {
 			title: "Dashboard - Grafico de linha de vendas",
@@ -101,10 +135,43 @@ export default class BookController {
 			layout: "defaultLayoutAdmin",
 			currentUrl: "dashboard",
 			isAdmin: true,
-			books: booksForChart,
 			labels,
 			salesHistory,
+			hasData,
+			viewType,
 		});
+	}
+
+	private generateMonthLabels(startDate: Date, endDate: Date): string[] {
+		const monthNames = [
+			"Jan",
+			"Fev",
+			"Mar",
+			"Abr",
+			"Mai",
+			"Jun",
+			"Jul",
+			"Ago",
+			"Set",
+			"Out",
+			"Nov",
+			"Dez",
+		];
+		const labels: string[] = [];
+		const current = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+		const end = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+
+		while (current <= end) {
+			labels.push(`${monthNames[current.getMonth()]}/${current.getFullYear()}`);
+			current.setMonth(current.getMonth() + 1);
+		}
+
+		return labels;
+	}
+
+	private parseLocalDate(dateString: string): Date {
+		const [year, month, day] = dateString.split("-").map(Number);
+		return new Date(year, month - 1, day);
 	}
 
 	async renderAllBooksWithPagination(req: Request, res: Response) {

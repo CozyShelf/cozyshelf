@@ -3,11 +3,46 @@
 		<div class="flex items-center gap-3">
 			<h1 class="font-semibold text-[20px]">Pedido #<%= order.id.toString().substring(0, 8) %>
 			</h1>
-			<span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
+			<span class="<%=
+                order.orderStatus === 'Em processamento' ? 'bg-orange' :
+                order.orderStatus === 'Em trânsito' ? 'bg-orange' :
+                order.orderStatus === 'Entregue' ? 'bg-dark-green' :
+                order.orderStatus === 'Em troca' ? 'bg-yellow-500' :
+				order.orderStatus === 'Trocado' ? 'bg-light-green' :
+				order.orderStatus === 'Troca rejeitada' ? 'bg-red-500' :
+				'bg-gray'
+            %> text-white px-2 py-0.5 rounded-full text-xs">
 				<%= order.orderStatus %>
 			</span>
 		</div>
 
+		<div class="flex justify-between">
+			<!-- LADO ESQUERDO-->
+			<div class="flex flex-col w-1/2 gap-5 mr-10 mt-4">
+				<!---BEGIN: valores-->
+				<div class="flex flex-col gap-4">
+					<h1 class="font-bold text-[18px] text-brown">Valores</h1>
+					<div class="flex justify-between">
+						<h2 class="text-gray-dark [12px]">Subtotal de itens:</h2>
+						<p class="font-semibold">R$ <%= order.itemSubTotal %>
+						</p>
+					</div>
+					<div class="flex justify-between">
+						<h2 class="text-gray-dark [12px]">Frete:</h2>
+						<p class="font-semibold">R$ <%= order.freight.value %>
+						</p>
+					</div>
+					<div class="flex justify-between">
+						<h2 class="text-gray-dark [12px]">Descontos de cupons:</h2>
+						<p class="text-light-green">- R$ <%= order.discount %>
+						</p>
+					</div>
+					<div class="flex justify-between border-t border-gray pt-2">
+						<h2 class="font-semibold text-[16px] text-brown">Total:</h2>
+						<p class="font-semibold text-[16px]">R$ <%= order.finalTotal %>
+						</p>
+					</div>
+				</div>
 		<div class="flex justify-between">
 			<!-- LADO ESQUERDO-->
 			<div class="flex flex-col w-1/2 gap-5 mr-10 mt-4">
@@ -66,7 +101,7 @@
 											<%= card.cardFlag %>
 										</span>
 										<span class="text-gray-500 text-[13px] font-mono">**** **** **** <%= card.cardNumber.slice(-4) %>
-												</span>
+										</span>
 									</div>
 									<% } %>
 							</div>
@@ -88,9 +123,10 @@
 									<%= book.name %>
 								</h2>
 								<div class="flex items-center justify-between gap-15">
-									<p class="text-gray-dark text-[12px]">Quantidade: <%= order.items[index].quantity %>
+									<p class="text-gray-dark text-[12px]" id="book-quantity-<%= book.id %>">Quantidade: <%=
+											order.items[index].quantity %>
 									</p>
-									<p class="font-semibold text-brown text-[14px]">
+									<p class="font-semibold text-brown text-[14px]" id="book-price-<%= book.id %>">
 										<%= book.formattedPrice || `R$ ${book.price.toFixed(2).replace('.', ',' )}` %>
 									</p>
 								</div>
@@ -105,24 +141,54 @@
 				class="font-semibold text-sm bg-brown text-white rounded hover:bg-dark-brown w-[150px] h-10 flex items-center justify-center">
 				Voltar
 			</a>
-			<% if (!isAdmin) { %>
+
+			<!---- PEDIDO DE TROCA CLIENTE-->
+			<% if (!isAdmin && order.orderStatus==='Entregue' ) { %>
 				<button id="exchange-btn" type="button"
 					class="font-semibold text-sm bg-orange text-white rounded hover:bg-dark-orange w-[150px] h-10 flex items-center justify-center">
 					Pedir Troca
 				</button>
 				<% } %>
+
+					<!---- MUDANÇA DE STATUS PELO ADMIN-->
 					<% if (isAdmin) { %>
-						<button type="submit"
-							class="font-semibold text-sm bg-light-brown text-white rounded hover:bg-light-title w-[150px] h-10 flex items-center justify-center">
-							Solicitar Entrega
-						</button>
-						<button type="submit"
-							class="font-semibold text-sm bg-light-green text-white rounded hover:bg-dark-green w-[150px] h-10 flex items-center justify-center">
-							Confirmar Entrega
-						</button>
-						<% } %>
+						<% if (order.orderStatus==='Em processamento' ) { %>
+							<button id="approve-order-btn"
+								class="changeStatus font-semibold text-sm bg-light-brown text-white rounded hover:bg-light-title w-[150px] h-10 flex items-center justify-center"
+								data-order-id="<%= order.id %>" data-status="IN_TRANSIT">
+								Solicitar Entrega
+							</button>
+							<% } %>
+
+								<% if (order.orderStatus==='Em trânsito' ) { %>
+									<button id="confirm-delivery-btn"
+										class="changeStatus font-semibold text-sm bg-dark-green text-white rounded hover:bg-green-700 w-[150px] h-10 flex items-center justify-center"
+										data-order-id="<%= order.id %>" data-status="DELIVERED">
+										Confirmar Entrega
+									</button>
+									<% } %>
+
+										<% if (order.orderStatus==='Em troca' ) { %>
+											<div class="flex gap-4">
+												<button id="reject-exchange-btn"
+													class="changeStatus font-semibold text-sm bg-red-500 text-white rounded hover:bg-red-700 w-[150px] h-10 flex items-center justify-center"
+													data-order-id="<%= order.id %>" data-status="EXCHANGED_REJECT">
+													Rejeitar Troca
+												</button>
+												<button id="confirm-exchange-btn"
+													class="confirmExchange font-semibold text-sm bg-yellow-500 text-white rounded hover:bg-yellow-700 w-[150px] h-10 flex items-center justify-center"
+													data-order-id="<%= order.id %>" data-status="EXCHANGED">
+													Confirmar Troca
+												</button>
+											</div>
+											<% } %>
+												<% } %>
 		</div>
 	</div>
 </form>
+
 <%- include('exchangeModal', { books: books, order: order }) %>
+<%- include('adminExchangeModal', { exchangeBooks: exchangeBooks, exchange: exchange }) %>
 <script src="/scripts/order/exchangeHandler.js" type="module"></script>
+<script src="/scripts/order/changeOrderStatus.js" type="module"></script>
+<script src="/scripts/order/confirmExchange.js" type="module"></script>

@@ -8,4 +8,8 @@ orderAPIRouter.post("/", async (req, res) => {
     await orderController.create(req, res);
 });
 
+orderAPIRouter.put("/:id/status/:status", async (req, res) => {
+    await orderController.updateStatus(req, res);
+});
+
 export default orderAPIRouter;

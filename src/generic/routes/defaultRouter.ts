@@ -10,6 +10,7 @@ import cartRouter from "../../cart/routes/cartRouter";
 import chatbotRouter from "../../ia/routes/chatbotRouter";
 import defaultAPIRouter from "./defaultAPIRouter";
 import HomePageControllerFactory from "../factories/HomePageControllerFactory";
+import exchangeRouter from "../../exchange/router/exchangeRouters";
 
 const defaultRouter = Router();
 const homePageController = new HomePageControllerFactory().make();
@@ -29,5 +30,6 @@ defaultRouter.use("/shopping-cart", cartRouter);
 defaultRouter.use("/books", bookRouter);
 defaultRouter.use("/admin", adminRouter);
 defaultRouter.use("/chatbot", chatbotRouter);
+defaultRouter.use("/exchange", exchangeRouter);
 
 export default defaultRouter;

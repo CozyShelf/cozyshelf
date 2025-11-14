@@ -4,13 +4,14 @@
 		<div class="flex items-center gap-2">
 			<h1 class="text-gray">Filtrar: </h1>
             <select class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown">
-				<option value="all">Todos</option>
+				<option value="">Todos</option>
 				<option value="approved">Aprovados</option>
 				<option value="inTransport">Em Transporte</option>
 				<option value="delivered">Entregues</option>
 				<option value="canceled">Cancelados</option>
 				<option value="inExchange">Em Troca</option>
 				<option value="exchanging">Trocado</option>
+				<option value="exchangeRejected">Troca Rejeitada</option>
 			</select>
 		</div>
 	</div>
@@ -34,7 +35,14 @@
 				<td class="px-6 py-3 font-medium text-gray-2"><%= order.id.toString().substring(0, 8) %></td>
 				<td class="px-6 py-3"><%= new Date(order.delivery.deliveryDate).toLocaleDateString('pt-BR') %></td>
 				<td class="px-6 py-3">
-					<span class="bg-dark-green text-white px-2 py-0.5 rounded-full text-xs">
+					<span class="<%= 
+						order.orderStatus === 'Em processamento' ? 'bg-orange' :
+						order.orderStatus === 'Em trânsito' ? 'bg-orange' :
+						order.orderStatus === 'Entregue' ? 'bg-dark-green' :
+						order.orderStatus === 'Em troca' ? 'bg-yellow-500' :
+						order.orderStatus === 'Trocado' ? 'bg-light-green' :
+						order.orderStatus === 'Troca rejeitada' ? 'bg-red-500' :
+						'bg-gray' %> text-white px-2 py-0.5 rounded-full text-xs">
 						<%= order.orderStatus %>
 					</span>
 				</td>

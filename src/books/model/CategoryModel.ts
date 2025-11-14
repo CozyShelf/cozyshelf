@@ -5,7 +5,7 @@ import BookCategory from "../domain/enums/BookCategory";
 
 @Entity()
 export default class CategoryModel extends GenericModel {
-	@Column({ type: "varchar", length: 200 })
+	@Column({ type: "varchar", length: 200, name: "description" })
 	_description!: string;
 
 	@ManyToMany(() => BookModel, (book) => book.categories)

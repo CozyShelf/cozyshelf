@@ -7,6 +7,7 @@ enum OrderStatus {
     IN_EXCHANGE = 'Em troca',
     EXCHANGE_AUTHORIZED = 'Troca autorizada',
     EXCHANGED = 'Trocado',
+    EXCHANGED_REJECT = 'Troca rejeitada',
 }
 
 export default OrderStatus;
