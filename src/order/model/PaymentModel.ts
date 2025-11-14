@@ -13,7 +13,7 @@ export default class PaymentModel extends GenericModel {
     @JoinColumn({ name: "order_id" })
     order!: OrderModel;
 
-    @OneToMany(() => PaymentCardModel, paymentCard => paymentCard.payment, { cascade: true })
+    @OneToMany(() => PaymentCardModel, paymentCard => paymentCard.payment, { cascade: true, eager: true })
     paymentCards!: PaymentCardModel[];
 
     constructor(
@@ -44,10 +44,10 @@ export default class PaymentModel extends GenericModel {
 
     public static fromEntity(payment: Payment): PaymentModel {
         const model = new PaymentModel();
-        
+
         model.totalAmount = payment.totalAmount;
         model.isActive = payment.isActive;
-        
+
         if (payment.id) {
             model.id = payment.id;
         }

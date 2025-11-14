@@ -22,7 +22,8 @@ export class OrderControllerFactory implements IFactory<OrderController> {
         return new OrderService(
             this.makeOrderDAO(),
             this.makeCartService(),
-            this.makeCouponService()
+            this.makeCouponService(),
+            this.makeBookService()
         );
     }
 
@@ -39,7 +40,6 @@ export class OrderControllerFactory implements IFactory<OrderController> {
             new CartDAO(postgresDataSource),
             new ClientDAO(postgresDataSource),
             new BookDAO(postgresDataSource),
-            this.makeBookService()
         );
     }
 

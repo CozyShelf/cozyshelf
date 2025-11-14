@@ -1,3 +1,4 @@
+import BookService from "../../books/service/BookService";
 import CartService from "../../cart/service/CartService";
 import { CouponService } from "../../coupons/service/CouponsService";
 import OrderDAO from "../dao/typeORM/OrderDAO";
@@ -8,7 +9,8 @@ export class OrderService {
     constructor(
         private readonly orderDAO: OrderDAO,
         private readonly cartService: CartService,
-        private readonly couponService: CouponService
+        private readonly couponService: CouponService,
+				private readonly bookService: BookService
     ) {}
 
     public async create(order: Order): Promise<Order> {
@@ -18,28 +20,35 @@ export class OrderService {
         await this.validateCouponsForOrder(orderModel);
 
         const exceeds = await this.couponsTotalValueExceedsOrderTotal(order.discount, orderModel);
-        
+
         if (exceeds) {
             this.couponService.createExchangeCouponForExcessValue(
                 order.clientId,
                 order.discount - (Number(order.itemSubTotal) + Number(order.freight.value))
             );
-        }
-        
-        // Create the order
-        const createdOrderModel = await this.orderDAO.save(orderModel);
-        
+				}
+
+				for (const item of order.items) {
+					const book = await this.bookService.getById(item.bookId);
+					book.verifyStockAvailability(item.quantity);
+
+					await this.bookService.decreaseBookStock(item.bookId, item.quantity);
+				}
+
+		const createdOrderModel = await this.orderDAO.save(orderModel);
+
         const createdOrder = createdOrderModel.toEntity();
 
         await this.markCouponsAsUsed(createdOrder);
 
         this.cartService.clearCart(createdOrder.clientId);
-    
+
         return createdOrder;
     }
 
     public async getById(id: string): Promise<Order | null> {
-        const orderModel = await this.orderDAO.findById(id);
+			const orderModel = await this.orderDAO.findById(id);
+
         if (!orderModel) {
             return null;
         }

@@ -47,7 +47,7 @@ export default class OrderModel extends GenericModel {
     @Column({ type: "json", nullable: true, name: "exchange_coupon_ids" })
     exchangeCouponIds?: string[];
 
-    constructor(        
+    constructor(
         client: ClientModel,
         items: OrderItemModel[],
         itemSubTotal: number,
@@ -92,7 +92,7 @@ export default class OrderModel extends GenericModel {
     }
 
     public static fromEntity(order: Order): OrderModel {
-        const deliveryModel = DeliveryModel.fromEntity(order.delivery);        
+        const deliveryModel = DeliveryModel.fromEntity(order.delivery);
         const freightModel = FreightModel.fromEntity(order.freight);
 
         const model = new OrderModel(
@@ -115,19 +115,19 @@ export default class OrderModel extends GenericModel {
 
         model.items = order.items.map(item => {
             const itemModel = OrderItemModel.fromEntity(item);
-            itemModel.order = model; 
+            itemModel.order = model;
             return itemModel;
         });
 
         if (order.payment) {
             const paymentModel = PaymentModel.fromEntity(order.payment);
             paymentModel.order = model;
-            
+
             paymentModel.paymentCards = paymentModel.paymentCards?.map(cardModel => {
                 cardModel.payment = paymentModel;
                 return cardModel;
             }) || [];
-            
+
             model.payment = paymentModel;
         }
 
@@ -135,7 +135,7 @@ export default class OrderModel extends GenericModel {
         freightModel.order = model;
 
         model.orderStatus = order.orderStatus as OrderStatus;
-        
+
         return model;
     }
 

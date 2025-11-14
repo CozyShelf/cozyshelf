@@ -1,0 +1,85 @@
+<div id="exchange-modal"
+	class="fixed inset-0 bg-[#343434]/70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+	<div
+		class="bg-white rounded-2xl shadow-2xl w-full max-w-[650px] max-h-[85vh] overflow-hidden flex flex-col animate-[slideUp_0.3s_ease-out]">
+
+		<div
+			class="bg-gradient-to-br from-[#863C13] to-[#6F2D08] px-8 py-7 flex items-center justify-between border-b-[3px] border-[#E77619]">
+			<h2 class="text-2xl font-bold text-[#F5ECE1] tracking-tight">Trocar Livros do Pedido</h2>
+			<button type="button" id="close-exchange-modal" aria-label="Fechar modal"
+				class="bg-[#F5ECE1]/15 text-[#F5ECE1] w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#F5ECE1]/25 transition-all duration-200 focus:outline-none">
+				<span class="material-symbols-outlined text-2xl">close</span>
+			</button>
+		</div>
+
+		<form id="exchange-form" class="flex-1 overflow-y-auto px-8 py-7" onsubmit="createExchange();">
+			<input type="hidden" id="order-id" name="orderId" value="<%= order.id %>" />
+
+			<div
+				class="bg-gradient-to-br from-[#F5ECE1] to-[#D6AE7C]/20 px-5 py-[18px] rounded-xl border-2 border-[#D6AE7C] flex items-center gap-3 mb-6 cursor-pointer hover:border-[#E77619] transition-all duration-200">
+				<input type="checkbox" id="exchange-all"
+					class="appearance-none w-[22px] h-[22px] border-[2.5px] border-[#863C13] rounded-md cursor-pointer transition-all duration-200 checked:bg-[#E77619] checked:border-[#E77619] checked:after:content-['✓'] checked:after:text-white checked:after:text-base checked:after:font-bold checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 relative flex-shrink-0" />
+				<label for="exchange-all" class="text-[#863C13] font-semibold text-base cursor-pointer select-none">
+					Trocar todo o pedido
+				</label>
+			</div>
+
+			<ul id="exchange-books-list" class="flex flex-col gap-4">
+				<% books.forEach(function(book, index) { %>
+					<li
+						class="bg-white border-2 border-[#F5ECE1] rounded-2xl p-5 flex items-center gap-5 hover:border-[#D6AE7C] hover:shadow-[0_8px_24px_rgba(134,60,19,0.12)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-[#E77619] before:scale-y-0 hover:before:scale-y-100 before:transition-transform before:duration-300 group">
+						<img src="<%= book.coverPath %>" alt="Capa do livro"
+							class="w-[70px] h-[100px] object-cover rounded-xl shadow-md border-2 border-[#F5ECE1] flex-shrink-0" />
+						<div class="flex-1 flex flex-col gap-1.5">
+							<label for="book-<%= book.id %>"
+								class="text-[#863C13] font-semibold text-base leading-tight cursor-pointer">
+								<%= book.name %>
+							</label>
+							<span class="text-[#898989] text-[13px] font-medium">
+								Adquiridas: <%= order.items[index].quantity %> unidades
+							</span>
+						</div>
+
+						<div class="flex flex-col items-center gap-2">
+							<label for="quantity-<%= book.id %>" class="text-[#898989] text-xs font-medium uppercase tracking-wider">
+								Qtd. troca
+							</label>
+							<input type="number" min="1" max="<%= order.items[index].quantity %>" value="1"
+								id="quantity-<%= book.id %>" data-max="<%= order.items[index].quantity %>"
+								class="book-quantity w-[70px] px-3 py-2.5 border-2 border-[#D6AE7C] rounded-xl text-center font-semibold text-base text-[#863C13] focus:outline-none focus:border-[#E77619] focus:ring-[3px] focus:ring-[#E77619]/15 transition-all duration-200" />
+						</div>
+
+						<input type="checkbox"
+							class="book-checkbox appearance-none w-[22px] h-[22px] border-[2.5px] border-[#863C13] rounded-md cursor-pointer transition-all duration-200 checked:bg-[#E77619] checked:border-[#E77619] checked:after:content-['✓'] checked:after:text-white checked:after:text-base checked:after:font-bold checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 relative flex-shrink-0"
+							name="selectedBooks" value="<%= book.id %>" id="book-<%= book.id %>" />
+					</li>
+					<% }); %>
+			</ul>
+		</form>
+
+		<div class="px-8 py-6 border-t-2 border-[#F5ECE1] flex justify-end gap-3">
+			<button type="button"
+				class="px-8 py-3.5 rounded-full font-semibold text-[15px] tracking-wide bg-white text-[#863C13] border-2 border-[#D6AE7C] hover:bg-[#F5ECE1] hover:border-[#863C13] transition-all duration-200">
+				Cancelar
+			</button>
+			<button type="submit" style="background-color: #863C13; color: white;"
+				class="px-8 py-3.5 rounded-full font-semibold text-[15px] tracking-wide border-2 border-[#863C13] hover:bg-light-brown transition-colors duration-200">
+				Confirmar Troca
+			</button>
+		</div>
+	</div>
+</div>
+
+<style>
+	@keyframes slideUp {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+</style>

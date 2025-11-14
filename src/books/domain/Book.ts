@@ -1,5 +1,6 @@
 import DomainEntity from "../../generic/domain/DomainEntity";
 import BookCategory from "./enums/BookCategory";
+import NotAvailableInStock from "./exceptions/NotAvailableInStock";
 
 export default class Book extends DomainEntity {
 	_name: string;
@@ -278,5 +279,11 @@ export default class Book extends DomainEntity {
 
 	public isInStock(quantity: number = 1): boolean {
 		return this._stockQuantity >= quantity;
+	}
+
+	public verifyStockAvailability(quantity: number = 1): void {
+		if (!this.isInStock(quantity)) {
+			throw new NotAvailableInStock(this.name, quantity, this._stockQuantity);
+		}
 	}
 }
