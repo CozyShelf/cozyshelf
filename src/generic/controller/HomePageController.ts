@@ -20,9 +20,8 @@ export default class HomePageController {
 
 	public async renderHomePage(_: Request, res: Response) {
 		try {
-			const context = this.contextService.prepareBookRecommendationContext(
-				this.BOOKS_JSON_PATH
-			);
+			const context = await this.contextService
+			.prepareBookRecommendationContext(this.BOOKS_JSON_PATH);
 
 			const prompt = `${context}\n\nRetorne APENAS um array JSON válido com ${this.BOOKS_IN_HOME_PAGE} livros interessantes e variados de diferentes categorias.`;
 

@@ -43,33 +43,6 @@
 						</p>
 					</div>
 				</div>
-		<div class="flex justify-between">
-			<!-- LADO ESQUERDO-->
-			<div class="flex flex-col w-1/2 gap-5 mr-10 mt-4">
-				<!---BEGIN: valores-->
-				<div class="flex flex-col gap-4">
-					<h1 class="font-bold text-[18px] text-brown">Valores</h1>
-					<div class="flex justify-between">
-						<h2 class="text-gray-dark [12px]">Subtotal de itens:</h2>
-						<p class="font-semibold">R$ <%= order.itemSubTotal %>
-						</p>
-					</div>
-					<div class="flex justify-between">
-						<h2 class="text-gray-dark [12px]">Frete:</h2>
-						<p class="font-semibold">R$ <%= order.freight.value %>
-						</p>
-					</div>
-					<div class="flex justify-between">
-						<h2 class="text-gray-dark [12px]">Descontos de cupons:</h2>
-						<p class="text-light-green">- R$ <%= order.discount %>
-						</p>
-					</div>
-					<div class="flex justify-between border-t border-gray pt-2">
-						<h2 class="font-semibold text-[16px] text-brown">Total:</h2>
-						<p class="font-semibold text-[16px]">R$ <%= order.finalTotal %>
-						</p>
-					</div>
-				</div>
 
 				<!---END: valores-->
 				<!---BEGIN: detalhes(endereço e cartao)-->
@@ -158,31 +131,31 @@
 								data-order-id="<%= order.id %>" data-status="IN_TRANSIT">
 								Solicitar Entrega
 							</button>
+						<% } %>
+
+						<% if (order.orderStatus==='Em trânsito' ) { %>
+							<button id="confirm-delivery-btn"
+								class="changeStatus font-semibold text-sm bg-dark-green text-white rounded hover:bg-green-700 w-[150px] h-10 flex items-center justify-center"
+								data-order-id="<%= order.id %>" data-status="DELIVERED">
+								Confirmar Entrega
+							</button>
+						<% } %>
+
+						<% if (order.orderStatus==='Em troca' ) { %>
+							<div class="flex gap-4">
+								<button id="reject-exchange-btn"
+									class="changeStatus font-semibold text-sm bg-red-500 text-white rounded hover:bg-red-700 w-[150px] h-10 flex items-center justify-center"
+									data-order-id="<%= order.id %>" data-status="EXCHANGED_REJECT">
+									Rejeitar Troca
+								</button>
+								<button id="confirm-exchange-btn"
+									class="confirmExchange font-semibold text-sm bg-yellow-500 text-white rounded hover:bg-yellow-700 w-[150px] h-10 flex items-center justify-center"
+									data-order-id="<%= order.id %>" data-status="EXCHANGED">
+									Confirmar Troca
+								</button>
+							</div>
 							<% } %>
-
-								<% if (order.orderStatus==='Em trânsito' ) { %>
-									<button id="confirm-delivery-btn"
-										class="changeStatus font-semibold text-sm bg-dark-green text-white rounded hover:bg-green-700 w-[150px] h-10 flex items-center justify-center"
-										data-order-id="<%= order.id %>" data-status="DELIVERED">
-										Confirmar Entrega
-									</button>
-									<% } %>
-
-										<% if (order.orderStatus==='Em troca' ) { %>
-											<div class="flex gap-4">
-												<button id="reject-exchange-btn"
-													class="changeStatus font-semibold text-sm bg-red-500 text-white rounded hover:bg-red-700 w-[150px] h-10 flex items-center justify-center"
-													data-order-id="<%= order.id %>" data-status="EXCHANGED_REJECT">
-													Rejeitar Troca
-												</button>
-												<button id="confirm-exchange-btn"
-													class="confirmExchange font-semibold text-sm bg-yellow-500 text-white rounded hover:bg-yellow-700 w-[150px] h-10 flex items-center justify-center"
-													data-order-id="<%= order.id %>" data-status="EXCHANGED">
-													Confirmar Troca
-												</button>
-											</div>
-											<% } %>
-												<% } %>
+						<% } %>
 		</div>
 	</div>
 </form>

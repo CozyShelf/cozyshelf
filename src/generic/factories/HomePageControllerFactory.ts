@@ -5,15 +5,22 @@ import GeminiCacheService from "../../ia/service/GeminiContextService";
 import postgresDataSource from "../config/database/datasources/postgresDataSource";
 import HomePageController from "../controller/HomePageController";
 import IFactory from "./Factory";
+import { OrderControllerFactory } from "../../order/factory/OrderControllerFactory";
 
-export default class HomePageControllerFactory
-	implements IFactory<HomePageController>
+export default class HomePageControllerFactory implements IFactory<HomePageController>
 {
+	private readonly orderFactory = new OrderControllerFactory();
+
 	public make(): HomePageController {
+		const bookService = new BookService(new BookDAO(postgresDataSource));
+		
 		return new HomePageController(
-			new BookService(new BookDAO(postgresDataSource)),
+			bookService,
 			new GeminiService(),
-			new GeminiCacheService()
+			new GeminiCacheService(
+				this.orderFactory.makeOrderService(),
+				bookService
+			)
 		);
 	}
 }

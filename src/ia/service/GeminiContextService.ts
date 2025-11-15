@@ -1,7 +1,15 @@
 import fs from "fs";
+import { OrderService } from "../../order/service/OrderService";
+import BookService from "../../books/service/BookService";
 
 export default class GeminiContextService {
-	public prepareBookRecommendationContext(jsonPath: string): string {
+
+	public constructor(
+		private readonly orderService: OrderService,
+		private readonly bookService: BookService
+	) {}
+
+	public async prepareBookRecommendationContext(jsonPath: string): Promise<string> {
 		const booksData = fs.readFileSync(jsonPath, "utf-8");
 		const books = JSON.parse(booksData);
 
@@ -15,9 +23,81 @@ export default class GeminiContextService {
 		}));
 
 		const booksList = JSON.stringify(simplifiedBooks);
+		
+		let purchaseContext = await this.getContextForUserOrderHistory();
+		
+		const contextText = `Você é um 'matchmaker' de livros especialista da livraria CozyShelf. Sua única função é analisar o histórico de compras de um usuário e encontrar os próximos livros que ele vai amar, com base em uma lista de catálogo específica.
+## Contexto e Dados Recebidos:
+1.  **Histórico de Compras do Usuário (JSON):** ${purchaseContext || "Nenhum histórico de compras disponível."}
+2.  **Catálogo da Loja (Livros que VOCÊ PODE recomendar) (JSON):** ${booksList}
 
-		const contextText = `Você é um assistente de recomendação de livros da livraria CozyShelf. Escolha SOMENTE livros desta lista: ${booksList}. Retorne APENAS um array JSON válido sem texto adicional, explicações ou formatação markdown. Retorne livros classicos. Use o formato exato mantendo: id, name, author, coverPath, price e categories.`;
+## Tarefa Principal:
+Recomendar livros do **Catálogo da Loja** que sejam *altamente similares* aos livros do **Histórico de Compras do Usuário**.
+
+## Lógica de Recomendação (Como pensar):
+Pense além de categorias amplas (como "Romance"). Foque na "vibe", popularidade e no subgênero. O que as pessoas que compraram [Livro A] também estão lendo?
+
+### Exemplo-Chave de "Vibe":
+* **SE** o histórico do usuário contém "A Hipótese do Amor" (Ali Hazelwood),
+* **ENTÃO** uma recomendação *perfeita* do catálogo seria "É Assim que Acaba" (Colleen Hoover).
+* **Por quê?** Ambos são romances contemporâneos "New Adult", fenômenos de popularidade (BookTok), com temas emocionais intensos e estilo de escrita moderno. Use esta lógica!
+
+## Regras Rigorosas:
+1.  **Fonte Única:** Recomende *SOMENTE* livros que estão no **Catálogo da Loja** (${booksList}).
+2.  **Similaridade de "Vibe":** Use o "Exemplo-Chave" como seu guia principal. Combine subgêneros (ex: "Fantasia Romântica" com "Fantasia Romântica", "Distopia Jovem" com "Distopia Jovem").
+3.  **Evitar Incompatibilidade:** NÃO recomende literatura clássica (ex: Machado de Assis) se o histórico é de best-sellers modernos/comerciais (ex: Rupi Kaur, Colleen Hoover).
+4.  **Sem Repetição:** NÃO recomende livros que o usuário *já possui* no histórico dele.
+5.  **Variedade (se possível):** Se o histórico for diverso, tente variar as recomendações. Se o histórico for focado (só romance), foque as recomendações em romance.
+
+## Formato de Saída OBRIGATÓRIO:
+Retorne APENAS um array JSON válido contendo os livros recomendados. Não inclua NENHUM texto, explicação, introdução ou formatação markdown (como \`\`\`json). Use o formato exato mantendo: id, name, author, coverPath, price e categories. `;
 
 		return contextText;
+	}
+	
+	public async getContextForUserOrderHistory(): Promise<string> {
+		let purchaseContext = "";
+		try {
+			const orders = await this.orderService.getAll();
+			
+			// Extrai os IDs dos livros comprados
+			const bookIds = orders.flatMap(order => 
+				order.items.map(item => item.bookId)
+			);
+			
+			const purchasedBooks = await Promise.all(
+				bookIds.map(id => this.bookService.getById(id))
+			);
+			
+			const validBooks = purchasedBooks.filter(book => book !== null);
+			
+			const purchasedBooksInfo = validBooks
+				.map(book => `"${book.name}" por ${book.author} - Categorias: [${book.categories.join(", ")}]`);
+			
+			// Extrai as categorias mais comuns
+			const allCategories = validBooks
+				.flatMap(book => book.categories);
+			
+			const categoryCount: Record<string, number> = {};
+			allCategories.forEach(cat => {
+				categoryCount[cat] = (categoryCount[cat] || 0) + 1;
+			});
+			
+			const topCategories = Object.entries(categoryCount)
+				.sort((a, b) => b[1] - a[1])
+				.slice(0, 3)
+				.map(([cat]) => cat);
+			
+			if (purchasedBooksInfo.length > 0) {
+				purchaseContext = `O usuário comprou: ${purchasedBooksInfo.join("; ")}. 
+				
+CATEGORIAS PREFERIDAS DO USUÁRIO: ${topCategories.join(", ")}.
+				
+Você DEVE recomendar livros das mesmas categorias: ${topCategories.join(", ")}.`;
+			}
+		} catch (error) {
+			console.log("[INFO] ℹ️ Não foi possível buscar histórico de compras:", error);
+		}
+		return purchaseContext;
 	}
 }
