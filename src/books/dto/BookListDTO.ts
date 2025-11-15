@@ -43,6 +43,21 @@ export default class BookListDTO {
 		return books.map((book) => BookListDTO.fromEntity(book));
 	}
 
+	public static fromJSON(json: any): BookListDTO {
+		return new BookListDTO(
+			json.id,
+			json.name,
+			json.author,
+			json.coverPath,
+			typeof json.price === "string" ? parseFloat(json.price) : json.price,
+			Array.isArray(json.categories) ? json.categories : []
+		);
+	}
+
+	public static fromJSONList(jsonArray: any[]): BookListDTO[] {
+		return jsonArray.map((json) => BookListDTO.fromJSON(json));
+	}
+
 	public get formattedPrice(): string {
 		const numericPrice =
 			typeof this.price === "string" ? parseFloat(this.price) : this.price;

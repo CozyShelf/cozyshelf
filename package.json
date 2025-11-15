@@ -36,6 +36,7 @@
 		"typescript": "^5.8.3"
 	},
 	"dependencies": {
+		"@google/generative-ai": "^0.24.1",
 		"@tailwindcss/cli": "^4.1.12",
 		"@types/bcrypt": "^6.0.0",
 		"@types/supertest": "^6.0.3",
