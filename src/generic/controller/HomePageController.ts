@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import BookService from "../../books/service/BookService";
 import BookListDTO from "../../books/dto/BookListDTO";
 import GeminiService from "../../ia/service/GeminiService";
-import GeminiCacheService from "../../ia/service/GeminiCacheService";
+import GeminiContextService from "../../ia/service/GeminiContextService";
 import path from "path";
 
 export default class HomePageController {
@@ -15,12 +15,12 @@ export default class HomePageController {
 	public constructor(
 		private readonly bookService: BookService,
 		private readonly aiService: GeminiService,
-		private readonly cacheService: GeminiCacheService
+		private readonly contextService: GeminiContextService
 	) {}
 
 	public async renderHomePage(_: Request, res: Response) {
 		try {
-			const context = this.cacheService.prepareBookRecommendationContext(
+			const context = this.contextService.prepareBookRecommendationContext(
 				this.BOOKS_JSON_PATH
 			);
 

@@ -1,6 +1,6 @@
 import fs from "fs";
 
-export default class GeminiCacheService {
+export default class GeminiContextService {
 	public prepareBookRecommendationContext(jsonPath: string): string {
 		const booksData = fs.readFileSync(jsonPath, "utf-8");
 		const books = JSON.parse(booksData);
