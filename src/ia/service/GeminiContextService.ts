@@ -56,7 +56,7 @@ export default class GeminiContextService {
 		3.  **Evitar Incompatibilidade:** NÃO recomende literatura clássica (ex: Machado de Assis) se o histórico é de best-sellers modernos/comerciais (ex: Rupi Kaur, Colleen Hoover).
 		4.  **Sem Repetição:** NÃO recomende livros que o usuário *já possui* no histórico dele.
 		5.  **Variedade Obrigatória:** Você DEVE variar as categorias nas recomendações quando necessário para atingir o número exato solicitado. Priorize as categorias preferidas do usuário, mas se precisar completar a quantidade, explore categorias relacionadas ou complementares disponíveis no catálogo.
-		6.  **CRÍTICO - Quantidade EXATA de Livros:** Você DEVE retornar EXATAMENTE ${numberOfRecommendations} livros. NÃO RETORNE MENOS. Este é um requisito absoluto e inegociável. Se houver poucas opções nas categorias preferidas, EXPANDA para outras categorias do catálogo até completar ${numberOfRecommendations} livros. NUNCA retorne 1, 2 ou 3 livros quando ${numberOfRecommendations} livros foram solicitados.
+		6.  **CRÍTICO - Quantidade EXATA de Livros:** Você DEVE retornar EXATAMENTE ${numberOfRecommendations} livros. **NÃO RETORNE MENOS**. Este é um requisito absoluto e inegociável. Se houver poucas opções nas categorias preferidas, EXPANDA para outras categorias do catálogo até completar ${numberOfRecommendations} livros. NUNCA retorne MENOS DE ${numberOfRecommendations} livros.
 
 		## Estratégia para Completar a Quantidade:
 		- **Primeiro:** Selecione livros das categorias preferidas do usuário (máxima prioridade)

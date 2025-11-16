@@ -26,9 +26,7 @@ export default class HomePageController {
 					this.BOOKS_IN_HOME_PAGE
 				);
 
-			const prompt = `${context}\n\nRetorne APENAS um array JSON válido contendo SEMPRE ${this.BOOKS_IN_HOME_PAGE} livros interessantes e variados de diferentes categorias.`;
-
-			const aiResponse = await this.aiService.talkToAi(prompt);
+			const aiResponse = await this.aiService.talkToAi(context);
 
 			const cleanResponse = aiResponse
 				.replace(/```json\n?/g, "")
