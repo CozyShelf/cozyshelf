@@ -13,9 +13,16 @@ function renderChatbot() {
 	}
 
 	chatbot.removeAttribute("hidden");
+	chatbot.classList.add("chatbot-appear");
 
 	closeButton.addEventListener("click", () => {
-		containerToRender.setAttribute("hidden", true);
+		chatbot.classList.remove("chatbot-appear");
+		chatbot.classList.add("chatbot-disappear");
+
+		setTimeout(() => {
+			containerToRender.setAttribute("hidden", true);
+			chatbot.classList.remove("chatbot-disappear");
+		}, 300);
 	});
 
 	messagesContainer.scrollIntoView({
@@ -23,11 +30,11 @@ function renderChatbot() {
 		block: "start",
 	});
 
-	function createMessage(botMessage, text) {
+	function createMessage(botMessage, text, withTypingEffect = false) {
 		const messageDiv = document.createElement("div");
 		messageDiv.className = `flex ${
 			botMessage ? "justify-start" : "justify-end"
-		} mb-4`;
+		} mb-4 message-appear`;
 
 		const messageContent = document.createElement("div");
 		messageContent.className = `${
@@ -35,7 +42,12 @@ function renderChatbot() {
 		} text-dark-brown px-4 py-2 rounded-2xl ${
 			botMessage ? "rounded-bl-sm" : "rounded-br-sm"
 		} max-w-xs shadow-sm`;
-		messageContent.innerText = text;
+
+		if (withTypingEffect) {
+			messageContent.className += " typing-effect";
+		} else {
+			messageContent.innerText = text;
+		}
 
 		messageDiv.appendChild(messageContent);
 		return messageDiv;
@@ -47,32 +59,101 @@ function renderChatbot() {
 			: button.setAttribute("disabled", true);
 	}
 
+	function createTypingIndicator() {
+		const messageDiv = document.createElement("div");
+		messageDiv.className = "flex justify-start mb-4 message-appear";
+		messageDiv.id = "typingIndicator";
+
+		const messageContent = document.createElement("div");
+		messageContent.className =
+			"bg-lighter-brown text-dark-brown px-4 py-2 rounded-2xl rounded-bl-sm max-w-xs shadow-sm";
+
+		const typingIndicator = document.createElement("div");
+		typingIndicator.className = "typing-indicator";
+
+		for (let i = 0; i < 3; i++) {
+			const dot = document.createElement("span");
+			dot.className = "typing-dot";
+			typingIndicator.appendChild(dot);
+		}
+
+		messageContent.appendChild(typingIndicator);
+		messageDiv.appendChild(messageContent);
+		return messageDiv;
+	}
+
+	async function typeMessage(element, text, speed = 25) {
+		return new Promise((resolve) => {
+			let index = 0;
+			const cursor = document.createElement("span");
+			cursor.className = "typing-cursor";
+			element.appendChild(cursor);
+
+			const interval = setInterval(() => {
+				if (index < text.length) {
+					const char = text.charAt(index);
+					const textNode = document.createTextNode(char);
+					element.insertBefore(textNode, cursor);
+					index++;
+
+					messagesContainer.scrollTop = messagesContainer.scrollHeight;
+				} else {
+					cursor.remove();
+					clearInterval(interval);
+					resolve();
+				}
+			}, speed);
+		});
+	}
+
 	function createBookRecommendation(book) {
 		if (!book) return null;
 
+		const bookContainer = document.createElement("div");
+		bookContainer.className =
+			"flex justify-start mb-4 book-recommendation-appear";
+
 		const bookDiv = document.createElement("div");
 		bookDiv.className =
-			"mt-3 p-3 bg-white rounded-lg shadow-sm border border-light-brown";
+			"bg-gradient-to-br from-lighter-brown to-white p-4 rounded-2xl rounded-bl-sm max-w-xs shadow-md border-2 border-light-brown";
+
+		const categoryBadge = book.category
+			? `<span class="inline-block bg-light-title text-white text-xs font-semibold px-2 py-1 rounded-full">${book.category}</span>`
+			: "";
+
+		const description = book.description
+			? `<p class="text-xs text-gray-700 leading-relaxed line-clamp-3">${book.description}</p>`
+			: "";
 
 		bookDiv.innerHTML = `
-			<div class="flex gap-3">
-				<img src="${book.coverPath}" alt="${
+			<div class="flex flex-col gap-3">
+				<div class="flex gap-3">
+					<img src="${book.coverPath}" alt="${
 			book.name
-		}" class="w-16 h-24 object-cover rounded">
-				<div class="flex-1">
-					<h4 class="font-semibold text-dark-brown text-sm">${book.name}</h4>
-					<p class="text-xs text-gray-600 mt-1">${book.author}</p>
-					<p class="text-sm font-bold text-dark-brown mt-2">R$ ${book.price.toFixed(
-						2
-					)}</p>
-					<a href="/books/${
-						book.id
-					}" class="text-xs text-light-brown hover:underline mt-1 inline-block">Ver detalhes</a>
+		}" class="w-20 h-28 object-cover rounded-lg shadow-md">
+					<div class="flex-1 flex flex-col justify-between">
+						<div>
+							<h4 class="font-bold text-dark-brown text-sm leading-tight">${book.name}</h4>
+							<p class="text-xs text-gray-600 mt-1">${book.author}</p>
+							${categoryBadge ? `<div class="mt-2">${categoryBadge}</div>` : ""}
+						</div>
+						<p class="text-base font-bold text-light-title mt-2">R$ ${book.price.toFixed(
+							2
+						)}</p>
+					</div>
 				</div>
+				${description ? `<div class="mt-1">${description}</div>` : ""}
+				<a href="/books/${
+					book.id
+				}" class="mt-2 w-full bg-light-title hover:bg-brown text-white font-semibold py-2 px-4 rounded-lg text-center text-sm transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md flex items-center justify-center gap-2">
+					<span>Ver detalhes do livro</span>
+					<span class="material-symbols-outlined text-base">arrow_forward</span>
+				</a>
 			</div>
 		`;
 
-		return bookDiv;
+		bookContainer.appendChild(bookDiv);
+		return bookContainer;
 	}
 
 	function getConversationHistory() {
@@ -145,8 +226,7 @@ function renderChatbot() {
 
 					input.value = "";
 
-					const typingIndicator = createMessage(true, "Digitando...");
-					typingIndicator.id = "typingIndicator";
+					const typingIndicator = createTypingIndicator();
 					messagesContainer.appendChild(typingIndicator);
 					messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
@@ -159,8 +239,12 @@ function renderChatbot() {
 						indicator.remove();
 					}
 
-					const botMessage = createMessage(true, botResponse.message);
+					const botMessage = createMessage(true, "", true);
 					messagesContainer.appendChild(botMessage);
+					messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+					const messageContent = botMessage.querySelector("div");
+					await typeMessage(messageContent, botResponse.message);
 
 					if (botResponse.recommendedBook) {
 						console.log("Livro recomendado:", botResponse.recommendedBook);
@@ -168,7 +252,7 @@ function renderChatbot() {
 							botResponse.recommendedBook
 						);
 						if (bookRecommendation) {
-							botMessage.querySelector("div").appendChild(bookRecommendation);
+							messagesContainer.appendChild(bookRecommendation);
 						}
 					} else {
 						console.warn("Nenhum livro recomendado na resposta");

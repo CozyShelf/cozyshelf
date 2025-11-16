@@ -1,18 +1,41 @@
 <div id="chatbot"
-	class="flex flex-col wrapper w-4/12 mt-10 fixed bottom-1 right-5 bg-white shadow-lg rounded-2xl min-h-[80vh] max-h-[80vh]"
+	class="flex flex-col wrapper w-4/12 mt-10 fixed bottom-1 right-5 bg-white shadow-2xl rounded-2xl min-h-[80vh] max-h-[80vh] z-50 overflow-hidden"
 	hidden>
-	<div class="relative">
-		<a class="absolute right-5 top-5 cursor-pointer bg-brown hover:bg-lighter-brown rounded w-7 h-7 flex items-center justify-center"
-			id="closeChatbotModal">
-			<span class="material-symbols-outlined text-white hover:text-brown">close</span>
-		</a>
+	<!-- Cabeçalho do Chatbot -->
+	<div class="chatbot-header bg-gradient-to-r from-light-title to-brown p-4 rounded-t-2xl relative">
+		<div class="flex items-center gap-3">
+			<div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md">
+				<img src="/assets/mingau-full.png" alt="Mingau" class="w-10 h-10 object-contain">
+			</div>
+			<div class="flex-1">
+				<h2 class="text-white font-bold text-lg">Mingau</h2>
+				<p class="text-lighter-brown text-xs flex items-center gap-1">
+					<span class="w-2 h-2 bg-light-green rounded-full animate-pulse"></span>
+					Online - Pronto para ajudar!
+				</p>
+			</div>
+			<button
+				class="cursor-pointer bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full w-8 h-8 flex items-center justify-center transition-all"
+				id="closeChatbotModal">
+				<span class="material-symbols-outlined text-light-brown text-xl">close</span>
+			</button>
+		</div>
 	</div>
 
-	<div class="flex-1 p-4 pt-16 overflow-y-auto" id="chatbotMessages">
-		<div class="flex flex-col items-center justify-center mt-32" id="chatbotWelcome">
-			<div class="flex flex-row justify-center"><img class="w-28" src="/assets/mingau-full.png" alt="Imagem do mascote">
+	<div class="flex-1 p-4 overflow-y-auto" id="chatbotMessages">
+		<div class="flex flex-col items-center justify-center mt-20 gap-4" id="chatbotWelcome">
+			<div class="relative">
+				<div class="absolute inset-0 bg-light-title opacity-20 blur-2xl rounded-full"></div>
+				<img class="w-32 relative z-10 animate-bounce-slow" src="/assets/mingau-full.png" alt="Imagem do mascote">
 			</div>
-			<h1 class="text-center text-gray font-medium">Faça suas perguntas ao Mingau</h1>
+			<div class="text-center px-6">
+				<h1 class="text-dark-brown font-bold text-xl mb-2">Olá! Eu sou o Mingau 🐱</h1>
+				<p class="text-gray text-sm">Seu assistente literário pessoal</p>
+				<p class="text-gray-600 text-xs mt-3 leading-relaxed">
+					Estou aqui para te ajudar a encontrar o livro perfeito!
+					<br>Pergunte sobre gêneros, autores ou descreva o que você gostaria de ler.
+				</p>
+			</div>
 		</div>
 	</div>
 
