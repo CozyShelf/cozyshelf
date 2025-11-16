@@ -20,10 +20,13 @@ export default class HomePageController {
 
 	public async renderHomePage(_: Request, res: Response) {
 		try {
-			const context = await this.contextService
-			.prepareBookRecommendationContext(this.BOOKS_JSON_PATH);
+			const context =
+				await this.contextService.prepareBookRecommendationContext(
+					this.BOOKS_JSON_PATH,
+					this.BOOKS_IN_HOME_PAGE
+				);
 
-			const prompt = `${context}\n\nRetorne APENAS um array JSON válido com ${this.BOOKS_IN_HOME_PAGE} livros interessantes e variados de diferentes categorias.`;
+			const prompt = `${context}\n\nRetorne APENAS um array JSON válido contendo SEMPRE ${this.BOOKS_IN_HOME_PAGE} livros interessantes e variados de diferentes categorias.`;
 
 			const aiResponse = await this.aiService.talkToAi(prompt);
 
@@ -32,15 +35,31 @@ export default class HomePageController {
 				.replace(/```\n?/g, "")
 				.trim();
 
-			const books = BookListDTO.fromJSONList(JSON.parse(cleanResponse));
+			const jsonBooks = JSON.parse(cleanResponse);
+
+			let books = await Promise.all(
+				jsonBooks.map(async (bookData: any) => {
+					try {
+						const book = await this.bookService.getBookByName(bookData.name);
+						return book;
+					} catch {
+						return null;
+					}
+				})
+			);
+
+			books = books.filter((book) => book !== null);
 
 			res.render("homePage", {
 				title: "Seja bem vindo !",
 				currentHeaderTab: "home",
-				books: books ?? [],
+				books: BookListDTO.fromEntityList(books) ?? [],
 			});
 		} catch (error) {
-			console.error("Erro ao buscar recomendações de livros:", error);
+			console.warn(
+				"[WARN] 🔴 Erro ao buscar recomendações de livros:",
+				(error as Error).message
+			);
 
 			const books = await this.bookService.getAll(1, this.BOOKS_IN_HOME_PAGE);
 
