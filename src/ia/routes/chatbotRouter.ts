@@ -1,17 +1,11 @@
 import { Request, Response, Router } from "express";
-import ConfigDynamicPaths from "../../generic/helpers/ConfigDynamicPaths";
-import path from "path";
+import ChatbotControllerFactory from "../factories/ChatbotControllerFactory";
 
 const chatbotRouter = Router();
-chatbotRouter.use(
-	ConfigDynamicPaths.configViewsPath(path.join(__dirname, "../views"))
-);
+const controller = new ChatbotControllerFactory().make();
 
-chatbotRouter.get("/", (_: Request, res: Response) => {
-	res.render("mingauChatbot", {
-		title: "Converse com o Mingau",
-		currentHeaderTab: ""
-	});
+chatbotRouter.post("/", (req: Request, res: Response) => {
+	return controller.handleChatRequest(req, res);
 });
 
 export default chatbotRouter;
