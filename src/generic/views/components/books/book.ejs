@@ -1,5 +1,5 @@
 <div class="flex flex-row gap-4 w-full max-w-md rounded-lg p-4 relative">
-	<a href="/books/<%= book.id %>"><img class="w-32 rounded-md shadow-lg transition-all hover:scale-105"
+	<a href="/books/<%= book.id %>"><img class="w-32 h-auto rounded-md shadow-lg transition-all hover:scale-105 object-cover"
 			src="<%= book.coverPath %>" alt="Capa do livro"></a>
 
 	<div class="flex flex-col justify-between flex-grow">
@@ -17,7 +17,12 @@
 				<span class="material-symbols-outlined w-6 text-[16px]">
 					<% const cat=book.categories[0].toLowerCase(); let icon="label" ; if (cat.includes("romance")) {
 						icon="favorite" ; } else if (cat.includes("fantasia") || cat.includes("mágico")) { icon="auto_awesome" ; }
-						else if (cat.includes("literatura") || cat.includes("teatro")) { icon="menu_book" } %>
+						else if (cat.includes("literatura") || cat.includes("teatro")) { icon="menu_book" ; } else if
+						(cat.includes("suspense") || cat.includes("distóp")) { icon="mystery" ; } else if
+						(cat.includes("desenvolvimento") || cat.includes("pessoal")) { icon="psychology" ; } else if
+						(cat.includes("não-ficção") || cat.includes("história")) { icon="fact_check" ; } else if
+						(cat.includes("científica")) { icon="science" ; } else if (cat.includes("infantojuvenil")) {
+						icon="child_care" ; } %>
 						<%= icon %>
 				</span>
 				<%= book.categories[0] %>
@@ -28,8 +33,7 @@
 			<%= book.formattedPrice || `R$ ${book.price.toFixed(2)}` %>
 		</span>
 
-		<button type="button"
-			id="add-to-cart-button"
+		<button type="button" id="add-to-cart-button"
 			class="add-to-cart-component-btn flex items-center justify-center gap-2 w-full h-6 mt-2 px-2 py-2 border border-light-title text-light-title font-medium text-[12px] rounded-md hover:bg-light-title hover:text-white hover:cursor-pointer transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
 			data-book-id="<%= book.id %>" data-book-title="<%= book.name %>" data-book-image="<%= book.coverPath %>"
 			data-book-price="<%= book.formattedPrice || `R$ ${book.price.toFixed(2)}` %>">

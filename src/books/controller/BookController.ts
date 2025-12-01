@@ -10,7 +10,7 @@ export default class BookController {
 	private readonly service: BookService;
 	private readonly bookSaleService: BookSaleService;
 	private readonly DEFAULT_PAGINATION_PAGE = 1;
-	private readonly DEFAULT_PAGINATION_LIMIT = 6;
+	private readonly DEFAULT_PAGINATION_LIMIT = 9;
 
 	constructor(service: BookService, bookSaleService: BookSaleService) {
 		this.service = service;

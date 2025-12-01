@@ -31,7 +31,11 @@ export default class BookDAO implements IDAO<BookModel> {
 		return this.repository.findOneBy({ id, isActive: true });
 	}
 
-	delete(id: string): Promise<void> {
+	findByName(name: string): Promise<BookModel | null> {
+		return this.repository.findOneBy({ title: name, isActive: true });
+	}
+
+	delete(_: string): Promise<void> {
 		throw new Error("Method not implemented.");
 	}
 }

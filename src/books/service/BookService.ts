@@ -21,6 +21,15 @@ export default class BookService {
 		return bookModel.toEntity();
 	}
 
+	public async getBookByName(name: string): Promise<Book> {
+		const bookModel = await this.dao.findByName(name);
+		if (!bookModel) {
+			throw new NoBooksFound(name, "nome");
+		}
+
+		return bookModel.toEntity();
+	}
+
 	public async isBookInStock(
 		bookId: string,
 		quantity: number = 1

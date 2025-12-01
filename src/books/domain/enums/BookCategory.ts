@@ -14,6 +14,11 @@ enum BookCategory {
 	LITERATURA_FRANCESA = "Literatura Francesa",
 	TEATRO_CLASSICO = "Teatro Clássico",
 	LITERATURA_RUSSA = "Literatura Russa",
+	SUSPENSE = "Suspense",
+	DESENVOLVIMENTO_PESSOAL = "Desenvolvimento Pessoal",
+	NAO_FICCAO = "Não-ficção",
+	HISTORIA = "História",
+	FICCAO_CIENTIFICA = "Ficção Científica",
 }
 
 export default BookCategory;

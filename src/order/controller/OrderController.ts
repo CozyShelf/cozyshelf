@@ -158,8 +158,6 @@ export default class OrderController {
 
 			const exchange =  await this.exchangeService.getByOrderId(order.id);
 			const exchangeBooks = exchange ? await Promise.all(order._items.map((item) => this.bookService.getById(item._bookId))) : [];
-
-			console.log("Exchange books:", exchangeBooks);
 			
 			res.render("orderDetails", {
 				title: `Detalhes do Pedido ${order.id}`,

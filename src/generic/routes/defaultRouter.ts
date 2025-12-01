@@ -7,7 +7,6 @@ import couponsRouter from "../../coupons/router/couponsRouter";
 import bookRouter from "../../books/routes/bookRouter";
 import adminRouter from "../../admin/routes/adminRouter";
 import cartRouter from "../../cart/routes/cartRouter";
-import chatbotRouter from "../../ia/routes/chatbotRouter";
 import defaultAPIRouter from "./defaultAPIRouter";
 import HomePageControllerFactory from "../factories/HomePageControllerFactory";
 import exchangeRouter from "../../exchange/router/exchangeRouters";
@@ -29,7 +28,6 @@ defaultRouter.use("/coupons", couponsRouter);
 defaultRouter.use("/shopping-cart", cartRouter);
 defaultRouter.use("/books", bookRouter);
 defaultRouter.use("/admin", adminRouter);
-defaultRouter.use("/chatbot", chatbotRouter);
 defaultRouter.use("/exchange", exchangeRouter);
 
 export default defaultRouter;
