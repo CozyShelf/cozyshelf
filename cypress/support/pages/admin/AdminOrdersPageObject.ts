@@ -145,24 +145,28 @@ export default class AdminOrdersPageObject extends GenericPageObject {
 	}
 
 	checkReturnAllToStock() {
-		cy.get("#return-all-to-stock").should("exist").then(($checkbox) => {
-			if (!$checkbox.prop("checked")) {
-				cy.wrap($checkbox).check({ force: true });
-			}
-		});
+		cy.get("#return-all-to-stock")
+			.should("exist")
+			.then(($checkbox) => {
+				if (!$checkbox.prop("checked")) {
+					cy.wrap($checkbox).check({ force: true });
+				}
+			});
 		cy.wait(500);
 	}
 
 	uncheckReturnAllToStock() {
 		// Abordagem mais robusta: desmarcar diretamente todos os checkboxes
 		// Primeiro, clicar no checkbox principal se estiver marcado
-		cy.get("#return-all-to-stock").should("exist").then(($checkbox) => {
-			if ($checkbox.prop("checked")) {
-				cy.wrap($checkbox).click({ force: true });
-			}
-		});
+		cy.get("#return-all-to-stock")
+			.should("exist")
+			.then(($checkbox) => {
+				if ($checkbox.prop("checked")) {
+					cy.wrap($checkbox).click({ force: true });
+				}
+			});
 		cy.wait(800);
-		
+
 		// Forçar desmarcação de todos os checkboxes individuais se ainda estiverem marcados
 		cy.get(".stock-checkbox").each(($checkbox) => {
 			cy.wrap($checkbox).then(($el) => {
@@ -216,20 +220,24 @@ export default class AdminOrdersPageObject extends GenericPageObject {
 	}
 
 	checkSpecificBookForStock(bookIndex: number) {
-		cy.get(".stock-checkbox").eq(bookIndex).then(($checkbox) => {
-			if (!$checkbox.prop("checked")) {
-				cy.wrap($checkbox).click({ force: true });
-			}
-		});
+		cy.get(".stock-checkbox")
+			.eq(bookIndex)
+			.then(($checkbox) => {
+				if (!$checkbox.prop("checked")) {
+					cy.wrap($checkbox).click({ force: true });
+				}
+			});
 		cy.wait(300);
 	}
 
 	uncheckSpecificBookForStock(bookIndex: number) {
-		cy.get(".stock-checkbox").eq(bookIndex).then(($checkbox) => {
-			if ($checkbox.prop("checked")) {
-				cy.wrap($checkbox).click({ force: true });
-			}
-		});
+		cy.get(".stock-checkbox")
+			.eq(bookIndex)
+			.then(($checkbox) => {
+				if ($checkbox.prop("checked")) {
+					cy.wrap($checkbox).click({ force: true });
+				}
+			});
 		cy.wait(500);
 	}
 
@@ -238,10 +246,7 @@ export default class AdminOrdersPageObject extends GenericPageObject {
 	}
 
 	setStockQuantityForBook(bookIndex: number, quantity: number) {
-		cy.get(".stock-quantity")
-			.eq(bookIndex)
-			.clear()
-			.type(quantity.toString());
+		cy.get(".stock-quantity").eq(bookIndex).clear().type(quantity.toString());
 		cy.wait(200);
 	}
 
