@@ -114,9 +114,14 @@ describe("Exchange and Order Status Management", () => {
 
 						adminOrdersPageObject.verifyConfirmExchangeButtonExists();
 
+						// Confirmar troca com interação no modal de seleção de estoque
 						adminOrdersPageObject.confirmExchange();
-
-						adminOrdersPageObject.verifySuccessMessageAndClose();
+						adminOrdersPageObject.verifyStockConfirmationModalIsVisible();
+						adminOrdersPageObject.verifyStockModalTitle();
+						adminOrdersPageObject.checkReturnAllToStock();
+						adminOrdersPageObject.verifyAllStockCheckboxesAreChecked();
+						adminOrdersPageObject.clickConfirmStockReturn();
+						adminOrdersPageObject.verifyStockReturnSuccessMessageAndClose();
 
 						// Verificar status "Trocado" na lista
 						adminOrdersPageObject.visitAdminOrdersPage();
@@ -252,9 +257,14 @@ describe("Exchange and Order Status Management", () => {
 
 					adminOrdersPageObject.verifyConfirmExchangeButtonExists();
 
+					// Confirmar troca com interação no modal de seleção de estoque
 					adminOrdersPageObject.confirmExchange();
-
-					adminOrdersPageObject.verifySuccessMessageAndClose();
+					adminOrdersPageObject.verifyStockConfirmationModalIsVisible();
+					adminOrdersPageObject.verifyStockModalTitle();
+					adminOrdersPageObject.checkReturnAllToStock();
+					adminOrdersPageObject.verifyAllStockCheckboxesAreChecked();
+					adminOrdersPageObject.clickConfirmStockReturn();
+					adminOrdersPageObject.verifyStockReturnSuccessMessageAndClose();
 
 					// Verificar status "Trocado" na lista
 					adminOrdersPageObject.visitAdminOrdersPage();
@@ -265,6 +275,136 @@ describe("Exchange and Order Status Management", () => {
 					couponsPageObject.verifyCouponsPageLoaded();
 					couponsPageObject.verifyExchangeCouponExists();
 					couponsPageObject.verifyExchangeCouponHasExpirationDate();
+				});
+			});
+		});
+
+		it("should reject exchange and change status to 'Entregue'", () => {
+			orderTestHelper.createOrder().then((id: string) => {
+				orderId = id;
+				cy.log(`Order ID: ${orderId}`);
+
+				adminOrdersPageObject.visitAdminOrdersPage();
+				adminOrdersPageObject.verifyAdminOrdersPageLoaded();
+				adminOrdersPageObject.clickOrderByIdInAdminList(orderId);
+				cy.wait(1000);
+
+				cy.url().then((url) => {
+					fullOrderId = url.split("/").pop()!;
+
+					adminOrdersPageObject.approveOrder();
+					adminOrdersPageObject.verifySuccessMessageAndClose();
+
+					// Verificar status na lista e voltar para detalhes
+					adminOrdersPageObject.visitAdminOrdersPage();
+					adminOrdersPageObject.verifyOrderStatusById(orderId, "Em trânsito");
+					adminOrdersPageObject.visitAdminOrderDetailsPage(fullOrderId);
+					cy.wait(1000);
+
+					adminOrdersPageObject.confirmDelivery();
+					adminOrdersPageObject.verifySuccessMessageAndClose();
+
+					// Verificar status na lista
+					adminOrdersPageObject.visitAdminOrdersPage();
+					adminOrdersPageObject.verifyOrderStatusById(orderId, "Entregue");
+
+					orderTestHelper.requestExchange(fullOrderId);
+
+					// Verificar status "Em troca" na lista
+					adminOrdersPageObject.visitAdminOrdersPage();
+					adminOrdersPageObject.verifyOrderStatusById(orderId, "Em troca");
+
+					// Acessar detalhes para rejeitar troca
+					adminOrdersPageObject.visitAdminOrderDetailsPage(fullOrderId);
+					cy.wait(1000);
+
+					adminOrdersPageObject.verifyRejectExchangeButtonExists();
+					adminOrdersPageObject.verifyConfirmExchangeButtonExists();
+
+					// Rejeitar troca
+					adminOrdersPageObject.rejectExchange();
+					adminOrdersPageObject.verifyRejectExchangeSuccessMessageAndClose();
+				});
+			});
+		});
+	});
+
+	describe("Stock Confirmation Modal", () => {
+		it("should open stock confirmation modal when confirming exchange", () => {
+			orderTestHelper.createOrder().then((id: string) => {
+				orderId = id;
+				cy.log(`Order ID: ${orderId}`);
+
+				adminOrdersPageObject.visitAdminOrdersPage();
+				adminOrdersPageObject.verifyAdminOrdersPageLoaded();
+				adminOrdersPageObject.clickOrderByIdInAdminList(orderId);
+				cy.wait(1000);
+
+				cy.url().then((url) => {
+					fullOrderId = url.split("/").pop()!;
+
+					adminOrdersPageObject.approveOrder();
+					adminOrdersPageObject.verifySuccessMessageAndClose();
+					adminOrdersPageObject.visitAdminOrderDetailsPage(fullOrderId);
+					cy.wait(1000);
+
+					adminOrdersPageObject.confirmDelivery();
+					adminOrdersPageObject.verifySuccessMessageAndClose();
+
+					orderTestHelper.requestExchange(fullOrderId);
+
+					adminOrdersPageObject.visitAdminOrderDetailsPage(fullOrderId);
+					cy.wait(1000);
+
+					// Clicar no botão de confirmar troca deve abrir o modal
+					adminOrdersPageObject.confirmExchange();
+					adminOrdersPageObject.verifyStockConfirmationModalIsVisible();
+					adminOrdersPageObject.verifyStockModalTitle();
+					adminOrdersPageObject.verifyReturnAllCheckboxExists();
+				});
+			});
+		});
+
+		it("should successfully confirm exchange", () => {
+			orderTestHelper.createOrder().then((id: string) => {
+				orderId = id;
+
+				adminOrdersPageObject.visitAdminOrdersPage();
+				adminOrdersPageObject.clickOrderByIdInAdminList(orderId);
+				cy.wait(1000);
+
+				cy.url().then((url) => {
+					fullOrderId = url.split("/").pop()!;
+
+					adminOrdersPageObject.approveOrder();
+					adminOrdersPageObject.verifySuccessMessageAndClose();
+					adminOrdersPageObject.visitAdminOrderDetailsPage(fullOrderId);
+					cy.wait(1000);
+
+					adminOrdersPageObject.confirmDelivery();
+					adminOrdersPageObject.verifySuccessMessageAndClose();
+
+					orderTestHelper.requestExchange(fullOrderId);
+
+					adminOrdersPageObject.visitAdminOrderDetailsPage(fullOrderId);
+					cy.wait(1000);
+
+					adminOrdersPageObject.confirmExchange();
+					adminOrdersPageObject.verifyStockConfirmationModalIsVisible();
+
+					// Desmarcar todos e selecionar apenas alguns itens
+					adminOrdersPageObject.uncheckReturnAllToStock();
+					cy.wait(1500); // Aguardar propagação completa
+					adminOrdersPageObject.checkSpecificBookForStock(0);
+					adminOrdersPageObject.verifySelectedCount(1);
+
+					// Confirmar retorno parcial ao estoque
+					adminOrdersPageObject.clickConfirmStockReturn();
+					adminOrdersPageObject.verifyStockReturnSuccessMessageAndClose();
+
+					// Verificar status "Trocado"
+					adminOrdersPageObject.visitAdminOrdersPage();
+					adminOrdersPageObject.verifyOrderStatusById(orderId, "Trocado");
 				});
 			});
 		});
