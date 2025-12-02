@@ -1,4 +1,4 @@
-import ClientRegistrationPageObject from "../../support/pages/ClientRegistrationPageObject";
+import ClientRegistrationPageObject from "../../support/pages/client/ClientRegistrationPageObject";
 import { IClientTestData } from "../../support/pages/types/TestData";
 
 describe("client registration tests", () => {

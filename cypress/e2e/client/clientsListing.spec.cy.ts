@@ -1,5 +1,5 @@
-import ClientListPageObject from "../../support/pages/ClientListPageObject";
-import ClientRegistrationPageObject from "../../support/pages/ClientRegistrationPageObject";
+import ClientListPageObject from "../../support/pages/client/ClientListPageObject";
+import ClientRegistrationPageObject from "../../support/pages/client/ClientRegistrationPageObject";
 
 describe("client listing tests", () => {
 	let clientListPageObject: ClientListPageObject;

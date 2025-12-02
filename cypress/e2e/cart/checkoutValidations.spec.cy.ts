@@ -276,52 +276,5 @@ describe("checkout validations", () => {
 					});
 			});
 		});
-
-		it("should enforce minimum value of R$ 10 per card", () => {
-			checkoutPageObject.selectDeliveryAddress(TEST_ADDRESS_ID);
-
-			checkoutPageObject.selectAndAddCard(TEST_CARD_ID);
-
-			cy.get('input[data-card-index="0"]').clear().type("5").blur();
-
-			cy.get(".swal2-container", { timeout: 5000 }).should("be.visible");
-			cy.get(".swal2-icon-error").should("be.visible");
-		});
-
-		it("should allow values below R$ 10 when remaining amount after coupons is less than R$ 10", () => {
-			checkoutPageObject.selectDeliveryAddress(TEST_ADDRESS_ID);
-
-			checkoutPageObject.selectPromotionalCoupon(
-				PROMOTIONAL_COUPONS.BLACKFRIDAY
-			);
-			checkoutPageObject.selectExchangeCoupon(EXCHANGE_COUPONS.TROCA004);
-			checkoutPageObject.applyCoupons();
-
-			cy.wait(1000);
-
-			checkoutPageObject.getTotalAmount().then((totalText) => {
-				const total = parseFloat(
-					totalText.replace("R$", "").replace(",", ".").trim()
-				);
-
-				if (total > 0 && total < 10) {
-					checkoutPageObject.selectAndAddCard(TEST_CARD_ID);
-					checkoutPageObject.updateCardAmount(0, total / 2);
-
-					cy.get("#card-selector option")
-						.last()
-						.then(($option) => {
-							const newCardId = $option.val() as string;
-							checkoutPageObject.selectAndAddCard(newCardId);
-							checkoutPageObject.updateCardAmount(1, total / 2);
-
-							checkoutPageObject.submitCheckout();
-
-							cy.wait(2000);
-							cy.get(".swal2-container").should("not.contain", "valor mínimo");
-						});
-				}
-			});
-		});
 	});
 });

@@ -1,5 +1,5 @@
 import { IUpdatePasswordTestData } from "../../support/pages/types/TestData";
-import UpdatePasswordPageObject from "../../support/pages/UpdatePasswordPageObject";
+import UpdatePasswordPageObject from "../../support/pages/client/UpdatePasswordPageObject";
 
 describe("update password tests", () => {
 	let updatePasswordPageObject: UpdatePasswordPageObject;

@@ -36,7 +36,7 @@ describe("delete an address", () => {
         addressTablePageObject.closeDeleteErrorModal();
     });
 
-    it("should delete a non-preferred card successfully", () => {
+    it("should delete a address successfully", () => {
         makeSUT();
         addressTablePageObject.deleteAddressSuccess(1);
 
