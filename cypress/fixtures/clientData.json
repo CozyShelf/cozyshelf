@@ -1,0 +1,29 @@
+{
+	"name": "João Silva",
+	"birthDate": "1990-05-12",
+	"cpf": "12345678915",
+	"email": "joao.teste2@email.com",
+	"password": "Senha123@@",
+	"gender": "MALE",
+	"phone": "11999999999",
+	"phoneType": "MOBILE",
+	"address": {
+		"shortPhrase": "Próximo ao mercado",
+		"cep": "01234567",
+		"state": "SP",
+		"city": "São Paulo",
+		"streetType": "Rodovia",
+		"streetName": "Rua das Flores",
+		"number": "100",
+		"neighborhood": "Centro",
+		"residenceType": "Apartamento",
+		"type": "DELIVERY_AND_BILLING"
+	},
+	"card": {
+		"number": "4111111111111111",
+		"cvv": "123",
+		"impressName": "JOAO SILVA",
+		"flag": "Visa",
+		"isPreferred": true
+	}
+}

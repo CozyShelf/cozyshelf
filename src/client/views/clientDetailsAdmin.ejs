@@ -1,0 +1,26 @@
+<div class="flex flex-col w-full mt-9">
+	<div class="flex justify-start align-middle gap-5 mb-5 px-32">
+		<button onclick="history.back()" class="text-brown hover:text-dark-brown flex items-center gap-1 text-[14px]">
+			<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+		</button>
+		<h1 class="font-semibold text-[20px] text-brown">Detalhes do Cliente: <%= user.name %>
+		</h1>
+	</div>
+	<%- include('../../client/views/clientDetails.ejs', {title: "Informações Pessoais" , currentUrl: "client" , user}) %>
+
+		<%- include('../../client/views/passwordDetail.ejs', {title: "Alterar Senha" , user}) %>
+
+			<% user.addresses.forEach((address, index)=> { %>
+				<%- include('../../address/views/addressDetails.ejs', {title: "Endereço " + (index + 1), isAdmin: true, user,
+					address, states, withTitle: true) %>
+					<% }); %>
+
+						<% user.cards.forEach((card, index)=> { %>
+							<%- include('../../card/views/cardDetails.ejs', {title: "Cartão de Crédito " + (index + 1),
+								currentUrl: "card" , isAdmin: true, card, withTitle: true) %>
+								<% }); %>
+</div>
+<script type="module" src="/scripts/client/update/index.mjs"></script>
+<script type="module" src="/scripts/card/index.mjs"></script>
+<script type="module" src="/scripts/address/index.mjs"></script>
+<script type="module" src="/scripts/password/index.mjs"></script>

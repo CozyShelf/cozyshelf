@@ -1,0 +1,67 @@
+<form class="flex flex-col w-full gap-10 mt-9 mb-15 px-32" id="card-form">
+	<div class="flex flex-col gap-5">
+		<% if (withTitle) { %>
+			<h1 class="font-semibold text-[20px]">
+				<%= title %>
+			</h1>
+		<% } %>
+
+		<div class="flex flex-col gap-10" id="cards">
+			<div class="flex flex-col gap-3 justify-start" id="card">
+				<input type="text" value="<%= card?.id %>" id="cardId" hidden>
+				<div class="flex flex-row gap-10">
+					<%- include('buttons/toggleButton.ejs', { toggleName: "card-is-preferred" ,
+						toggleMessage: "Marcar como preferencial" , isChecked: card?.isPreferred, })%>
+				</div>
+
+				<div class="flex flex-col gap-5">
+					<div class="flex flex-row gap-10">
+						<label class="flex flex-col text-[12px] gap-3 w-full">
+							Número do Cartão *
+							<input placeholder="Ex: XXXX XXXX XXXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+								name="card-number" id="card-number" value="<%= card?.formattedNumber ? card.formattedNumber : '' %>" required
+								maxlength="19" minlength="19">
+						</label>
+						<label class="flex flex-col text-[12px] gap-3 w-full">
+							CVV *
+							<input placeholder="XXX" class="border rounded-[5px] border-gray h-10 p-2.5" type="text" name="card-cvv" id="card-cvv"
+								value="<%= card?.cvv ? card.cvv : '' %>" required maxlength="3">
+						</label>
+					</div>
+					<div class="flex flex-row gap-10">
+						<label class="flex flex-col text-[12px] gap-3 w-full">
+							Nome impresso no cartão *
+							<input placeholder="Ex: JOAO S D SILVA" class="border rounded-[5px] border-gray h-10 p-2.5" type="text"
+								name="card-impress-name" id="card-impress-name" value="<%= card?.nameOnCard ? card.nameOnCard : '' %>" required maxlength="50">
+						</label>
+						<label class="flex flex-col text-[12px] gap-3 w-full">
+							Bandeira *
+							<select name="card-flag" id="card-flag" class="border rounded-[5px] border-gray h-10 p-2.5" required>
+								<option value="">Selecione...</option>
+								<option value="Visa" <%=card?.flagDescription==='Visa' ? 'selected' : '' %>>Visa</option>
+								<option value="Mastercard" <%=card?.flagDescription==='Mastercard' ? 'selected' : '' %>>Mastercard
+								</option>
+								<option value="Elo" <%=card?.flagDescription==='Elo' ? 'selected' : '' %>>Elo</option>
+							</select>
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="flex flex-row justify-between items-center mt-2">
+			<% if (!isAdmin) { %>
+				<a href="/cards/client/f4a4ecf2-e31e-41b2-8c9f-a36898e23d81"
+					class="font-semibold text-sm bg-brown text-white rounded hover:bg-dark-brown w-[150px] h-10 flex items-center justify-center">
+					Voltar
+				</a>
+				<% } %>
+					<div class="flex flex-1 justify-end">
+						<button type="submit" id="<%= card ? 'updateCard' : 'newCard' %>"
+							class="font-medium text-sm text-white bg-light-green w-[150px] h-10 rounded-[5px] cursor-pointer hover:bg-dark-green flex items-center justify-center">
+							<%= card ? 'Atualizar' : 'Salvar' %>
+						</button>
+					</div>
+		</div>
+	</div>
+</form>
+<script type="module" src="/scripts/card/index.mjs"></script>

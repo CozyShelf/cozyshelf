@@ -1,0 +1,54 @@
+<div id="chatbot"
+	class="flex flex-col wrapper w-4/12 mt-10 fixed bottom-1 right-5 bg-white shadow-2xl rounded-2xl min-h-[80vh] max-h-[80vh] z-50 overflow-hidden"
+	hidden>
+	<!-- Cabeçalho do Chatbot -->
+	<div class="chatbot-header bg-gradient-to-r from-light-title to-brown p-4 rounded-t-2xl relative">
+		<div class="flex items-center gap-3">
+			<div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md">
+				<img src="/assets/mingau-full.png" alt="Mingau" class="w-10 h-10 object-contain">
+			</div>
+			<div class="flex-1">
+				<h2 class="text-white font-bold text-lg">Mingau</h2>
+				<p class="text-lighter-brown text-xs flex items-center gap-1">
+					<span class="w-2 h-2 bg-light-green rounded-full animate-pulse"></span>
+					Online - Pronto para ajudar!
+				</p>
+			</div>
+			<button
+				class="cursor-pointer bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full w-8 h-8 flex items-center justify-center transition-all"
+				id="closeChatbotModal">
+				<span class="material-symbols-outlined text-light-brown text-xl">close</span>
+			</button>
+		</div>
+	</div>
+
+	<div class="flex-1 p-4 overflow-y-auto" id="chatbotMessages">
+		<div class="flex flex-col items-center justify-center mt-20 gap-4" id="chatbotWelcome">
+			<div class="relative">
+				<div class="absolute inset-0 bg-light-title opacity-20 blur-2xl rounded-full"></div>
+				<img class="w-32 relative z-10 animate-bounce-slow" src="/assets/mingau-full.png" alt="Imagem do mascote">
+			</div>
+			<div class="text-center px-6">
+				<h1 class="text-dark-brown font-bold text-xl mb-2">Olá! Eu sou o Mingau 🐱</h1>
+				<p class="text-gray text-sm">Seu assistente literário pessoal</p>
+				<p class="text-gray-600 text-xs mt-3 leading-relaxed">
+					Estou aqui para te ajudar a encontrar o livro perfeito!
+					<br>Pergunte sobre gêneros, autores ou descreva o que você gostaria de ler.
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<form class="flex flex-row items-center gap-3 p-3 w-full h-14 rounded-b-2xl bg-light-title relative">
+		<input
+			class="bg-lighter-brown p-2 pl-3 pr-12 rounded-full font-medium text-dark-brown placeholder-light-brown flex-1 outline-none border-none text-sm"
+			type="text" placeholder=">" id="chatbotInput">
+		<button
+			class="cursor-pointer bg-dark-brown hover:bg-opacity-90 hover:bg-brown disabled:bg-light-brown transition-colors rounded-full p-3 flex items-center justify-center min-w-10 min-h-10 absolute right-1"
+			id="sendMessage">
+			<span class="material-symbols-outlined text-lighter-brown text-lg">
+				send
+			</span>
+		</button>
+	</form>
+</div>

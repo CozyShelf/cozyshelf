@@ -1,0 +1,35 @@
+<aside class="h-screen w-64 bg-lighter-brown flex flex-col justify-between py-6 px-5 fixed ">
+    <div>
+        <a href="/" class="flex flex-row items-center gap-2 mb-10">
+            <%- include("mascot.ejs") %>
+            <div class="flex flex-col">
+                <h1 class="font-bold text-light-title text-[20px]">Cozy Shelf</h1>
+                <p class="font-semibold text-light-title text-[14px]">Administrativo</p>
+            </div>
+        </a>
+        <nav>
+            <ul class="text-[16px] space-y-6 divide-y divide-gray-300 text-light-title">
+                <li class="py-2">
+                    <a class="hover:text-light-brown <%= currentUrl === 'dashboard' ? 'font-bold' : '' %>" href="/admin/dashboard">Dashboard</a>
+                </li>
+                <li class="py-2">
+                    <a class="hover:text-light-brown <%= currentUrl === 'clients' ? 'font-bold' : '' %>" href="/admin/clients">Clientes</a>
+                </li>
+                <li class="py-2">
+                    <a class="hover:text-light-brown <%= currentUrl === 'orders' ? 'font-bold' : '' %>" href="/admin/orders">Pedidos</a>
+                </li>
+                <li class="py-2">
+                    <a class="hover:text-light-brown <%= currentUrl === 'stock' ? 'font-bold' : '' %>" href="/admin/stock">Estoque</a>
+                </li>
+            </ul>
+            <div class="py-55">
+                <a class="flex items-center gap-2 text-[14px] text-light-title hover:text-light-brown" href="/">
+                    <span class="material-symbols-outlined">
+                        arrow_back
+                    </span>
+                    Volte para o site
+                </a>
+            </div>
+        </nav>
+    </div>
+</aside>

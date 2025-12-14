@@ -1,0 +1,58 @@
+<div class="flex flex-col w-full gap-10 mt-9 mb-15 px-32">
+	<div class="flex justify-between align-middle">
+		<h1 class="font-semibold text-[20px]"><%= title %> (<%= orders.length %>)</h1>
+		<div class="flex items-center gap-2">
+			<h1 class="text-gray">Filtrar: </h1>
+            <select class="border border-gray rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-dark-brown">
+				<option value="">Todos</option>
+				<option value="approved">Aprovados</option>
+				<option value="inTransport">Em Transporte</option>
+				<option value="delivered">Entregues</option>
+				<option value="canceled">Cancelados</option>
+				<option value="inExchange">Em Troca</option>
+				<option value="exchanging">Trocado</option>
+				<option value="exchangeRejected">Troca Rejeitada</option>
+			</select>
+		</div>
+	</div>
+	<table class="min-w-full border-none rounded-lg overflow-hidden shadow-md">
+		<thead class="bg-dark-brown text-white text-sm uppercase">
+			<tr>
+				<th class="px-6 py-3 text-left font-semibold">ID</th>
+				<th class="px-6 py-3 text-left font-semibold">Data de Entrega</th>
+				<th class="px-6 py-3 text-left font-semibold">Status</th>
+				<th class="px-6 py-3 text-left font-semibold">Ações</th>
+			</tr>
+		</thead>
+		<tbody class="divide-y divide-light-brown text-sm text-gray-2 bg-lighter-brown">
+			<% if (orders.length === 0) { %>
+				<tr>
+					<td colspan="4" class="px-6 py-3 text-center text-gray-2">Nenhum pedido encontrado</td>
+				</tr>
+			<% } %>
+			<% orders.forEach(order => { %>
+			<tr>
+				<td class="px-6 py-3 font-medium text-gray-2"><%= order.id.toString().substring(0, 8) %></td>
+				<td class="px-6 py-3"><%= new Date(order.delivery.deliveryDate).toLocaleDateString('pt-BR') %></td>
+				<td class="px-6 py-3">
+					<span class="<%= 
+						order.orderStatus === 'Em processamento' ? 'bg-orange' :
+						order.orderStatus === 'Em trânsito' ? 'bg-orange' :
+						order.orderStatus === 'Entregue' ? 'bg-dark-green' :
+						order.orderStatus === 'Em troca' ? 'bg-yellow-500' :
+						order.orderStatus === 'Trocado' ? 'bg-light-green' :
+						order.orderStatus === 'Troca rejeitada' ? 'bg-red-500' :
+						'bg-gray' %> text-white px-2 py-0.5 rounded-full text-xs">
+						<%= order.orderStatus %>
+					</span>
+				</td>
+				<td class="px-6 py-3 flex gap-2">
+					<a href="<%= isAdmin ? "/admin/orders/" + order.id : "/orders/" + order.id %>" class="hover:text-gray flex justify-center items-center">
+						<span class="material-symbols-outlined text-base">visibility</span>
+					</a>
+				</td>
+			</tr>
+			<% }); %>
+		</tbody>
+	</table>
+</div>

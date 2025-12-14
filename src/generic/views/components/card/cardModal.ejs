@@ -1,0 +1,17 @@
+<div id="modal-container" class="hidden backdrop-blur-[2px] fixed inset-0 z-50"
+	style="display: none; align-items: center; justify-content: center;">
+	<div class="bg-white rounded-lg shadow-xl p-8 w-[700px] max-h-[90vh] overflow-y-auto border-dark-brown border-2">
+		<div class="flex flex-col gap-6" id="card-modal">
+			<div class="flex items-center justify-between mb-4">
+				<h1 class="font-semibold text-[20px]">Cadastrar Novo Cartão</h1>
+				<a class="ml-4 cursor-pointer bg-brown hover:bg-lighter-brown rounded w-7 h-7 flex items-center justify-center"
+					id="close-modal">
+					<span class="material-symbols-outlined text-white hover:text-brown">close</span>
+				</a>
+			</div>
+
+			<%- include("../../../../card/views/cardDetails.ejs", { card: null, isAdmin: false,
+				withTitle: false }) %>
+		</div>
+	</div>
+</div>

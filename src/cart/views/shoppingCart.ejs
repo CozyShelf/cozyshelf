@@ -1,0 +1,251 @@
+<% if (cartItems.length===0) { %>
+	<!-- Estado vazio do carrinho -->
+	<div class="mt-10 flex flex-col items-center justify-center px-8">
+		<div class="bg-white p-12 text-center max-w-md mx-auto">
+			<div class="mb-8">
+				<span class="material-symbols-outlined text-8xl text-light-brown mb-6 block">shopping_cart</span>
+			</div>
+			<h1 id="empty-cart-title" class="text-3xl font-bold text-dark-gray mb-6">Seu carrinho está vazio</h1>
+			<p id="empty-cart-message" class="text-gray-dark mb-10 mt-10 leading-relaxed text-lg">
+				Parece que você ainda não adicionou nenhum livro ao seu carrinho.
+				Que tal explorar nossa coleção e encontrar algo interessante para ler?
+			</p>
+			<a id="explore-books-btn" href="/books"
+				class="inline-block bg-brown text-white px-10 py-4 rounded-lg hover:bg-dark-brown transition-all duration-300 font-semibold text-lg shadow-md hover:shadow-lg transform hover:scale-105">
+				Explorar Livros
+			</a>
+		</div>
+	</div>
+	<% } else { %>
+		<div class="mt-10 mb-20 flex flex-col items-center">
+			<%- include("headers/pageHeader.ejs", {pageTitle: "Carrinho" }) %>
+				<form class="flex flex-col gap-26">
+					<div class="flex flex-row w-full justify-between mt-10 px-32">
+						<!---BEGIN: lista de livros-->
+						<div id="cart-items-container" class="w-2/3">
+							<ul id="cart-items-list" class="space-y-0">
+								<% cartItems && cartItems.forEach(function(item) { %>
+									<%- include('../../generic/views/components/cart/cartItem.ejs', {item: item}) %>
+										<% }); %>
+							</ul>
+						</div>
+						<!---BEGIN: dados para finalizar pedido-->
+						<div class="w-1/3 ml-10 flex flex-col gap-3">
+							<!---BEGIN: cupons-->
+							<div class="flex flex-col gap-4 p-4 border border-light-brown rounded-md">
+								<h1 class="font-bold text-[18px] text-brown">Cupons</h1>
+								<p class="text-sm text-gray-600 mb-4">Utilize seus cupons para obter desconto na compra:</p>
+
+								<!-- Cupom Promocional -->
+								<div id="promotional-coupons-section" class="flex flex-col gap-2">
+									<h2 class="font-semibold text-gray-dark text-[14px]">Cupom Promocional:</h2>
+									<div class="flex gap-2">
+										<select id="promotional-coupon-select" name="promotionalCoupon"
+											class="border border-gray-dark text-gray-dark rounded px-2 py-1 w-full text-[12px]">
+											<option value="">Selecione um cupom promocional</option>
+											<% if (promotionalCoupons && promotionalCoupons.length > 0) { %>
+												<% promotionalCoupons.forEach(function(coupon) { %>
+													<option value="<%= coupon.id %>">
+														<%= coupon.description %> (<%= Math.round(coupon.value) %>%)
+													</option>
+												<% }); %>
+											<% } else { %>
+												<option value="" disabled>Nenhum cupom promocional disponível</option>
+											<% } %>
+										</select>
+									</div>
+								</div>
+
+								<!-- Cupons de Troca -->
+								<div id="exchange-coupons-section" class="flex flex-col gap-2">
+									<h2 class="font-semibold text-gray-dark text-[14px]">Cupons de Troca:</h2>
+									<div id="exchange-coupons-list" class="max-h-24 overflow-y-auto">
+										<% if (exchangeCoupons && exchangeCoupons.length> 0) { %>
+											<% exchangeCoupons.forEach(function(coupon, index) { %>
+												<label class="flex items-center gap-2 text-[12px] mb-1">
+													<input type="checkbox" name="exchangeCoupons" value="<%= coupon.id %>"
+														class="w-4 h-4 text-brown bg-gray-100 border-gray-300 rounded focus:ring-brown">
+													<span>
+														<%= coupon.description %> (R$ <%= coupon.value %>)
+													</span>
+												</label>
+												<% }); %>
+													<% } else { %>
+														<p id="no-exchange-coupons-message" class="text-[12px] text-gray-500 italic">Nenhum cupom de
+															troca disponível</p>
+														<% } %>
+									</div>
+								</div>
+
+								<div class="flex gap-2">
+									<button type="button" id="apply-coupons"
+										class="bg-brown text-white px-4 py-2 rounded hover:bg-dark-brown text-[12px] font-semibold flex-1">
+										Aplicar Cupons
+									</button>
+									<button type="button" id="reset-coupons"
+										class="bg-gray-500 text-white px-3 py-2 rounded hover:bg-gray-600 text-[12px] font-semibold"
+										onclick="resetCoupons()" style="display: none;">
+										Resetar
+									</button>
+								</div>
+
+								<!-- Status dos cupons aplicados -->
+								<div id="applied-coupons-status"
+									class="mt-2 p-2 bg-green-50 border border-green-200 rounded text-[11px] text-green-800"
+									style="display: none;">
+									<div class="flex items-center gap-1 mb-1">
+										<span class="material-symbols-outlined text-[14px]">check_circle</span>
+										<span class="font-semibold">Cupons aplicados:</span>
+									</div>
+									<div id="applied-coupons-list"></div>
+								</div>
+							</div>
+
+							<div id="cart-summary" class="flex flex-col gap-4 p-6 border border-light-brown rounded-md">
+								<h1 id="cart-values-title" class="font-bold text-[18px] text-brown">Valores</h1>
+								<div class="flex justify-between">
+									<h2 class="text-gray-dark [12px]">Subtotal de itens:</h2>
+									<p class="font-semibold" id="items-subtotal">
+										<%= itemsSubtotal %>
+									</p>
+								</div>
+								<div class="flex justify-between">
+									<h2 class="text-gray-dark [12px]">Frete:</h2>
+									<p id="freight-value" class="font-semibold">
+										<%= freight %>
+									</p>
+								</div>
+								<div class="flex justify-between">
+									<h2 class="text-gray-dark [12px]">Descontos de cupons:</h2>
+									<p id="coupons-discount" class="text-light-green">- R$ 0,00</p>
+								</div>
+								<div class="flex justify-between border-t border-gray pt-2 text-dark-brown">
+									<h2 class="font-semibold text-[16px]">Total:</h2>
+									<p class="font-semibold text-[16px]" id="total-display"
+										data-total-amount="<%= total.replace('R$ ', '').replace(',', '.') %>">
+										<%= total %>
+									</p>
+								</div>
+							</div>
+
+							<div class="flex flex-col gap-4 p-6 border border-light-brown rounded-md">
+								<h1 class="font-bold text-[18px] text-brown">Detalhes da Compra</h1>
+								<div class="flex flex-col gap-4">
+									<!-- Endereço de Entrega -->
+									<div>
+										<h2 class="font-semibold text-gray-dark text-[14px] mb-2">Endereço de Entrega:</h2>
+										<div class="flex gap-2 items-center">
+											<select id="userAddress" name="userAddress" required
+												class="border border-gray-dark text-gray-dark rounded px-2 py-1 w-full text-[12px]">
+												<option value="">Selecione um endereço</option>
+												<% if (addresses && addresses.length> 0) { %>
+													<% addresses.forEach(function(address) { %>
+														<option value="<%= address.id %>"
+															data-freight="<%= address.freightValue %>"
+                											data-state="<%= address.state %>">
+															<%= address.shortPhrase %> - <%= address.fullAddress %>
+														</option>
+														<% }); %>
+															<% } %>
+											</select>
+											<button
+												class="text-bold w-10 h-7 bg-brown text-white rounded-[5px] border-2 border-light-brown cursor-pointer hover:bg-dark-brown"
+												id="add-address" type="button">+</button>
+										</div>
+									</div>
+
+									<!-- Métodos de Pagamento -->
+									<div>
+										<h2 class="font-semibold text-gray-dark text-[14px] mb-2">Métodos de Pagamento:</h2>
+										<p class="text-[12px] text-gray-600 mb-3">Selecione os cartões e defina o valor para cada um:</p>
+
+										<!-- Aviso quando cupons cobrem tudo -->
+										<div id="payment-disabled-warning"
+											class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-[12px] text-green-800"
+											style="display: none;">
+											<div class="flex items-center gap-2">
+												<span class="material-symbols-outlined text-[16px]">check_circle</span>
+												<div>
+													<p class="font-semibold">Compra totalmente paga com cupons!</p>
+													<p class="text-[11px] mt-1">Não é necessário adicionar cartões de crédito. Sua compra já está
+														completamente quitada pelos cupons aplicados.</p>
+												</div>
+											</div>
+										</div>
+
+										<div id="selected-cards" class="space-y-3 mb-4">
+											<!-- Cards selecionados aparecerão aqui -->
+										</div>
+
+										<div id="payment-controls" class="flex gap-2 items-center">
+											<select id="card-selector"
+												class="border border-gray-dark text-gray-dark rounded px-2 py-1 w-full text-[12px]">
+												<option value="">Adicionar cartão de crédito</option>
+												<% if (cards && cards.length> 0) { %>
+													<% cards.forEach(function(card) { %>
+														<option value="<%= card.id %>" data-card-brand="<%= card.flagDescription %>"
+															data-card-last-digits="<%= card.maskedNumber.substr(-4) %>" <%=card.isPreferred
+															? "selected" : "" %>>
+															<%= card.shortDisplay %>
+														</option>
+														<% }); %>
+															<% } %>
+											</select>
+											<button type="button" id="add-card-to-payment"
+												class="text-bold px-3 h-7 bg-brown text-white rounded-[5px] border-2 border-light-brown cursor-pointer hover:bg-dark-brown text-[11px]">
+												Adicionar
+											</button>
+											<button
+												class="text-bold w-10 h-7 bg-brown text-white rounded-[5px] border-2 border-light-brown cursor-pointer hover:bg-dark-brown"
+												id="add-payment" type="button">+</button>
+										</div>
+
+										<!-- Resumo dos valores por cartão -->
+										<div id="payment-summary" class="mt-4 p-3 bg-gray-50 rounded-lg" style="display: none;">
+											<h3 class="font-semibold text-[12px] text-gray-dark mb-2">Resumo do Pagamento:</h3>
+											<div id="payment-breakdown" class="space-y-1 text-[11px]">
+												<!-- Breakdown dos valores por cartão -->
+											</div>
+											<div id="remaining-amount" class="mt-2 pt-2 border-t border-gray-300 font-semibold text-[12px]">
+												<!-- Valor restante -->
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="flex justify-end">
+								<button id="finish-order-btn" type="submit"
+									class="font-semibold text-sm bg-light-green text-white rounded hover:bg-dark-green w-[150px] h-10 flex items-center justify-center">
+									Finalizar Pedido
+								</button>
+							</div>
+						</div>
+					</div>
+				</form>
+		</div>
+
+		<!-- Modal de Endereço (fora do formulário principal) -->
+		<%- include('../../generic/views/components/address/addressModal.ejs', { states }) %>
+
+			<!-- Modal de Cartão (fora do formulário principal) -->
+			<%- include('../../generic/views/components/card/cardModal.ejs') %>
+				<% } %>
+					<script>
+						window.promotionalCoupons = <%- JSON.stringify(promotionalCoupons || []) %>;
+						window.exchangeCoupons = <%- JSON.stringify(exchangeCoupons || []) %>;
+					</script>
+
+					<script type="module" src="/scripts/generic/create/createFormSubmit.mjs"></script>
+					<script type="module" src="/scripts/generic/delete/deleteFormSubmit.mjs"></script>
+					<script src="/scripts/shoppingCart/utils/cartUtils.mjs"></script>
+					<script src="/scripts/shoppingCart/components/cartManagement.mjs"></script>
+
+					<script src="/scripts/shoppingCart/modals/addressModal.js"></script>
+					<script src="/scripts/shoppingCart/modals/cardModal.js"></script>
+					<script src="/scripts/shoppingCart/components/couponManagement.js"></script>
+					<script src="/scripts/shoppingCart/components/couponValidation.js"></script>
+					<script src="/scripts/shoppingCart/components/multipleCardPayment.js"></script>
+					<script src="/scripts/shoppingCart/components/addressFreightCalculator.mjs"></script>
+
+					<!-- Sistema de Checkout -->
+					<script type="module" src="/scripts/shoppingCart/checkout.mjs"></script>

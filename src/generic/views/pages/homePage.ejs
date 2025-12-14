@@ -1,0 +1,82 @@
+<div class="flex flex-col gap-26 mt-10 relative">
+	<div class="flex flex-row w-full justify-between mt-10 px-32">
+		<div class="flex flex-col w-5/12 justify-start gap-5">
+			<p class="font-medium text-[16px]">Olá, leitor!</p>
+			<h1 class="font-bold text-3xl text-light-title">Seja muito bem vindo,</h1>
+			<p class="text-[16px] font-medium text-gray-700">
+				Deixe nosso mascote <strong>Mingau</strong> te ajudar a descobrir o livro perfeito para você!
+				Ele conhece seus gostos e vai sugerir títulos que combinam com seu humor e preferências.
+			</p>
+			<div class="relative flex flex-row gap-5">
+				<button onclick="renderChatbot()"
+					class="p-4 bg-light-title font-semibold text-white w-6/12 rounded-[10px] hover:bg-brown hover:cursor-pointer transition-all hover:scale-105">
+					💬 Falar com Mingau
+				</button>
+				<div class="absolute top-3 left-54"><%- include("mascot.ejs", { mascotWidth: 24 }) %></div>
+			</div>
+		</div>
+
+		<div class="relative flex flex-col w-7/12 justify-end items-center">
+			<div class="relative w-full overflow-hidden">
+				<div class="flex transition-transform duration-300 ease-in-out" id="bookCarousel"
+					style="transform: translateX(0%);">
+
+					<% for (let i=0; i < books.length; i +=2) { %>
+						<div class="min-w-full flex flex-row gap-10 w-full flex-shrink-0 justify-center">
+							<%- include("books/bookFrame.ejs", { bookCoverImgPath: books[i].coverPath }) %>
+
+								<% if (books[i + 1]) { %>
+									<%- include("books/bookFrame.ejs", { bookCoverImgPath: books[i + 1].coverPath }) %>
+										<% } else { %>
+											<div class="w-32 h-48"></div>
+											<% } %>
+						</div>
+						<% } %>
+				</div>
+			</div>
+
+			<div class="flex gap-2 mt-6" id="carouselDots">
+				<% const totalSlides=Math.ceil(books.length / 2); %>
+					<% for (let i=0; i < totalSlides; i++) { %>
+						<button
+							class="carousel-dot cursor-pointer hover:opacity-80 w-3 h-3 rounded-full transition-colors duration-200 <%= i === 0 ? 'bg-light-title active' : 'bg-gray inactive' %>"
+							data-slide="<%= i %>" onclick="goToSlide(this.dataset.slide)">
+						</button>
+						<% } %>
+			</div>
+		</div>
+	</div>
+
+	<div class="flex flex-row justify-end absolute z-50" id="chatbotContainer" hidden>
+		<%- include("chatbot/mingauChatbot.ejs") %>
+	</div>
+
+	<div class="flex-flex-col gap-5">
+		<div class="text-center mb-8">
+			<h2 class="text-xl font-semibold text-light-title mb-2">Ou mergulhe direto no nosso catálogo</h2>
+			<p class="text-[16px] font-medium text-gray-600">
+				Dê uma olhada nos títulos em destaque e encontre algo que desperte sua curiosidade
+			</p>
+		</div>
+		<%- include("books/bookList.ejs", { books }) %>
+			<div class="flex justify-center mt-10 mb-10 items-center">
+				<div class="relative group">
+					<a href="/books"
+						class="border border-light-title text-light-title hover:bg-light-title hover:text-white hover:cursor-pointer bg-transparent font-bold px-10 py-5 rounded-3xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex flex-row gap-4 items-center">
+						<span class="flex flex-col items-center gap-4">
+							<div class="text-lg">Ver Todos os Livros</div>
+						</span>
+						<span
+							class="material-symbols-outlined text-xl transform group-hover:translate-x-2 transition-transform duration-300">
+							storefront
+						</span>
+					</a>
+				</div>
+			</div>
+	</div>
+</div>
+
+<script type="module" src="scripts/global/components/autoPlayCarousel.mjs"></script>
+<script type="module" src="scripts/shoppingCart/utils/cartUtils.mjs"></script>
+<script type="module" src="scripts/books/components/bookComponent.mjs"></script>
+<script src="scripts/chatbot/components/chatbot.js"></script>
